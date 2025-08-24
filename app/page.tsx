@@ -23,9 +23,9 @@ export default function Home({ searchParams }: { searchParams: FetchCarProps }) 
     };
 
     toast.promise(fetchAllCars(), {
-      loading: 'Fetching cars...',
-      success: 'Fetched cars successfully.',
-      error: 'Failed to fetch cars.',
+      loading: 'Wyszukiwanie samochodów...',
+      success: 'Wyszukiwanie zakończone',
+      error: 'Nie udało się znaleźć samochodów',
     });
   }, [model, year, manufacturer, fuelType, limit]);
 

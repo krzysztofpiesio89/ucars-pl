@@ -22,16 +22,16 @@ const Hero = () => {
               Hey🙋‍♀️, {session.user?.name?.split(" ")[0]} <br />
             </span>
           )}
-          Find, book, rent a car quick and super easy!
+       Wygraj aukcje i spełnij marzenie o samochodzie z USA! Wygodnie i bezpiecznie
         </h1>
 
         <p className="text-xl md:text-2xl md:mt-6 mt-4 mb-4 lg:mb-8 text-slat-600 dark:text-slate-400">
-          Streamline your car rental experience with our effortless booking
-          process.
+         Kup samochód z USA bez stresu i ryzyka. 
+          Wygraj aukcje i ciesz się nowym autem w kilka tygodni!
         </p>
         <Link href={"#explore"}>
           <CustomButton
-            title="Explore Cars"
+            title="Trwające aukcje"
             type="button"
             containerStyle="text-white bg-blue-500 dark:bg-pink-500"
           />
@@ -41,7 +41,7 @@ const Hero = () => {
       <div className="flex items-end lg:flex-[1.25] justify-end w-full h-[590px] lg:h-screen ">
         <div className="w-full h-full relative">
           <Image
-            src={"/images/main-car.png"}
+            src={"/images/usa-main-car.webp"}
             alt="hero"
             quality={100}
             fill

@@ -35,17 +35,17 @@ const Navbar = () => {
             className='h-full object-contain'
           /> */}
           <span className="text-xl md:text-3xl text-indigo-700 font-bold dark:text-white">
-            Carsify
+           TransAviaTech
           </span>
         </Link>
 
         {/* Desktop navigation  */}
         <div className="hidden md:flex items-center  gap-3 ">
           <Link href={"/view-all"}>
-            <span>Search</span>
+            <span>Wyszukaj</span>
           </Link>
           <Link href={"/rent-car"} onClick={() => setIsDropdownShown(false)}>
-            <span>AddCar</span>
+            <span>Aukcje na żywo</span>
           </Link>
 
           {isUser ? (
@@ -75,7 +75,7 @@ const Navbar = () => {
           ) : (
             <Link href={"/user/login"}>
               <CustomButton
-                title="Login"
+                title="Zaloguj się"
                 type="button"
                 containerStyle="bg-white rounded-full border text-blue-500 w-full rounded-full dark:bg-pink-700 dark:text-slate-300 dark:border-slate-700 dark:text-slate-300"
               />

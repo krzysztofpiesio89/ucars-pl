@@ -25,8 +25,8 @@ const ViewAllCars = ({ searchParams }: { searchParams: FetchCarProps }) => {
         toast.promise(
             fetchAllCars(),
             {
-                loading: 'Fetching Cars...',
-                success: 'Cars fetched successfully',
+                loading: 'Wyszukiwanie samochodów...',
+                success: 'Samochody znalezione',
                 error: (err) => err.message,
             }
         );

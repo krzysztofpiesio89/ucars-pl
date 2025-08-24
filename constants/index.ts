@@ -72,25 +72,25 @@ export const fuels = [
 
 export const footerLinks = [
     {
-        title: 'About',
+        title: 'O nas',
         links: [
-            { title: 'How it works', url: '/' },
-            { title: 'Featured', url: '/' },
-            { title: 'Partnership', url: '/' },
-            { title: 'Bussiness Relation', url: '/' },
+            { title: 'Jak pracujemy', url: '/' },
+            { title: 'Wyróżnione', url: '/' },
+            { title: 'Współpraca', url: '/' },
+            { title: 'Relacje biznesowe', url: '/' },
         ],
     },
     {
-        title: 'Company',
+        title: 'Nasza firma',
         links: [
-            { title: 'Events', url: '/' },
+            { title: 'Wydarzenia', url: '/' },
             { title: 'Blog', url: '/' },
-            { title: 'Podcast', url: '/' },
-            { title: 'Invite a friend', url: '/' },
+            { title: 'Podcasty', url: '/' },
+            { title: 'Prasa', url: '/' },
         ],
     },
     {
-        title: 'Socials',
+        title: 'Socjal Media',
         links: [
             { title: 'Discord', url: '/' },
             { title: 'Instagram', url: '/' },
