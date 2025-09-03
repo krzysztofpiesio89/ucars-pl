@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// Konfiguracja generatora klienta Prisma.
+// Odpowiada za wygenerowanie kodu klienta TypeScript na podstawie tego schematu.
+generator client {
+  provider = "prisma-client-js"
+  // Określa folder docelowy dla wygenerowanego klienta.
+  output   = "../app/generated/prisma"
+}
+
+// Definicja źródła danych.
+// Określa typ bazy danych i sposób połączenia.
+datasource db {
+  provider = "postgresql" // Używamy bazy danych PostgreSQL.
+  url      = env("DATABASE_URL") // Adres URL bazy danych jest pobierany ze zmiennej środowiskowej.
+}
+
+// Model Użytkownika - reprezentuje każdego zarejestrowanego użytkownika w systemie.
+model User {
+  id         Int      @id @default(autoincrement()) // Unikalny identyfikator użytkownika.
+  email      String   @unique // Adres email, musi być unikalny.
+  password   String   // Hash hasła użytkownika.
+  name       String?  // Opcjonalne imię użytkownika.
+  coverImage String?  // Opcjonalny URL do zdjęcia profilowego/awatara.
+  createdAt  DateTime @default(now()) // Data utworzenia konta.
+  updatedAt  DateTime @updatedAt // Data ostatniej aktualizacji profilu.
+
+  // Relacje
+  cars      Car[]      // Lista samochodów dodanych przez tego użytkownika (np. jako administrator).
+  bids      Bid[]      // Lista wszystkich ofert złożonych przez tego użytkownika w różnych aukcjach.
+  favorites Favorite[] // Lista samochodów oznaczonych jako ulubione przez tego użytkownika.
+}
+
+// Model Samochodu - centralny model aplikacji, przechowuje wszystkie informacje o pojeździe z aukcji.
+model Car {
+  id              Int      @id @default(autoincrement()) // Unikalny identyfikator samochodu.
+  lotNumber       String   @unique // Unikalny numer partii (LOT) z aukcji.
+  vin             String   // Numer VIN pojazdu.
+  year            Int      // Rok produkcji.
+  make            String   // Marka (np. Ford).
+  model           String   // Model (np. Mustang).
+  trim            String?  // Wersja wyposażenia (np. GT).
+  odometer        Int?     // Przebieg w milach.
+  primaryDamage   String?  // Główne uszkodzenie (np. Front End).
+  secondaryDamage String?  // Drugorzędne uszkodzenie.
+  lossType        String?  // Typ szkody (np. Collision).
+  fuelType        String?  // Typ paliwa (np. Gasoline).
+  transmission    String?  // Typ skrzyni biegów (np. Automatic).
+  drive           String?  // Rodzaj napędu (np. RWD).
+  cylinders       Int?     // Liczba cylindrów.
+  bodyStyle       String?  // Typ nadwozia (np. Coupe).
+  color           String?  // Kolor pojazdu.
+  auctionDate     DateTime? // Data i godzina aukcji.
+  auctionLocation String?  // Lokalizacja aukcji.
+  saleStatus      String?  // Status sprzedaży (np. "On Auction", "Sold").
+  currentBid      Float    @default(0) // Aktualna najwyższa oferta.
+  buyItNowPrice   Float?   // Cena "Kup Teraz", jeśli dostępna.
+  currency        String   @default("USD") // Waluta.
+  imageFiles      Json?    // Lista URL-i do zdjęć samochodu, przechowywana jako JSON.
+  source          String   @default("copart") // Źródło danych (np. "copart", "iaai").
+  createdAt       DateTime @default(now()) // Data dodania rekordu do bazy.
+  updatedAt       DateTime @updatedAt // Data ostatniej aktualizacji rekordu.
+
+  // Relacje
+  creatorId Int?     // Klucz obcy do użytkownika, który dodał ten samochód do bazy.
+  creator   User?    @relation(fields: [creatorId], references: [id])
+  auctions  Auction[] // Lista wszystkich aukcji powiązanych z tym samochodem (jeden samochód może być licytowany wielokrotnie).
+  favorites Favorite[] // Lista wpisów w tabeli ulubionych, które odnoszą się do tego samochodu.
+}
+
+// Model Aukcji - reprezentuje pojedyncze wydarzenie aukcyjne dla konkretnego samochodu.
+model Auction {
+  id          Int      @id @default(autoincrement()) // Unikalny identyfikator aukcji.
+  carId       Int      // Klucz obcy do samochodu, który jest licytowany.
+  car         Car      @relation(fields: [carId], references: [id])
+  startDate   DateTime // Data rozpoczęcia aukcji.
+  endDate     DateTime // Data zakończenia aukcji.
+  status      String   // Status aukcji (np. "active", "finished", "cancelled").
+  startingBid Float    // Cena wywoławcza.
+  currentBid  Float    @default(0) // Bieżąca najwyższa oferta w tej konkretnej aukcji.
+
+  // Relacje
+  bids Bid[] // Lista wszystkich ofert złożonych w ramach tej aukcji.
+}
+
+// Model Oferty (Bid) - reprezentuje pojedynczą ofertę złożoną przez użytkownika w konkretnej aukcji.
+model Bid {
+  id        Int      @id @default(autoincrement()) // Unikalny identyfikator oferty.
+  auctionId Int      // Klucz obcy do aukcji, w której złożono ofertę.
+  auction   Auction  @relation(fields: [auctionId], references: [id])
+  userId    Int      // Klucz obcy do użytkownika, który złożył ofertę.
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Float    // Kwota oferty.
+  createdAt DateTime @default(now()) // Czas złożenia oferty.
+}
+
+// Model Ulubionych - tabela łącząca użytkowników z samochodami, które oznaczyli jako ulubione.
+model Favorite {
+  id        Int      @id @default(autoincrement()) // Unikalny identyfikator wpisu.
+  carId     Int      // Klucz obcy do polubionego samochodu.
+  creatorId Int      // Klucz obcy do użytkownika, który polubił samochód.
+  createdAt DateTime @default(now()) // Czas dodania do ulubionych.
+
+  // Relacje
+  car     Car @relation(fields: [carId], references: [id])
+  creator User @relation(fields: [creatorId], references: [id])
+}

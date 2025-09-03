@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
-import User from "@/models/User";
-import { connectToDatabase } from "@/utils/database";
+import prisma from "@/utils/prisma";
 
 const handler = NextAuth({
   providers: [
@@ -12,31 +11,42 @@ const handler = NextAuth({
   ],
   callbacks: {
     async session({ session }) {
-      if (session?.user) {
-        const sessionUser = await User.findOne({ email: session?.user.email });
-        session.user.id = sessionUser._id.toString();
+      if (session?.user && session.user.email) {
+        // pobieramy użytkownika z PostgreSQL przez Prisma
+        const sessionUser = await prisma.user.findUnique({
+          where: { email: session.user.email },
+        });
+        if (sessionUser) {
+          session.user.id = sessionUser.id.toString();
+        }
       }
       return session;
     },
     async signIn({ profile }): Promise<boolean> {
       try {
-        await connectToDatabase();
-        //check if the user exists
-        const isUserExists = await User.findOne({ email: profile?.email });
-        if (!isUserExists && profile?.email) {
-          //create user
-          const image = `https://api.multiavatar.com/${profile?.name}.svg`;
-          await User.create({
-            username: profile.name?.replace(" ", "").toLowerCase(),
-            email: profile.email,
-            coverImage:
-              "https://images.pexels.com/photos/1590067/pexels-photo-1590067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            image,
+        if (!profile?.email) return false;
+
+        // sprawdzamy czy użytkownik już istnieje
+        const isUserExists = await prisma.user.findUnique({
+          where: { email: profile.email },
+        });
+
+        if (!isUserExists) {
+          // tworzymy nowego użytkownika w PostgreSQL
+          const image = `https://api.multiavatar.com/${profile.name}.svg`;
+
+          await prisma.user.create({
+            data: {
+              name: profile.name,
+              email: profile.email,
+              password: "", // GitHub login, hasło nie jest potrzebne
+              // dodatkowe pola opcjonalne
+            },
           });
         }
+
         return true;
       } catch (error) {
-        // Handle the error
         console.error(error);
         return false;
       }

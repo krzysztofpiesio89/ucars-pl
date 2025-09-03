@@ -13,8 +13,10 @@ import CustomInput from './CustomInput';
 import ImageUploader from './ImageUploader';
 import Form from './Form';
 import Loader from './Loader';
+import AboutUs from './AboutUs'; // <-- Zaimportuj nowy komponent
 export {
     Hero,
+    AboutUs,
     CustomButton,
     Catalogue,
     Navbar,

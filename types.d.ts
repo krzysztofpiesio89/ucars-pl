@@ -6,29 +6,47 @@ export interface FuelsProps {
 }
 
 export interface CarProps {
-    capacity: number;
-    carTitle: string;
-    carType: string;
-    cityMPG: number;
-    cylinders: number;
-    combinationMPG: number;
-    drive: string;
-    fuelCapacity: number;
-    fuelType: string;
-    highwayMPG: number;
-    imageFiles: string[];
-    location: string;
-    manufacturer: string;
-    model: string;
-    rentPrice: number
-    shortDescription: string;
-    transmission: string;
-    typeOfclass: string;
-    year: string;
-    creator: Creator;
-    _id: string;
-}
+  id: number;
+  lotNumber: string;
+  vin: string;
+  year: number;
+  make: string;
+  model: string;
+  trim?: string;
+  odometer?: number;
+  primaryDamage?: string;
+  secondaryDamage?: string;
+  lossType?: string;
+  fuelType?: string;
+  transmission?: string;
+  drive?: string;
+  cylinders?: number;
+  bodyStyle?: string;
+  color?: string;
+  auctionDate?: string;
+  auctionLocation?: string;
+  saleStatus?: string;
+  currentBid?: number;
+  buyItNowPrice?: number;
+  currency?: string;
+  imageFiles?: string[] | string;
+  source?: string;
+  createdAt: string;
+  updatedAt: string;
 
+  creatorId?: number;
+  creator?: {            // <--- teraz całkowicie opcjonalny
+    id: number;
+    name?: string;
+    email?: string;
+  } | null;
+
+  // pola pomocnicze do filtrów
+  manufacturer?: string;
+  carTitle?: string;
+  typeOfclass?: string;
+  rentPrice?: number;
+}
 export interface CarInfoProps extends CarProps {
     creator?: Creator;
     _id?: string;

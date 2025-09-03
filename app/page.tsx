@@ -1,5 +1,5 @@
 'use client'
-import { Catalogue,  Hero} from '@/components';
+import { Catalogue,  Hero, AboutUs} from '@/components';
 import { CarProps, FetchCarProps } from '@/types';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -38,6 +38,7 @@ export default function Home({ searchParams }: { searchParams: FetchCarProps }) 
       <div className="w-72 h-72 dark:bg-gradient-radial from-slate-700 to-[#343434] rounded-2xl rotate-12 absolute top-[15%] right-0 blur-3xl" />
 
       <Hero />
+       <AboutUs /> 
       { allCars && <Catalogue
         isLoading={isLoading}
         allCars={allCars}

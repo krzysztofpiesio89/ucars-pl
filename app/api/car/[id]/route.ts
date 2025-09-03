@@ -1,16 +1,25 @@
-import Car from "@/models/Car";
-import { connectToDatabase } from "@/utils/database";
 import { NextResponse } from "next/server";
+import prisma from "@/utils/prisma";
 
-// get a car by id
+// GET a car by id
 export const GET = async (req: Request, { params }: { params: { id: string } }) => {
-    const { id } = params;
-    try {
-        await connectToDatabase();
-        const specificCar = await Car.findById(id);
-        return NextResponse.json(specificCar, { status: 200 });
-    } catch (error) {
-        console.error({ error });
-        return NextResponse.json('Failed to get a specific car', { status: 500 });
+  const { id } = params;
+
+  try {
+    // Prisma używa int dla id w Twoim modelu, więc konwertujemy z string
+    const carId = parseInt(id, 10);
+
+    const specificCar = await prisma.car.findUnique({
+      where: { id: carId },
+    });
+
+    if (!specificCar) {
+      return NextResponse.json({ message: "Car not found" }, { status: 404 });
     }
-}
+
+    return NextResponse.json(specificCar, { status: 200 });
+  } catch (error) {
+    console.error({ error });
+    return NextResponse.json({ message: "Failed to get a specific car" }, { status: 500 });
+  }
+};

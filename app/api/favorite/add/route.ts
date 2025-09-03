@@ -1,19 +1,44 @@
-import Favorite from '@/models/Favorite';
-import { connectToDatabase } from '@/utils/database';
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import prisma from "@/utils/prisma";
+
 export const POST = async (req: Request) => {
+  try {
     const favCar = await req.json();
-    try {
-        await connectToDatabase();
-        const isFavoriteAllreadyExist = await Favorite.findById(favCar._id);
-        if(isFavoriteAllreadyExist){
-            return NextResponse.json('Favorite already exist', { status: 409 });
-        }
-        const newFavorite = new Favorite(favCar,{new:true});
-        await newFavorite.save();
-        return NextResponse.json('newFavorite', { status: 201 });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json('Failed to create a add a favorite', { status: 500 });
+    const { carId, creatorId } = favCar;
+
+    if (!carId || !creatorId) {
+      return NextResponse.json(
+        { message: "Missing carId or creatorId" },
+        { status: 400 }
+      );
     }
-}
+
+    // Sprawdzamy, czy favorite już istnieje
+    const existingFavorite = await prisma.favorite.findFirst({
+      where: { carId, creatorId },
+    });
+
+    if (existingFavorite) {
+      return NextResponse.json(
+        { message: "Favorite already exists" },
+        { status: 409 }
+      );
+    }
+
+    // Tworzymy nowy rekord
+    const newFavorite = await prisma.favorite.create({
+      data: {
+        carId,
+        creatorId,
+      },
+    });
+
+    return NextResponse.json(newFavorite, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { message: "Failed to add favorite" },
+      { status: 500 }
+    );
+  }
+};
