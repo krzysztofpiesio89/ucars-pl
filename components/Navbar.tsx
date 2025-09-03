@@ -35,7 +35,7 @@ const Navbar = () => {
             className='h-full object-contain'
           /> */}
           <span className="text-xl md:text-3xl text-indigo-700 font-bold dark:text-white">
-           TransAviaTech
+           { process.env.NEXT_PUBLIC_APP_NAME }
           </span>
         </Link>
 

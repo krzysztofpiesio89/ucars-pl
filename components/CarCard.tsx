@@ -44,13 +44,12 @@ const CarCard = ({
       toast("Login/sign in to add to favorite 💖");
       return;
     }
-
+  
     const userId = parseInt(session.user.id);
     setIsLoading(true);
 
     try {
       if (isFavoriteBtnActive) {
-        // Usuń z ulubionych
         const result = await removeFromFavorites(userId, carId);
         if (result.success) {
           toast.success("Removed from favorites ❤️");
@@ -59,7 +58,6 @@ const CarCard = ({
           toast.error("Failed to remove from favorites");
         }
       } else {
-        // Dodaj do ulubionych
         const result = await addToFavorites(userId, carId);
         if (result.success) {
           toast.success("Added to favorites 💖");
@@ -76,7 +74,6 @@ const CarCard = ({
     }
   };
 
-  // Obsługa imageFiles: tylko lokalne ścieżki lub fallback
   const getImages = (): string[] => {
     if (Array.isArray(car.imageFiles)) {
       return car.imageFiles.filter((img) => typeof img === 'string' && img.startsWith("/"));
@@ -100,7 +97,11 @@ const CarCard = ({
   const displayImage = images[0] || "/cars/fallback.webp";
 
   return (
-    <div className="w-full h-fit max-w-lg mx-auto bg-white dark:bg-gradient-radial from-slate-700 to-slate-900 dark:border-slate-700/70 md:hover:shadow-lg transition-all duration-150 ease-linear p-3 md:p-4 rounded-2xl border group group-hover:scale-125">
+    <div className="relative overflow-hidden w-full h-fit max-w-lg mx-auto bg-white dark:bg-gradient-radial from-slate-700 to-slate-900 dark:border-slate-700/70 md:hover:shadow-lg transition-all duration-150 ease-linear p-3 md:p-4 rounded-2xl border group">
+      
+      {/* ZMIANA: Czas trwania animacji jest teraz zdefiniowany tylko dla stanu 'group-hover'. */}
+      <span className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent transition-all ease-in-out group-hover:duration-700 group-hover:left-[100%] -skew-x-12" />
+
       <div className="flex items-center justify-between">
         <h1 className="text-lg md:text-xl font-bold capitalize truncate max-w-[75%]">
           {car.carTitle || `${car.make} ${car.model}`}
@@ -125,12 +126,13 @@ const CarCard = ({
 
       <p className="text-gray-400 capitalize mt-1">{car.typeOfclass || car.bodyStyle || "N/A"}</p>
 
-      <div className="relative w-full h-48 rounded-lg mt-1">
+      <div className="relative w-full h-48 rounded-lg mt-1 overflow-hidden">
         <Image
           src={displayImage}
           alt="car"
           fill
-          className="object-contain absolute w-full rounded-lg"
+          // ZMIANA: Czas trwania animacji jest teraz zdefiniowany tylko dla stanu 'group-hover'.
+          className="object-contain absolute w-full rounded-lg transition-transform ease-in-out group-hover:duration-300 group-hover:scale-105"
         />
       </div>
 
@@ -185,19 +187,19 @@ const CarCard = ({
           </Link>
         </div>
 
-        { console.log(car.id)};
+        
             {car.creator?.email === session?.user?.email && pathname === "/profile" && (
           <div className="mt-4 flex items-center justify-between gap-2">
             <CustomButton
               title="Edit"
               type="button"
-              handleClick={() => handleEdit && handleEdit(car.id)} // używamy car.id zamiast car._id
+              handleClick={() => handleEdit && handleEdit(`${car.id}`)}
               containerStyle="bg-green-600 text-white w-full px-5 rounded-full dark:bg-blue-500 dark:text-slate-300"
             />
             <CustomButton
               title="Delete"
               type="button"
-              handleClick={() => handleDelete && handleDelete(car.id)} // używamy car.id zamiast car._id
+              handleClick={() => handleDelete && handleDelete(`${car.id}`)}
               containerStyle="border border-red-500 w-full px-5 rounded-full dark:bg-red-500 dark:text-slate-300"
             />
           </div>
@@ -208,3 +210,4 @@ const CarCard = ({
 };
 
 export default CarCard;
+
