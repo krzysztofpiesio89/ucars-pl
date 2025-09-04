@@ -1,5 +1,5 @@
 'use client'
-import { Catalogue,  Hero, AboutUs} from '@/components';
+import { Catalogue,  Hero, AboutUs, ProcessSection} from '@/components';
 import { CarProps, FetchCarProps } from '@/types';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -39,6 +39,7 @@ export default function Home({ searchParams }: { searchParams: FetchCarProps }) 
 
       <Hero />
        <AboutUs /> 
+       <ProcessSection />
       { allCars && <Catalogue
         isLoading={isLoading}
         allCars={allCars}

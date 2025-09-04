@@ -1,4 +1,5 @@
 import Hero from './Hero';
+import ProcessSection from './ProcessSection';
 import CustomButton from './CustomButton';
 import Navbar from './Navbar';
 import Catalogue from './Catalogue';
@@ -17,6 +18,7 @@ import AboutUs from './AboutUs'; // <-- Zaimportuj nowy komponent
 export {
     Hero,
     AboutUs,
+    ProcessSection,
     CustomButton,
     Catalogue,
     Navbar,
