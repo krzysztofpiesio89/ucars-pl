@@ -31,7 +31,6 @@ const RentACar = () => {
         shortDescription:'',
         transmission:'',
         typeOfclass:'',
-        year:'',
     });
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
