@@ -6,7 +6,8 @@ const nextConfig = {
             "avatars.githubusercontent.com",
             "images.pexels.com" ,
             "res.cloudinary.com",
-            "lh3.googleusercontent.com"
+            "lh3.googleusercontent.com",
+            "via.placeholder.com"
         ]
     }
 }
