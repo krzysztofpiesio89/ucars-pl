@@ -147,7 +147,7 @@ const CardDetails = ({ params }: { params: { id: string } }) => {
                 <div className="mt-8 p-6 bg-blue-50 dark:bg-slate-800/50 rounded-2xl">
                      <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Description</h3>
                     <p className="text-slate-700 dark:text-slate-300 text-lg">
-                        {car.shortDescription || "No additional description available."}
+                     {`This is a ${car.year} ${car.make} ${car.model} with primary damage listed as '${car.primaryDamage || 'N/A'}'. Please review all photos and specifications before bidding.`}
                     </p>
                 </div>
             </div>
