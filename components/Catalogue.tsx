@@ -75,7 +75,7 @@ const Catalogue = ({ allCars, limit, isLoading }: CatalogueProps) => {
 
       {limit < allCars?.length && (
         <CustomButton
-          title="Show More"
+          title="Zobacz więcej"
           type="button"
           containerStyle="mt-12 mx-auto bg-blue-600 text-white px-6 border rounded-full dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600"
           handleClick={handleClick}

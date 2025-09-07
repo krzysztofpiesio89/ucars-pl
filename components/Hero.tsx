@@ -1,60 +1,67 @@
 "use client";
+
 import { CustomButton } from "@/components";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import AboutUs from "@/components/AboutUs"; // <-- Zaimportuj nowy komponent
+import AboutUs from "@/components/AboutUs";
 
 const Hero = () => {
   const { data: session } = useSession();
   const { theme } = useTheme();
   const isUser = session?.user;
+
   return (
-    <section className="max-w-[1440px] mx-auto relative flex flex-col md:flex-row items-center bg-contain light dark:dark bg-no-repeat bg-bottom gradient-radial">
-      <div className="flex-1 p-4 md:p-16 pt-32 md:pt-28">
-        <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-radial from-[#456efd] to-[#00377b,#017cd0] text-blue-500 dark:text-white">
+    <section className="max-w-7xl mx-auto flex flex-col xl:flex-row items-center overflow-hidden">
+      <div className="flex-1 p-4 sm:p-6 lg:p-8 pt-28 xl:pt-36">
+        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white">
           {isUser && (
-            <span
-              className={`text-lg ${
-                theme === "dark" ? "text-pink-600" : "text-indigo-600"
-              } truncate`}
-            >
-              Hey🙋‍♀️, {session.user?.name?.split(" ")[0]} <br />
+            <span className="block text-xl lg:text-2xl font-medium text-blue-600 dark:text-pink-500 mb-2 truncate">
+              Witaj 🙋‍♀️, {session.user?.name?.split(" ")[0]}!
             </span>
           )}
-       Wygraj aukcje i spełnij marzenie o samochodzie z USA! Wygodnie i bezpiecznie
+          Wygraj aukcje i spełnij marzenie o samochodzie z USA!
         </h1>
 
-        <p className="text-xl md:text-2xl md:mt-6 mt-4 mb-4 lg:mb-8 text-slat-600 dark:text-slate-400">
-         Kup samochód z USA bez stresu i ryzyka. 
-          Wygraj aukcje i ciesz się nowym autem w kilka tygodni!
+        <p className="text-lg md:text-xl mt-4 mb-8 text-gray-600 dark:text-slate-400">
+          Kup samochód z USA bez stresu i ryzyka. Wygraj aukcje i ciesz się nowym autem w kilka tygodni!
         </p>
+        
         <Link href={"#explore"}>
           <CustomButton
             title="Trwające aukcje"
             type="button"
-            containerStyle="text-white bg-blue-500 dark:bg-pink-500"
+            containerStyle="text-white bg-blue-600 dark:bg-pink-500 rounded-full px-8 py-3 font-semibold shadow-lg hover:opacity-90 transition-opacity"
           />
         </Link>
       </div>
 
-      <div className="flex items-end lg:flex-[1.25] justify-end w-full h-[590px] lg:h-screen ">
-        <div className="w-full h-full relative">
-          <Image
-            src={"/images/usa-main-car.webp"}
-            alt="hero"
-            quality={100}
-            fill
-            className="absolute top-0 bottom-0 left-0 right-0 w-[80%] h-[590px] lg:h-full lg:w-full object-contain md:scale-125 animate-car"
-          />
-        </div>
+      <div className="flex-1 w-full h-[350px] sm:h-[500px] xl:h-screen relative">
+        <Image
+          src={"/images/usa-main-car.webp"}
+          alt="hero"
+          quality={100}
+          fill
+          // ✅ POPRAWKA: Uproszczono i poprawiono klasy dla obrazka
+          className="object-contain w-[90%] h-full mx-auto xl:w-full"
+          priority // Dodano dla szybszego ładowania
+          sizes="(max-width: 1280px) 90vw, 50vw"
+        />
       </div>
     </section>
-    
   );
-
 };
- <AboutUs /> 
 
-export default Hero;
+// ✅ POPRAWKA: Stworzono komponent nadrzędny, aby poprawnie renderować obie sekcje
+const HomePage = () => {
+  return (
+    <main>
+      <Hero />
+      <AboutUs />
+      {/* Tutaj możesz dodać kolejne sekcje swojej strony głównej */}
+    </main>
+  );
+};
+
+export default HomePage;

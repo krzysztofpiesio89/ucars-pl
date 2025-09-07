@@ -5,8 +5,8 @@ import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
-  title: "Carshub",
-  description: "Find, book, rent a car—quick and super easy!",
+  title: "uCars.pl",
+  description: "Nowoczesny system licytacji IAAI, CoPart - Kupuj samochody online z łatwością",
 };
 
 export default function RootLayout({
