@@ -2,7 +2,8 @@
 
 import { ChangeEvent, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { FormProps, CarFormProps } from '@/types';
+import { FormProps } from '@/types';   
+import { CarFormProps } from '../types/index';
 import CustomInput from './CustomInput';
 import CustomSelect from './CustomSelect';
 import ImageUploader from './ImageUploader';

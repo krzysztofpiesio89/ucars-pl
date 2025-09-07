@@ -1,8 +1,9 @@
 // types/index.ts
 
+import { Dispatch, SetStateAction, FormEvent } from 'react';
+
 /**
  * Główny interfejs dla obiektu samochodu, zgodny z modelem `Car` w Prisma.
- * Używany do wyświetlania szczegółów pojazdu.
  */
 export interface CarProps {
   id: number;
@@ -22,13 +23,11 @@ export interface CarProps {
   color: string | null;
   currentBid: number;
   buyItNowPrice: number | null;
-  // Prisma `Json?` mapujemy na tablicę stringów lub null
-  imageFiles: string[] | null; 
+  imageFiles: string[] | null;
 }
 
 /**
- * Interfejs używany specjalnie dla formularza edycji samochodu.
- * Zawiera tylko te pola, które użytkownik może modyfikować.
+ * Interfejs używany specjalnie dla formularza dodawania/edycji samochodu.
  */
 export interface CarFormProps {
   make: string;
@@ -47,7 +46,18 @@ export interface CarFormProps {
   color: string | null;
   currentBid: number;
   buyItNowPrice: number | null;
-  imageFiles: string[]; // W formularzu lepiej unikać `null` dla tablic
+  imageFiles: string[];
 }
 
-// Możesz tu również dodać inne typy, jeśli będą potrzebne w przyszłości
+/**
+ * Interfejs dla propsów komponentu Form.
+ * Definiuje, jakie właściwości komponent Form przyjmuje.
+ */
+export interface FormProps {
+    carInfo: CarFormProps;
+    setCarInfo: Dispatch<SetStateAction<CarFormProps>>;
+    submitBtnTitle: string;
+    title: string;
+    handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
+    isLoading: boolean;
+}
