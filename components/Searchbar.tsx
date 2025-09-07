@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import toast from 'react-hot-toast';
+import { RiSearchLine } from 'react-icons/ri';
 
 const Searchbar = () => {
     const router = useRouter();
@@ -29,7 +30,7 @@ const Searchbar = () => {
     const handleSearch = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (manufacturer === '' && carName === '') {
-            return toast('Plase enter a manufacturer or car name');
+            return toast.error('Wprowadź markę lub model samochodu');
         }
         updateSearchParams(carName.toLowerCase(), manufacturer.toLowerCase());
     }
@@ -42,92 +43,67 @@ const Searchbar = () => {
             searchParams.delete('model');
         }
         if (manufacturer) {
-            searchParams.set('manufacturer', manufacturer);
+            searchParams.set('manufacturer', 'make'); // Zgodnie z API powinno być 'make'
         } else {
             searchParams.delete('manufacturer');
         }
 
-        const newPathname = `${window.location.pathname}?${searchParams.toString()}`;
+        const newPathname = `/view-all?${searchParams.toString()}`;
         router.push(newPathname);
     }
 
+    // ✅ Stworzono spójny, nowoczesny wygląd dla paska wyszukiwania
     return (
-        <form className='w-full flex flex-col md:flex-row items-center justify-center gap-2 max-w-3xl bg-white dark:bg-slate-800  rounded border dark:border-slate-700 px-2' onSubmit={handleSearch}>
-            <div className='flex items-center w-full py-2.5 px-4 relative md:border-r dark:border-slate-700 '>
-                <Image
-                    src={'/icons/car-logo.svg'}
-                    alt='car company logo'
-                    width={20}
-                    height={20}
-                    className='object-contain'
-                />
+        <form className='flex items-center w-full max-w-3xl rounded-full shadow-md bg-white dark:bg-slate-800 border dark:border-slate-700' onSubmit={handleSearch}>
+            <div className='flex items-center flex-1 relative'>
+                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                    <Image src={'/icons/car-logo.svg'} alt='logo marki' width={22} height={22} />
+                </div>
                 <input
                     type="text"
                     placeholder='Volkswagen...'
-                    className='text-gray-400 flex-1 outline-none pl-4 text-xs bg-transparent'
+                    className='w-full py-3 pl-12 pr-4 text-sm text-gray-800 dark:text-gray-200 bg-transparent outline-none placeholder:text-gray-500 dark:placeholder:text-gray-400'
                     value={manufacturer}
                     onChange={manufacturerHandleChange}
+                    onFocus={() => setIsManufacturerListShown(true)}
                 />
-
-                <button type='submit'>
-                    <Image
-                        src={'/icons/search.svg'}
-                        alt='magnifying glass'
-                        width={20}
-                        height={20}
-                        className='object-contain flex md:hidden'
-                    />
-                </button>
-                {
-                    (manufacturer && isManufacturerListShown) && <div className='absolute top-9 left-0 right-0 w-full max-h-60 overflow-y-auto z-20 rounded-lg shadow-lg mt-4'>
-                        {
-                            filteredManufacturers.map((item, i) => {
-                                return <button
+                {(manufacturer && isManufacturerListShown) && (
+                    <div className='absolute top-full left-0 w-full max-h-60 overflow-y-auto z-20 rounded-xl shadow-lg mt-2 bg-white dark:bg-slate-800 border dark:border-slate-700'>
+                        {filteredManufacturers.length > 0 ? (
+                             filteredManufacturers.map((item, i) => (
+                                <button
                                     key={i}
                                     type='button'
-                                    className='bg-white hover:bg-blue-500 hover:text-white px-4 py-2 cursor-pointer w-full text-left text-sm'
+                                    className='px-4 py-2.5 cursor-pointer w-full text-left text-sm text-gray-800 dark:text-gray-200 hover:bg-blue-600 hover:text-white first:rounded-t-xl last:rounded-b-xl'
                                     onClick={() => handleManfacturerItemClick(item)}
                                 >
                                     {item}
                                 </button>
-                            })
-                        }
+                            ))
+                        ) : (
+                            <p className='px-4 py-2.5 text-sm text-gray-500'>Nie znaleziono producenta</p>
+                        )}
                     </div>
-                }
+                )}
             </div>
-            <div className='flex items-center w-full py-2.5 px-4 '>
-                <Image
-                    src={'/images/model-icon.png'}
-                    alt='model icon'
-                    width={20}
-                    height={20}
-                    className='object-contain'
-                />
+
+            <div className='border-l h-6 border-gray-200 dark:border-slate-700'></div>
+
+            <div className='flex items-center flex-1 relative'>
+                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                    <Image src={'/images/model-icon.png'} alt='ikona modelu' width={22} height={22} />
+                </div>
                 <input
                     type="text"
-                    placeholder='Teguan...'
-                    className='text-gray-400 flex-1 outline-none pl-4 text-xs bg-transparent'
+                    placeholder='Tiguan...'
+                    className='w-full py-3 pl-12 pr-4 text-sm text-gray-800 dark:text-gray-200 bg-transparent outline-none placeholder:text-gray-500 dark:placeholder:text-gray-400'
                     value={carName}
                     onChange={handleCarNameChange}
                 />
-                <button type='submit'>
-                    <Image
-                        src={'/icons/search.svg'}
-                        alt='magnifying glass'
-                        width={20}
-                        height={20}
-                        className='object-contain flex md:hidden'
-                    />
-                </button>
             </div>
-            <button type='submit'>
-                <Image
-                    src={'/icons/search.svg'}
-                    alt='search'
-                    width={30}
-                    height={30}
-                    className='object-contain hidden md:flex'
-                />
+            
+            <button type='submit' className='bg-blue-600 p-2.5 rounded-full m-1 hover:bg-blue-700 transition-colors' aria-label="Wyszukaj">
+                <RiSearchLine size={20} className="text-white" />
             </button>
         </form>
     )

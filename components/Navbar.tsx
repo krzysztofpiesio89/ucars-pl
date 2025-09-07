@@ -1,13 +1,32 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
 import { getProviders, signIn, signOut, useSession } from "next-auth/react";
 import ThemeSwitcher from "./theme/ThemeSwitcher";
-import { BsGithub, BsTwitter } from "react-icons/bs";
+// ✅ 1. Zaktualizowano importy ikon
+import { BsX, BsInstagram, BsFacebook } from "react-icons/bs";
 import { useTheme } from "next-themes";
 import { RiLogoutBoxLine, RiMenu3Line } from "react-icons/ri";
+
+// ✅ 2. Stworzono reużywalny komponent dla linków społecznościowych
+const SocialLinks = ({ className }: { className?: string }) => (
+    <div className={`flex items-center gap-4 ${className}`}>
+        <Link href={"https://x.com/TWOJ_PROFIL"} target="_blank" aria-label="Odwiedź nasz profil na X">
+            <BsX className="h-5 w-5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors" />
+        </Link>
+        <Link href={"https://instagram.com/TWOJ_PROFIL"} target="_blank" aria-label="Odwiedź nasz profil na Instagramie">
+            <BsInstagram className="h-5 w-5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors" />
+        </Link>
+        <Link href={"https://facebook.com/TWOJ_PROFIL"} target="_blank" aria-label="Odwiedź nasz profil na Facebooku">
+            <BsFacebook className="h-5 w-5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors" />
+        </Link>
+    </div>
+);
+
+
 const Navbar = () => {
   const { data: session } = useSession();
   const [providers, setProviders] = useState<any>(null);
@@ -23,171 +42,104 @@ const Navbar = () => {
     };
     setupProviders();
   }, []);
+
   return (
-    <nav className="absolute z-10 left-0 right-0 w-full bg-transparent p-2 border-b dark:border-b-gray-800">
-      <div className="flex items-center justify-between px-2 md:px-6 max-w-[1440px] mx-auto">
+    <nav className="fixed z-50 left-0 right-0 top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b dark:border-b-gray-800 shadow-sm">
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto h-16">
         <Link href={"/"}>
-          {/* <Image
-            src={'/icons/logo.svg'}
-            alt='logo'
-            width={100}
-            height={20}
-            className='h-full object-contain'
-          /> */}
-          <span className="text-xl md:text-3xl text-indigo-700 font-bold dark:text-white">
-           { process.env.NEXT_PUBLIC_APP_NAME }
+          <span className="text-xl md:text-2xl text-blue-600 font-bold dark:text-white">
+           { process.env.NEXT_PUBLIC_APP_NAME || "uCars.pl" }
           </span>
         </Link>
 
-        {/* Desktop navigation  */}
-        <div className="hidden md:flex items-center  gap-3 ">
-          <Link href={"/view-all"}>
+        {/* Desktop navigation */}
+        <div className="hidden md:flex items-center gap-6">
+          <Link href={"/view-all"} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
             <span>Wyszukaj</span>
           </Link>
-          <Link href={"/rent-car"} onClick={() => setIsDropdownShown(false)}>
-            <span>Aukcje na żywo</span>
+          <Link href={"/#import_process"} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
+            <span>Jak to działa?</span>
           </Link>
 
           {isUser ? (
-            <>
-              <Link href={`/favorites/${id}`}>
-                <span>Favorites</span>
+            <div className="flex items-center gap-4">
+              <Link href={`/favorites/${id}`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
+                <span>Ulubione</span>
               </Link>
-              <Link href={`/profile`} onClick={() => setIsDropdownShown(false)}>
+              <Link href={`/profile`}>
                 <Image
-                  src={session?.user?.image || "/assets/images/user.svg"}
-                  alt="Profile Picture"
-                  width={40}
-                  height={40}
-                  className="cursor-pointer objcet-contain rounded-full"
+                  src={session?.user?.image || "/images/user-fallback.png"}
+                  alt="Zdjęcie profilowe"
+                  width={32}
+                  height={32}
+                  className="cursor-pointer rounded-full"
                 />
               </Link>
               <CustomButton
-                title="Logout"
+                title="Wyloguj"
                 type="button"
-                handleClick={() => {
-                  signOut();
-                }}
-                containerStyle="bg-white rounded-full border text-blue-500 rounded-full dark:bg-pink-700 dark:text-slate-300 dark:border-slate-700 dark:text-slate-300"
-                icon={<RiLogoutBoxLine size={16} className={`text-white`} />}
+                handleClick={() => signOut()}
+                containerStyle="bg-blue-600 text-white rounded-full text-sm px-4 py-2 hover:bg-blue-700"
               />
-            </>
+            </div>
           ) : (
-            <Link href={"/user/login"}>
-              <CustomButton
+            <CustomButton
                 title="Zaloguj się"
                 type="button"
-                containerStyle="bg-white rounded-full border text-blue-500 w-full rounded-full dark:bg-pink-700 dark:text-slate-300 dark:border-slate-700 dark:text-slate-300"
-              />
-            </Link>
+                handleClick={() => signIn()}
+                containerStyle="bg-blue-600 text-white rounded-full text-sm px-4 py-2 hover:bg-blue-700"
+            />
           )}
-          <div className="flex items-center gap-4 border-l dark:border-slate-600 ml-4 pl-4">
-            <Link
-              href={"https://github.com/Iamsidar07/Car-Showcase"}
-              onClick={() => setIsDropdownShown(false)}
-              className="flex  gap-2"
-            >
-              <BsGithub
-                size={20}
-                className={`h-6 w-6  ${theme === "dark" ? "text-slate-400" : "text-slate-700"}`}
-              />
-            </Link>
-            <Link
-              href={"https://twitter.com/iamsidar07"}
-              onClick={() => setIsDropdownShown(false)}
-              className="flex gap-2"
-            >
-              <BsTwitter
-                size={20}
-                className={`h-6 w-6 ${theme === "dark" ? "text-slate-400" : "text-slate-700"}`}
-              />
-            </Link>
+
+          {/* ✅ 3. Sekcja z ikonami i przełącznikiem motywu */}
+          <div className="flex items-center gap-4 border-l dark:border-slate-700 ml-4 pl-4">
+            <SocialLinks />
             <ThemeSwitcher />
           </div>
         </div>
 
-        {/* Mobile navigation  */}
-        <div className="flex items-center gap-4 md:hidden h-full object-contain cursor-pointer">
+        {/* Mobile navigation */}
+        <div className="flex items-center gap-4 md:hidden">
           <ThemeSwitcher />
-          <RiMenu3Line
-            size={20}
-            className={`flex items-center md:hidden h-full object-contain cursor-pointer ${theme === "dark" ? "text-slate-400" : "text-slate-700"}`}
-            onClick={() => setIsDropdownShown((prevState) => !prevState)}
-          />
+          <button onClick={() => setIsDropdownShown((prev) => !prev)} aria-label="Otwórz menu">
+            <RiMenu3Line size={24} className="text-gray-700 dark:text-gray-300" />
+          </button>
         </div>
+
         {isDropdownShown && (
-          <div className="bg-white/30 dark:bg-gradient-radial from-slate-700 to-slate-900 border dark:border-zinc-600 min-w-[290px]  rounded-lg shadow backdrop-blur-sm absolute top-16 right-8 py-6 px-5 flex flex-col gap-2 text-left md:hidden z-50 min-h-[270px] ">
-            <Link href={"/view-all"} onClick={() => setIsDropdownShown(false)}>
-              <span>Search</span>
-            </Link>
-            <Link href={"/rent-car"} onClick={() => setIsDropdownShown(false)}>
-              <span>AddCar</span>
-            </Link>
+          <div className="bg-white/90 dark:bg-gray-800/90 border dark:border-zinc-700 w-[calc(100%-2rem)] rounded-lg shadow-xl backdrop-blur-md absolute top-20 right-4 p-5 flex flex-col gap-4 text-left md:hidden z-50">
+            <Link href={"/view-all"} onClick={() => setIsDropdownShown(false)} className="font-medium">Wyszukaj</Link>
+            <Link href={"/#import_process"} onClick={() => setIsDropdownShown(false)} className="font-medium">Jak to działa?</Link>
+            
+            <hr className="dark:border-gray-700 my-2" />
+            
             {isUser ? (
               <>
-                <Link
-                  href={`/favorites/${id}`}
-                  onClick={() => setIsDropdownShown(false)}
-                >
-                  <span>Favorites</span>
-                </Link>
-                <Link
-                  href={"/profile"}
-                  className="flex items-center"
-                  onClick={() => setIsDropdownShown(false)}
-                >
+                <Link href={`/favorites/${id}`} onClick={() => setIsDropdownShown(false)} className="font-medium">Ulubione</Link>
+                <Link href={"/profile"} className="flex items-center font-medium" onClick={() => setIsDropdownShown(false)}>
                   <Image
-                    src={session?.user?.image || "/assets/images/user.svg"}
-                    alt="Profile Picture"
-                    width={30}
-                    height={30}
-                    className="cursor-pointer objcet-contain rounded-full"
+                    src={session?.user?.image || "/images/user-fallback.png"}
+                    alt="Zdjęcie profilowe"
+                    width={28}
+                    height={28}
+                    className="rounded-full"
                   />
-                  <span className="ml-2">My Profile</span>
+                  <span className="ml-2">Mój Profil</span>
                 </Link>
-                <CustomButton
-                  title="Logout"
-                  type="button"
-                  handleClick={() => {
-                    signOut();
-                  }}
-                  containerStyle="rounded-full text-white dark:bg-pink-700 dark:text-slate-300  px-6"
-                  icon={<RiLogoutBoxLine size={16} className={`text-white`} />}
-                />
+                <button onClick={() => { signOut(); setIsDropdownShown(false); }} className="text-left font-medium text-red-500">
+                  Wyloguj
+                </button>
               </>
             ) : (
-              <Link href={"/user/login"}>
-                <CustomButton
-                  title="Login"
-                  type="button"
-                  containerStyle="rounded-full dark:bg-pink-700 dark:text-slate-300 text-white mt-4 px-6"
-                />
+              <Link href={"/user/login"} onClick={() => setIsDropdownShown(false)} className="font-medium">
+                Zaloguj się
               </Link>
             )}
-            <div className="flex items-baseline gap-2 absolute bottom-4 flex-1">
-              <Link
-                href={"https://github.com/Iamsidar07/Car-Showcase"}
-                onClick={() => setIsDropdownShown(false)}
-                className="flex gap-2 mr-4"
-              >
-                <BsGithub
-                  size={20}
-                  className={`h-6 w-6 ${theme === "dark" ? "text-slate-50" : "text-slate-700"}`}
-                />
-                <span>Github</span>
-              </Link>
-              <Link
-                href={"https://twitter.com/iamsidar07"}
-                onClick={() => setIsDropdownShown(false)}
-                className="flex gap-2 border-l pl-4 dark:border-zinc-500"
-              >
-                <BsTwitter
-                  size={20}
-                  className={`h-6 w-6 ${theme === "dark" ? "text-slate-50" : "text-slate-700"}`}
-                />
-                <span>Twitter</span>
-              </Link>
-            </div>
+            
+            <hr className="dark:border-gray-700 my-2" />
+            
+            {/* ✅ 4. Linki społecznościowe w menu mobilnym */}
+            <SocialLinks />
           </div>
         )}
       </div>
