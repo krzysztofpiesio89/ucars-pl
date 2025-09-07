@@ -39,17 +39,19 @@ const Hero = () => {
         </Link>
       </div>
 
-      <div className="flex items-end lg:flex-[1.25] justify-end w-full h-[590px] lg:h-screen ">
-        <div className="w-full h-full relative">
-          <Image
-            src={"/images/usa-main-car.png"}
-            alt="hero"
-            quality={100}
-            fill
-            className="absolute top-0 bottom-0 left-0 right-0 w-[80%] h-[590px] lg:h-full lg:w-full object-contain md:scale-125 animate-car"
-          />
-        </div>
-      </div>
+    <div className="flex items-end lg:flex-[1.25] justify-end w-full h-[590px] lg:h-screen">
+  <div className="relative w-full h-full flex justify-center items-center px-[5%]">
+    <Image
+      src={"/images/usa-main-car.png"}
+      alt="hero"
+      quality={100}
+      width={800} // szerokość bazowa
+      height={600} // wysokość bazowa
+      className="w-full h-auto object-contain"
+    />
+  </div>
+</div>
+  
     </section>
     
   );
