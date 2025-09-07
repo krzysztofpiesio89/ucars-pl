@@ -11,7 +11,7 @@ const Footer = () => {
                         <Link href={'/'}>
                             <span className='text-xl md:text-3xl text-indigo-700 font-bold dark:text-white'>TransAviaTech</span>
                         </Link>
-                        <p className='mt-4'>TrasAviaTech 2025 <br /> Wszelkie prawa zastrzeżone  &copy;</p>
+                        <p className='mt-4'>uCars.pl 2025 <br /> Wszelkie prawa zastrzeżone  &copy;</p>
                     </div>
                     <div className='flex  items-center justify-between flex-wrap md:justify-evenly w-full flex-1 gap-3'>
                         {footerLinks.map(({ title, links }, i) => (<div key={i} className='space-y-2 flex flex-col items-start gap-4 '>
@@ -25,7 +25,7 @@ const Footer = () => {
                 </div>
             </div>
             <div className='border-t dark:border-slate-800 p-4 md:p-12 flex items-center md:justify-between flex-col md:flex-row gap-2'>
-                <p className='text-sm text-gray-400'>&copy;2025 TrasAviaTech. Wszelkie prawa zastrzeżone</p>
+                <p className='text-sm text-gray-400'>&copy;2025 uCars.pl. Wszelkie prawa zastrzeżone</p>
                 <div className='flex items-center gap-2'>
                     <Link href={'/'} className='text-gray-400 text-sm'>Polityka prywatności</Link>
                     <Link href={'/'} className='text-gray-400 text-sm'>Regulamin</Link>

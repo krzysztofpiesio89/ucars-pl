@@ -180,7 +180,7 @@ const CarCard = ({
           </div>
           <Link href={`/cars/${car.id}`}>
             <CustomButton
-              title="More Info"
+              title="Obejrzyj aukcje"
               type="button"
               containerStyle="bg-blue-600 text-white w-full px-5 rounded-full dark:bg-slate-700 dark:text-slate-300"
             />
