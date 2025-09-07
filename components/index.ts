@@ -11,8 +11,6 @@ import Filter from './Filter';
 import ShowAllCars from './ShowAllCars';
 import Provider from './Provider';
 import CustomInput from './CustomInput';
-import ImageUploader from './ImageUploader';
-import Form from './Form';
 import Loader from './Loader';
 import AboutUs from './AboutUs'; // <-- Zaimportuj nowy komponent
 export {
@@ -30,7 +28,5 @@ export {
     ShowAllCars,
     Provider,
     CustomInput,
-    ImageUploader,
-    Form,
     Loader
 };
