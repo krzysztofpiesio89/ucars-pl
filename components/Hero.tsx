@@ -13,8 +13,12 @@ const Hero = () => {
   const isUser = session?.user;
 
   return (
-    <section className="max-w-7xl mx-auto flex flex-col xl:flex-row items-center overflow-hidden">
-      <div className="flex-1 p-4 sm:p-6 lg:p-8 pt-28 xl:pt-36">
+    // ✅ POPRAWKA: Zmieniono xl:flex-row na lg:flex-row dla lepszej responsywności na tabletach
+    <section className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center overflow-hidden">
+      
+      {/* Kolumna z tekstem */}
+      {/* ✅ POPRAWKA: Dodano klasy 'order' do zarządzania kolejnością */}
+      <div className="flex-1 p-4 sm:p-6 lg:p-8 pt-28 lg:pt-36 order-last lg:order-first">
         <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white">
           {isUser && (
             <span className="block text-xl lg:text-2xl font-medium text-blue-600 dark:text-pink-500 mb-2 truncate">
@@ -37,23 +41,23 @@ const Hero = () => {
         </Link>
       </div>
 
-      <div className="flex-1 w-full h-[350px] sm:h-[500px] xl:h-screen relative">
+      {/* Kolumna z obrazkiem */}
+      {/* ✅ POPRAWKA: Dodano klasy 'order' do zarządzania kolejnością */}
+      <div className="flex-1 w-full h-[300px] sm:h-[400px] lg:h-screen relative order-first lg:order-last">
         <Image
           src={"/images/usa-main-car.png"}
           alt="hero"
           quality={100}
           fill
-          // ✅ POPRAWKA: Uproszczono i poprawiono klasy dla obrazka
-          className="object-contain w-[90%] h-full mx-auto xl:w-full"
-          priority // Dodano dla szybszego ładowania
-          sizes="(max-width: 1280px) 90vw, 50vw"
+          className="object-contain w-[90%] h-full mx-auto lg:w-full"
+          priority
+          sizes="(max-width: 1024px) 90vw, 50vw"
         />
       </div>
     </section>
   );
 };
 
-// ✅ POPRAWKA: Stworzono komponent nadrzędny, aby poprawnie renderować obie sekcje
 const HomePage = () => {
   return (
     <main>
