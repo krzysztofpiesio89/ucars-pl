@@ -1,71 +1,60 @@
 "use client";
-
 import { CustomButton } from "@/components";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import AboutUs from "@/components/AboutUs";
+import AboutUs from "@/components/AboutUs"; // <-- Zaimportuj nowy komponent
 
 const Hero = () => {
   const { data: session } = useSession();
   const { theme } = useTheme();
   const isUser = session?.user;
-
   return (
-    // ✅ POPRAWKA: Zmieniono xl:flex-row na lg:flex-row dla lepszej responsywności na tabletach
-    <section className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center overflow-hidden">
-      
-      {/* Kolumna z tekstem */}
-      {/* ✅ POPRAWKA: Dodano klasy 'order' do zarządzania kolejnością */}
-      <div className="flex-1 p-4 sm:p-6 lg:p-8 pt-28 lg:pt-36 order-last lg:order-first">
-        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white">
+    <section className="max-w-[1440px] mx-auto relative flex flex-col md:flex-row items-center bg-contain light dark:dark bg-no-repeat bg-bottom gradient-radial">
+      <div className="flex-1 p-4 md:p-16 pt-32 md:pt-28">
+        <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-radial from-[#456efd] to-[#00377b,#017cd0] text-blue-500 dark:text-white">
           {isUser && (
-            <span className="block text-xl lg:text-2xl font-medium text-blue-600 dark:text-pink-500 mb-2 truncate">
-              Witaj 🙋‍♀️, {session.user?.name?.split(" ")[0]}!
+            <span
+              className={`text-lg ${
+                theme === "dark" ? "text-pink-600" : "text-indigo-600"
+              } truncate`}
+            >
+              Hey🙋‍♀️, {session.user?.name?.split(" ")[0]} <br />
             </span>
           )}
-          Wygraj aukcje i spełnij marzenie o samochodzie z USA!
+       Wygraj aukcje i spełnij marzenie o samochodzie z USA! Wygodnie i bezpiecznie
         </h1>
 
-        <p className="text-lg md:text-xl mt-4 mb-8 text-gray-600 dark:text-slate-400">
-          Kup samochód z USA bez stresu i ryzyka. Wygraj aukcje i ciesz się nowym autem w kilka tygodni!
+        <p className="text-xl md:text-2xl md:mt-6 mt-4 mb-4 lg:mb-8 text-slat-600 dark:text-slate-400">
+         Kup samochód z USA bez stresu i ryzyka. 
+          Wygraj aukcje i ciesz się nowym autem w kilka tygodni!
         </p>
-        
         <Link href={"#explore"}>
           <CustomButton
             title="Trwające aukcje"
             type="button"
-            containerStyle="text-white bg-blue-600 dark:bg-pink-500 rounded-full px-8 py-3 font-semibold shadow-lg hover:opacity-90 transition-opacity"
+            containerStyle="text-white bg-blue-500 dark:bg-pink-500"
           />
         </Link>
       </div>
 
-      {/* Kolumna z obrazkiem */}
-      {/* ✅ POPRAWKA: Dodano klasy 'order' do zarządzania kolejnością */}
-      <div className="flex-1 w-full h-[300px] sm:h-[400px] lg:h-screen relative order-first lg:order-last">
-        <Image
-          src={"/images/usa-main-car.png"}
-          alt="hero"
-          quality={100}
-          fill
-          className="object-contain w-[90%] h-full mx-auto lg:w-full"
-          priority
-          sizes="(max-width: 1024px) 90vw, 50vw"
-        />
+      <div className="flex items-end lg:flex-[1.25] justify-end w-full h-[590px] lg:h-screen ">
+        <div className="w-full h-full relative">
+          <Image
+            src={"/images/usa-main-car.png"}
+            alt="hero"
+            quality={100}
+            fill
+            className="absolute top-0 bottom-0 left-0 right-0 w-[80%] h-[590px] lg:h-full lg:w-full object-contain md:scale-125 animate-car"
+          />
+        </div>
       </div>
     </section>
+    
   );
-};
 
-const HomePage = () => {
-  return (
-    <main>
-      <Hero />
-      <AboutUs />
-      {/* Tutaj możesz dodać kolejne sekcje swojej strony głównej */}
-    </main>
-  );
 };
+ <AboutUs /> 
 
-export default HomePage;
+export default Hero;
