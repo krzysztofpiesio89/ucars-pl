@@ -61,3 +61,8 @@ export interface FormProps {
     handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
     isLoading: boolean;
 }
+export interface ImageUploaderProps {
+  handleOnDrop: (files: File[]) => void;
+  acceptedFiles: File[];      // Nowo dodane pliki (typ File)
+  existingImageFiles: string[]; // Istniejące już obrazki (jako URL lub base64)
+}
