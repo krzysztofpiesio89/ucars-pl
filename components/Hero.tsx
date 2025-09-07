@@ -39,7 +39,7 @@ const Hero = () => {
 
       <div className="flex-1 w-full h-[350px] sm:h-[500px] xl:h-screen relative">
         <Image
-          src={"/images/usa-main-car.webp"}
+          src={"/images/usa-main-car.png"}
           alt="hero"
           quality={100}
           fill
