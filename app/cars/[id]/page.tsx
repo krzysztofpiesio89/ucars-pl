@@ -115,37 +115,42 @@ const CardDetails = ({ params }: { params: { id: string } }) => {
 
                 {/* --- SEKCJA Z CENĄ I LICYTACJĄ --- */}
                 <div className="mt-8 p-6 bg-white dark:bg-slate-800/50 rounded-2xl border dark:border-slate-700">
-                    <p className="text-slate-600 dark:text-slate-400">Current Bid</p>
+                    <p className="text-slate-600 dark:text-slate-400">Aktualna cena</p>
                     <p className="text-4xl font-bold text-slate-900 dark:text-white mt-1">
                         ${(car.currentBid || 0).toLocaleString('en-US')}
                     </p>
                     {car.buyItNowPrice && (
                          <p className="text-slate-600 dark:text-slate-400 mt-2">
-                            Buy It Now: <span className="font-bold text-slate-800 dark:text-slate-200">${car.buyItNowPrice.toLocaleString('en-US')}</span>
+                            Kup teraz: <span className="font-bold text-slate-800 dark:text-slate-200">${car.buyItNowPrice.toLocaleString('en-US')}</span>
                          </p>
                     )}
                     <button className="w-full mt-4 bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 dark:bg-pink-500 dark:hover:bg-pink-600 transition-colors duration-300 text-lg shadow-lg">
-                        Place a Bid
+                        Licytuj na żywo
                     </button>
                 </div>
 
                 <div className="mt-8">
-                    <h3 className="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Vehicle Specifications</h3>
+                    <h3 className="text-2xl font-bold mb-2 text-slate-900 dark:text-white">
+                        Specyfikacja pojazdu
+                    </h3>
                     <DetailItem label="VIN" value={car.vin} />
-                    <DetailItem label="Lot Number" value={car.lotNumber} />
-                    <DetailItem label="Odometer" value={car.odometer ? `${car.odometer.toLocaleString('en-US')} mi` : 'N/A'} />
-                    <DetailItem label="Body Style" value={car.bodyStyle} />
-                    <DetailItem label="Drive" value={car.drive} />
-                    <DetailItem label="Engine Cylinders" value={car.cylinders} />
-                    <DetailItem label="Fuel Type" value={car.fuelType} />
-                    <DetailItem label="Transmission" value={car.transmission} />
-                    <DetailItem label="Color" value={car.color} />
-                    <DetailItem label="Primary Damage" value={car.primaryDamage} />
-                    <DetailItem label="Secondary Damage" value={car.secondaryDamage} />
+                    <DetailItem label="Numer aukcji" value={car.lotNumber} />
+                    <DetailItem
+                        label="Licznik przebiegu"
+                        value={car.odometer ? `${car.odometer.toLocaleString('pl-PL')} mi` : 'Brak danych'}
+                    />
+                    <DetailItem label="Typ nadwozia" value={car.bodyStyle} />
+                    <DetailItem label="Napęd" value={car.drive} />
+                    <DetailItem label="Cylindry silnika" value={car.cylinders} />
+                    <DetailItem label="Rodzaj paliwa" value={car.fuelType} />
+                    <DetailItem label="Skrzynia biegów" value={car.transmission} />
+                    <DetailItem label="Kolor" value={car.color} />
+                    <DetailItem label="Uszkodzenie główne" value={car.primaryDamage} />
+                    <DetailItem label="Uszkodzenie dodatkowe" value={car.secondaryDamage} />
                 </div>
                 
                 <div className="mt-8 p-6 bg-blue-50 dark:bg-slate-800/50 rounded-2xl">
-                     <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Description</h3>
+                     <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Opis auta</h3>
                     <p className="text-slate-700 dark:text-slate-300 text-lg">
                      {`This is a ${car.year} ${car.make} ${car.model} with primary damage listed as '${car.primaryDamage || 'N/A'}'. Please review all photos and specifications before bidding.`}
                     </p>

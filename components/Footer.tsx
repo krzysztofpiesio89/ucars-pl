@@ -9,7 +9,7 @@ const Footer = () => {
                 <div className='flex flex-col items-start  md:flex-row md:justify-between py-12 px-4 md:p-12 w-full  md:items-start gap-4'>
                     <div>
                         <Link href={'/'}>
-                            <span className='text-xl md:text-3xl text-indigo-700 font-bold dark:text-white'>TransAviaTech</span>
+                            <span className='text-xl md:text-3xl text-indigo-700 font-bold dark:text-white'>Nowoczesny system licytacji IAAI, CoPart </span>
                         </Link>
                         <p className='mt-4'>uCars.pl 2025 <br /> Wszelkie prawa zastrzeżone  &copy;</p>
                     </div>
