@@ -11,7 +11,7 @@ const FeatureIcon = ({ children }: { children: ReactNode }) => (
     </div>
 );
 
-// Dane dla listy cech - wyciągnięte dla lepszej czytelności
+// Dane dla listy cech (bez zmian)
 const features = [
     {
         icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
@@ -32,18 +32,17 @@ const features = [
 
 
 const AboutUs = () => {
-    // Warianty animacji dla kontenera, który rozdziela animacje na dzieci
+    // Warianty animacji (bez zmian)
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.2, // Opóźnienie dla każdego kolejnego dziecka
+                staggerChildren: 0.2,
             },
         },
     };
 
-    // Warianty dla pojedynczych elementów (tekst, punkty listy)
     const itemVariants: Variants = {
         hidden: { opacity: 0, y: 20 },
         visible: { 
@@ -53,7 +52,6 @@ const AboutUs = () => {
         },
     };
 
-    // Warianty dla obrazka
     const imageVariants: Variants = {
         hidden: { opacity: 0, scale: 0.9 },
         visible: {
@@ -72,16 +70,14 @@ const AboutUs = () => {
             className="max-w-7xl mx-auto py-16 md:py-24 px-4 sm:px-6 lg:px-8"
         >
             <motion.div
-                // Główny kontener animacji - będzie animował obrazek i kolumnę z tekstem jako dwa "dzieci"
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.3 }}
                 className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center"
             >
-                {/* Kolumna z obrazem */}
+                {/* Kolumna z obrazem (bez zmian) */}
                 <motion.div
-                    // Ten element jest "dzieckiem", więc używa wariantu dla elementu
                     variants={imageVariants}
                     whileHover={{ scale: 1.03, transition: { duration: 0.3 } }}
                     className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl order-first lg:order-last"
@@ -97,41 +93,42 @@ const AboutUs = () => {
                 </motion.div>
 
                 {/* Kolumna z tekstem */}
-                <motion.div
-                    // POPRAWKA: Ten kontener też jest kontenerem dla swoich dzieci (h2, p, ul).
-                    // Dzięki temu dziedziczy stan "visible" od rodzica i przekazuje animację `staggerChildren` dalej.
-                    variants={containerVariants}
-                    className="flex flex-col justify-center"
-                >
-                    <motion.h2
-                        variants={itemVariants}
-                        className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6"
+                {/* ✅ GŁÓWNA ZMIANA: Dodano div z półprzezroczystym tłem */}
+                <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 md:p-12 shadow-lg">
+                    <motion.div
+                        variants={containerVariants}
+                        className="flex flex-col justify-center"
                     >
-                        Kim Jesteśmy i Dlaczego Warto Nam Zaufać?
-                    </motion.h2>
-                    <motion.p
-                        variants={itemVariants}
-                        className="text-lg text-slate-600 dark:text-slate-400 mb-8"
-                    >
-                        Jesteśmy zespołem pasjonatów motoryzacji, którzy przekształcili swoje hobby w profesjonalną usługę. Naszą misją jest uproszczenie procesu importu wymarzonego samochodu z USA, czyniąc go dostępnym, bezpiecznym i w pełni transparentnym dla każdego klienta.
-                    </motion.p>
+                        <motion.h2
+                            variants={itemVariants}
+                            className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6"
+                        >
+                            Kim Jesteśmy i Dlaczego Warto Nam Zaufać?
+                        </motion.h2>
+                        <motion.p
+                            variants={itemVariants}
+                            className="text-lg text-slate-700 dark:text-slate-300 mb-8"
+                        >
+                            Jesteśmy zespołem pasjonatów motoryzacji, którzy przekształcili swoje hobby w profesjonalną usługę. Naszą misją jest uproszczenie procesu importu wymarzonego samochodu z USA, czyniąc go dostępnym, bezpiecznym i w pełni transparentnym dla każdego klienta.
+                        </motion.p>
 
-                    <motion.ul variants={itemVariants} className="space-y-6">
-                        {features.map((feature, index) => (
-                            <li key={index} className="flex items-start gap-4">
-                                <FeatureIcon>{feature.icon}</FeatureIcon>
-                                <div>
-                                    <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                                        {feature.title}
-                                    </h3>
-                                    <p className="text-slate-600 dark:text-slate-400 mt-1">
-                                        {feature.description}
-                                    </p>
-                                </div>
-                            </li>
-                        ))}
-                    </motion.ul>
-                </motion.div>
+                        <motion.ul variants={itemVariants} className="space-y-6">
+                            {features.map((feature, index) => (
+                                <li key={index} className="flex items-start gap-4">
+                                    <FeatureIcon>{feature.icon}</FeatureIcon>
+                                    <div>
+                                        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                                            {feature.title}
+                                        </h3>
+                                        <p className="text-slate-600 dark:text-slate-400 mt-1">
+                                            {feature.description}
+                                        </p>
+                                    </div>
+                                </li>
+                            ))}
+                        </motion.ul>
+                    </motion.div>
+                </div>
             </motion.div>
         </section>
     );
