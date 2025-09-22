@@ -19,12 +19,18 @@ datasource db {
   url      = env("DATABASE_URL") // Adres URL bazy danych jest pobierany ze zmiennej środowiskowej.
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 // Model Użytkownika - reprezentuje każdego zarejestrowanego użytkownika w systemie.
 model User {
   id         Int      @id @default(autoincrement()) // Unikalny identyfikator użytkownika.
   email      String   @unique // Adres email, musi być unikalny.
-  password   String   // Hash hasła użytkownika.
+  password   String?  // Hash hasła użytkownika (opcjonalny przy logowaniu przez OAuth).
   name       String?  // Opcjonalne imię użytkownika.
+  role       Role     @default(USER) // Rola użytkownika: USER lub ADMIN.
   coverImage String?  // Opcjonalny URL do zdjęcia profilowego/awatara.
   createdAt  DateTime @default(now()) // Data utworzenia konta.
   updatedAt  DateTime @updatedAt // Data ostatniej aktualizacji profilu.
@@ -44,6 +50,8 @@ model Car {
   make            String   // Marka (np. Ford).
   model           String   // Model (np. Mustang).
   trim            String?  // Wersja wyposażenia (np. GT).
+  engine          String?  // Silnik.
+  startCode       String?  // Kod startu (np. "Run & Drive").
   odometer        Int?     // Przebieg w milach.
   primaryDamage   String?  // Główne uszkodzenie (np. Front End).
   secondaryDamage String?  // Drugorzędne uszkodzenie.

@@ -98,11 +98,11 @@ const normalizedCars: NormalizedCar[] = allCars.map((car) => ({
   );
 
   const filterData: FilterCardProps[] = [
-    { title: 'Brand', category: 'brand', options: availableFilterBrandOptions },
-    { title: 'Drive', category: 'drive', options: availableFilterDriveOptions },
-    { title: 'Class', category: 'type', options: availableFilterTypeOptions },
-    { title: 'Fuel Type', category: 'fuelType', options: availableFilterFuelTypeOptions },
-    { title: 'Cylinders', category: 'cylinders', options: availableFilterCylindersOptions },
+    { title: 'Marka', category: 'brand', options: availableFilterBrandOptions },
+    { title: 'Napęd', category: 'drive', options: availableFilterDriveOptions },
+    { title: 'Typ nadwozia', category: 'type', options: availableFilterTypeOptions },
+    { title: 'Paliwo', category: 'fuelType', options: availableFilterFuelTypeOptions },
+    { title: 'Cylindry', category: 'cylinders', options: availableFilterCylindersOptions },
   ];
 
   return (
@@ -136,7 +136,7 @@ const normalizedCars: NormalizedCar[] = allCars.map((car) => ({
           ))}
 
           <div className='flex flex-col'>
-            <h2 className='text-gray-400 font-bold my-3'>Price</h2>
+            <h2 className='text-gray-400 font-bold my-3'>Cena</h2>
             <input
               type='range'
               value={filters.rentPriceRange}
