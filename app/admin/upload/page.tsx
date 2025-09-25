@@ -1,5 +1,3 @@
-// w pliku: app/admin/upload/page.tsx
-
 "use client";
 
 import { useState, useRef } from 'react';
@@ -15,6 +13,13 @@ const UploadPage = () => {
 
   // Funkcja, która opakowuje naszą Server Action, aby zarządzać stanem UI
   async function handleUpload(formData: FormData) {
+    // Sprawdzenie, czy plik został wybrany
+    const file = formData.get('carDataFile') as File;
+    if (!file || file.size === 0) {
+        setMessage({ type: 'error', text: 'Proszę wybrać plik przed wysłaniem.' });
+        return;
+    }
+
     setIsLoading(true);
     setMessage(null);
 
@@ -64,14 +69,30 @@ const UploadPage = () => {
             />
           </div>
 
-          <div className="text-right">
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 dark:bg-pink-600 dark:hover:bg-pink-700 transition duration-300 ease-in-out shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {isLoading ? 'Przetwarzanie...' : 'Wgraj i zaktualizuj dane'}
-            </button>
+          {/* NOWA SEKCJA: Pasek postępu i przycisk */}
+          <div className="space-y-4">
+            {/* Pasek postępu widoczny tylko podczas ładowania */}
+            {isLoading && (
+              <div>
+                <p className="text-sm text-center text-slate-500 dark:text-slate-400 mb-2">Przetwarzanie danych... To może potrwać chwilę.</p>
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                  <div
+                    className="bg-blue-600 dark:bg-pink-500 h-2.5 rounded-full animate-pulse"
+                    style={{ animationDuration: '2s' }}
+                  ></div>
+                </div>
+              </div>
+            )}
+
+            <div className="text-right">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 dark:bg-pink-600 dark:hover:bg-pink-700 transition duration-300 ease-in-out shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? 'Przetwarzanie...' : 'Wgraj i zaktualizuj dane'}
+              </button>
+            </div>
           </div>
         </form>
 

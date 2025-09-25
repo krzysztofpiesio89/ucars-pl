@@ -1,6 +1,6 @@
-import { PrismaClient } from '../app/generated/prisma'; // ścieżka do wygenerowanego klienta Prisma
+import { PrismaClient } from '@prisma/client';
 
-// Singleton, żeby nie tworzyć wielu instancji w dev
+// Singleton, aby nie tworzyć wielu instancji w trybie deweloperskim
 let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === 'production') {

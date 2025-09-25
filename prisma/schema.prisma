@@ -1,9 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
-  // Upewnij się, że ta ścieżka jest poprawna
+  // Ustawiamy domyślną, standardową ścieżkę wyjściową
   output   = "../node_modules/.prisma/client"
 }
 
@@ -12,83 +9,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ... reszta Twojego schematu pozostaje bez zmian
 model User {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
-  password   String
-  name       String?
-  coverImage String?
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  cars       Car[]
-  bids       Bid[]
-  favorites  Favorite[]
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  favorites Favorite[]
 }
 
 model Car {
-  id              Int       @id @default(autoincrement())
-  lotNumber       String    @unique
-  vin             String
-  year            Int
-  make            String
-  model           String
-  trim            String?
-  odometer        Int?
-  // ✅ DODANO PONIŻSZE POLA
-  engine          String?   // Informacje o silniku
-  startCode       String?   // Status "Run & Drive", "Stationary" itp.
-  primaryDamage   String?
-  secondaryDamage String?
-  lossType        String?
-  fuelType        String?
-  transmission    String?
-  drive           String?
-  cylinders       Int?
-  bodyStyle       String?
-  color           String?
-  auctionDate     DateTime?
-  auctionLocation String?
-  saleStatus      String?
-  currentBid      Float     @default(0)
-  buyItNowPrice   Float?
-  currency        String    @default("USD")
-  imageFiles      Json?
-  source          String    @default("copart")
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  creatorId       Int?
-  creator         User?     @relation(fields: [creatorId], references: [id])
-  auctions        Auction[]
-  favorites       Favorite[]
-}
-
-model Auction {
-  id          Int      @id @default(autoincrement())
-  carId       Int
-  car         Car      @relation(fields: [carId], references: [id])
-  startDate   DateTime
-  endDate     DateTime
-  status      String
-  startingBid Float
-  currentBid  Float    @default(0)
-  bids        Bid[]
-}
-
-model Bid {
-  id        Int      @id @default(autoincrement())
-  auctionId Int
-  auction   Auction  @relation(fields: [auctionId], references: [id])
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  amount    Float
-  createdAt DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  stock        String   @unique
+  year         Int
+  make         String
+  model        String
+  damageType   String
+  mileage      Int?
+  engineStatus String
+  bidPrice     Float
+  buyNowPrice  Float?
+  detailUrl    String
+  imageUrl     String
+  version      String?
+  origin       String?
+  vin          String?
+  engineInfo   String?
+  fuelType     String?
+  cylinders    String?
+  videoUrl     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  favorites    Favorite[]
 }
 
 model Favorite {
   id        Int      @id @default(autoincrement())
+  userId    Int
   carId     Int
-  creatorId Int
   createdAt DateTime @default(now())
-  car       Car      @relation(fields: [carId], references: [id])
-  creator   User     @relation(fields: [creatorId], references: [id])
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  car  Car  @relation(fields: [carId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, carId])
 }

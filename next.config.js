@@ -7,7 +7,8 @@ const nextConfig = {
             "images.pexels.com" ,
             "res.cloudinary.com",
             "lh3.googleusercontent.com",
-            "via.placeholder.com"
+            "via.placeholder.com",
+            "vis.iaai.com"
         ]
     },
      experimental: { // <-- Dodaj ten blok

@@ -1,211 +1,124 @@
-'use client';
+"use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import CustomButton from "./CustomButton";
-import { CardCardProps } from "@/types";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
-import toast from "react-hot-toast";
-import { addToFavorites, removeFromFavorites, isCarFavorite } from '@/utils/index';
+import { CarProps } from "@/types";
+import VideoPlayer from "./VideoPlayer";
+import Car360Viewer from "./Car360Viewer"; // Importujemy nowy komponent 360
 
-const CarCard = ({
-  car,
-  isFavorite = false,
-  handleDelete,
-  handleEdit,
-}: CardCardProps) => {
-  const { data: session } = useSession();
-  const pathname = usePathname();
-  
-  const [isFavoriteBtnActive, setIsFavoriteBtnActive] = useState(isFavorite);
-  const [isLoading, setIsLoading] = useState(false);
+// Mały komponent do wyświetlania szczegółów w siatce
+const InfoPill = ({ label, value }: { label: string; value: string | undefined | null }) => (
+    <div className="text-xs">
+        <span className="font-semibold text-slate-500 dark:text-slate-400">{label}: </span>
+        <span className="text-slate-700 dark:text-white font-medium">{value || 'N/A'}</span>
+    </div>
+);
 
-  // Sprawdź stan ulubionego przy ładowaniu
-  useEffect(() => {
-    const checkFavoriteStatus = async () => {
-      if (session?.user?.id && car.id) {
-        const userId = parseInt(session.user.id);
-        try {
-          const isFavorite = await isCarFavorite(userId, car.id);
-          setIsFavoriteBtnActive(isFavorite);
-        } catch (error) {
-          console.error('Check favorite status error:', error);
-        }
-      }
-    };
-    
-    checkFavoriteStatus();
-  }, [session?.user?.id, car.id]);
 
-  const handleHeartClick = async (carId: number) => {
-    if (!session?.user?.id) {
-      toast("Login/sign in to add to favorite 💖");
-      return;
-    }
-  
-    const userId = parseInt(session.user.id);
-    setIsLoading(true);
+const CarCard = ({ car }: { car: CarProps }) => {
+  const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
+  const [is360ViewerOpen, setIs360ViewerOpen] = useState(false); // Stan dla widoku 360
 
-    try {
-      if (isFavoriteBtnActive) {
-        const result = await removeFromFavorites(userId, carId);
-        if (result.success) {
-          toast.success("Removed from favorites ❤️");
-          setIsFavoriteBtnActive(false);
-        } else {
-          toast.error("Failed to remove from favorites");
-        }
-      } else {
-        const result = await addToFavorites(userId, carId);
-        if (result.success) {
-          toast.success("Added to favorites 💖");
-          setIsFavoriteBtnActive(true);
-        } else {
-          toast.error(result.message || "Failed to add to favorites");
-        }
-      }
-    } catch (error) {
-      console.error('Heart click error:', error);
-      toast.error("Something went wrong");
-    } finally {
-      setIsLoading(false);
-    }
+  const isIAAI = car.detailUrl.includes('iaai.com'); // Sprawdzamy, czy auto pochodzi z IAAI
+
+  // Funkcja do bezpiecznego formatowania ceny
+  const formatPrice = (price: string | number | null | undefined) => {
+      if (price === null || price === undefined) return "N/A";
+      const priceString = String(price);
+      const number = parseFloat(priceString.replace(/[^0-9.]/g, ''));
+      return isNaN(number) ? priceString : `$${number.toLocaleString('en-US')}`;
   };
 
-  const getImages = (): string[] => {
-    if (Array.isArray(car.imageFiles)) {
-      return car.imageFiles.filter((img) => typeof img === 'string' && img.startsWith("/"));
-    }
-    
-    if (typeof car.imageFiles === "string") {
-      try {
-        const parsed = JSON.parse(car.imageFiles);
-        return Array.isArray(parsed) 
-          ? parsed.filter((img: string) => typeof img === 'string' && img.startsWith("/"))
-          : [];
-      } catch {
-        return [];
-      }
-    }
-    
-    return [];
-  };
-
-  const images = getImages();
-  const displayImage = images[0] || "/cars/fallback.webp";
+  const currentBid = formatPrice(car.bidPrice);
+  const buyNowPrice = car.buyNowPrice ? formatPrice(car.buyNowPrice) : null;
 
   return (
-    <div className="relative overflow-hidden w-full h-fit max-w-lg mx-auto bg-white dark:bg-gradient-radial from-slate-700 to-slate-900 dark:border-slate-700/70 md:hover:shadow-lg transition-all duration-150 ease-linear p-3 md:p-4 rounded-2xl border group">
+    <>
+      <div className="relative w-full max-w-sm mx-auto bg-white dark:bg-slate-800/50 dark:border-slate-700/70 shadow-md hover:shadow-xl transition-shadow duration-300 rounded-2xl border group overflow-hidden">
+          <span className="absolute top-0 left-[-100%] h-full w-1/2 bg-gradient-to-r from-transparent via-white/20 dark:via-white/10 to-transparent transition-all group-hover:left-[100%] group-hover:duration-700" />
+          
+          <div className="relative w-full h-48 overflow-hidden">
+              <Image
+                  src={car.imageUrl || "/images/fallback-car.webp"}
+                  alt={`${car.make} ${car.model}`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => { e.currentTarget.src = "/images/fallback-car.webp"; }}
+              />
+              <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
+                  {/* Przycisk widoku 360 (tylko dla aut z IAAI) */}
+                  {isIAAI && (
+                      <button
+                        onClick={() => setIs360ViewerOpen(true)}
+                        className="p-1.5 bg-black/50 rounded-full hover:bg-black/75 transition-colors"
+                        aria-label="Otwórz widok 360"
+                      >
+                          <Image
+                            src="/icons/360-degrees.svg"
+                            alt="360 view icon"
+                            width={20}
+                            height={20}
+                          />
+                      </button>
+                  )}
+                  {/* Przycisk wideo */}
+                  {car.videoUrl && (
+                      <button
+                        onClick={() => setIsVideoPlayerOpen(true)}
+                        className="p-1.5 bg-black/50 rounded-full hover:bg-black/75 transition-colors"
+                        aria-label="Odtwórz wideo"
+                      >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
+                              <path d="M4.5 4.5a3 3 0 00-3 3v9a3 3 0 003 3h8.25a3 3 0 003-3v-9a3 3 0 00-3-3H4.5zM19.94 18.75l-2.69-2.69V7.94l2.69-2.69c.944-.945 2.56-.276 2.56 1.06v11.38c0 1.336-1.616 2.005-2.56 1.06z" />
+                          </svg>
+                      </button>
+                  )}
+              </div>
+          </div>
+
+          <div className="p-4">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white truncate">
+                  {car.year} {car.make} {car.model}
+              </h3>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2 border-t border-slate-200 dark:border-slate-700 pt-2">
+                  <InfoPill label="Przebieg" value={car.mileage} />
+                  <InfoPill label="Uszkodzenie" value={car.damageType} />
+                  <InfoPill label="Status" value={car.engineStatus} />
+                  <InfoPill label="Lot" value={car.stock} />
+              </div>
+              <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                  <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Aktualna oferta</p>
+                      <p className="text-xl font-bold text-slate-900 dark:text-white">{currentBid}</p>
+                       {buyNowPrice && (
+                           <p className="text-xs text-green-600 dark:text-green-400 font-semibold">Kup Teraz: {buyNowPrice}</p>
+                       )}
+                  </div>
+                  <Link href={car.detailUrl} target="_blank" rel="noopener noreferrer">
+                      <button className="bg-blue-600 text-white text-sm font-bold py-2 px-4 rounded-full hover:bg-blue-700 dark:bg-pink-500 dark:hover:bg-pink-600 transition-colors duration-300">
+                          Licytuj
+                      </button>
+                  </Link>
+              </div>
+          </div>
+      </div>
       
-      {/* ZMIANA: Czas trwania animacji jest teraz zdefiniowany tylko dla stanu 'group-hover'. */}
-      <span className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent transition-all ease-in-out group-hover:duration-700 group-hover:left-[100%] -skew-x-12" />
-
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg md:text-xl font-bold capitalize truncate max-w-[75%]">
-          {car.carTitle || `${car.make} ${car.model}`}
-        </h1>
-        <button 
-          type="button" 
-          onClick={() => handleHeartClick(car.id)}
-          disabled={isLoading}
-          className="disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Image
-            src={`/icons/${isFavoriteBtnActive ? "heart-filled" : "heart-outline"}.svg`}
-            alt="favorite button"
-            width={20}
-            height={20}
-            className={`object-contain cursor-pointer ${
-              isFavoriteBtnActive ? "scale-150 transition-transform duration-150 ease-in" : ""
-            } ${isLoading ? "opacity-50" : ""}`}
-          />
-        </button>
-      </div>
-
-      <p className="text-gray-400 capitalize mt-1">{car.typeOfclass || car.bodyStyle || "N/A"}</p>
-
-      <div className="relative w-full h-48 rounded-lg mt-1 overflow-hidden">
-        <Image
-          src={displayImage}
-          alt="car"
-          fill
-          // ZMIANA: Czas trwania animacji jest teraz zdefiniowany tylko dla stanu 'group-hover'.
-          className="object-contain absolute w-full rounded-lg transition-transform ease-in-out group-hover:duration-300 group-hover:scale-105"
+      {isVideoPlayerOpen && car.videoUrl && (
+        <VideoPlayer 
+          videoUrl={car.videoUrl} 
+          onClose={() => setIsVideoPlayerOpen(false)} 
         />
-      </div>
-
-      <div className="w-full mt-2 p-2 h-fit">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center justify-center gap-1">
-            <Image
-              src={"/icons/steering-wheel.svg"}
-              alt="steering wheel"
-              width={15}
-              height={15}
-              className="object-contain"
-            />
-            <span className="text-gray-400 text-sm">{car.transmission || "Manual"}</span>
-          </div>
-          <div className="flex items-center justify-center gap-1">
-            <Image
-              src={"/icons/fuel-tank.svg"}
-              alt="fuel-tank"
-              width={15}
-              height={15}
-              className="object-contain"
-            />
-            <span className="text-gray-400 text-sm">{car.fuelType || "N/A"}</span>
-          </div>
-          <div className="flex items-center justify-center gap-1">
-            <Image
-              src={"/icons/people.svg"}
-              alt="people"
-              width={15}
-              height={15}
-              className="object-contain"
-            />
-            <span className="text-gray-400 text-sm">{car.cylinders || 0} Cyl</span>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between mt-6">
-          <div className="relative">
-            <span className="absolute top-0 text-xs font-bold">$</span>
-            <span className="text-lg md:text-2xl font-bold text-center ml-2">
-              {(car.rentPrice || car.buyItNowPrice || car.currentBid || 0).toFixed(2)}
-            </span>
-            <span className="absolute bottom-0 text-xs font-bold">/bid</span>
-          </div>
-          <Link href={`/cars/${car.id}`}>
-            <CustomButton
-              title="Obejrzyj aukcje"
-              type="button"
-              containerStyle="bg-blue-600 text-white w-full px-5 rounded-full dark:bg-slate-700 dark:text-slate-300"
-            />
-          </Link>
-        </div>
-
-        
-            {car.creator?.email === session?.user?.email && pathname === "/profile" && (
-          <div className="mt-4 flex items-center justify-between gap-2">
-            <CustomButton
-              title="Edit"
-              type="button"
-              handleClick={() => handleEdit && handleEdit(`${car.id}`)}
-              containerStyle="bg-green-600 text-white w-full px-5 rounded-full dark:bg-blue-500 dark:text-slate-300"
-            />
-            <CustomButton
-              title="Delete"
-              type="button"
-              handleClick={() => handleDelete && handleDelete(`${car.id}`)}
-              containerStyle="border border-red-500 w-full px-5 rounded-full dark:bg-red-500 dark:text-slate-300"
-            />
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+      {/* Warunkowe renderowanie widoku 360 */}
+      {is360ViewerOpen && isIAAI && (
+        <Car360Viewer
+          stockNumber={car.stock}
+          onClose={() => setIs360ViewerOpen(false)}
+        />
+      )}
+    </>
   );
 };
 
