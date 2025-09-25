@@ -1,119 +1,94 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-// Konfiguracja generatora klienta Prisma.
-// Odpowiada za wygenerowanie kodu klienta TypeScript na podstawie tego schematu.
 generator client {
   provider = "prisma-client-js"
-  // Określa folder docelowy dla wygenerowanego klienta.
-  output   = "../app/generated/prisma"
+  // Upewnij się, że ta ścieżka jest poprawna
+  output   = "../node_modules/.prisma/client"
 }
 
-// Definicja źródła danych.
-// Określa typ bazy danych i sposób połączenia.
 datasource db {
-  provider = "postgresql" // Używamy bazy danych PostgreSQL.
-  url      = env("DATABASE_URL") // Adres URL bazy danych jest pobierany ze zmiennej środowiskowej.
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
-// Model Użytkownika - reprezentuje każdego zarejestrowanego użytkownika w systemie.
 model User {
-  id         Int      @id @default(autoincrement()) // Unikalny identyfikator użytkownika.
-  email      String   @unique // Adres email, musi być unikalny.
-  password   String?  // Hash hasła użytkownika (opcjonalny przy logowaniu przez OAuth).
-  name       String?  // Opcjonalne imię użytkownika.
-  role       Role     @default(USER) // Rola użytkownika: USER lub ADMIN.
-  coverImage String?  // Opcjonalny URL do zdjęcia profilowego/awatara.
-  createdAt  DateTime @default(now()) // Data utworzenia konta.
-  updatedAt  DateTime @updatedAt // Data ostatniej aktualizacji profilu.
-
-  // Relacje
-  cars      Car[]      // Lista samochodów dodanych przez tego użytkownika (np. jako administrator).
-  bids      Bid[]      // Lista wszystkich ofert złożonych przez tego użytkownika w różnych aukcjach.
-  favorites Favorite[] // Lista samochodów oznaczonych jako ulubione przez tego użytkownika.
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  password   String
+  name       String?
+  coverImage String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  cars       Car[]
+  bids       Bid[]
+  favorites  Favorite[]
 }
 
-// Model Samochodu - centralny model aplikacji, przechowuje wszystkie informacje o pojeździe z aukcji.
 model Car {
-  id              Int      @id @default(autoincrement()) // Unikalny identyfikator samochodu.
-  lotNumber       String   @unique // Unikalny numer partii (LOT) z aukcji.
-  vin             String   // Numer VIN pojazdu.
-  year            Int      // Rok produkcji.
-  make            String   // Marka (np. Ford).
-  model           String   // Model (np. Mustang).
-  trim            String?  // Wersja wyposażenia (np. GT).
-  engine          String?  // Silnik.
-  startCode       String?  // Kod startu (np. "Run & Drive").
-  odometer        Int?     // Przebieg w milach.
-  primaryDamage   String?  // Główne uszkodzenie (np. Front End).
-  secondaryDamage String?  // Drugorzędne uszkodzenie.
-  lossType        String?  // Typ szkody (np. Collision).
-  fuelType        String?  // Typ paliwa (np. Gasoline).
-  transmission    String?  // Typ skrzyni biegów (np. Automatic).
-  drive           String?  // Rodzaj napędu (np. RWD).
-  cylinders       Int?     // Liczba cylindrów.
-  bodyStyle       String?  // Typ nadwozia (np. Coupe).
-  color           String?  // Kolor pojazdu.
-  auctionDate     DateTime? // Data i godzina aukcji.
-  auctionLocation String?  // Lokalizacja aukcji.
-  saleStatus      String?  // Status sprzedaży (np. "On Auction", "Sold").
-  currentBid      Float    @default(0) // Aktualna najwyższa oferta.
-  buyItNowPrice   Float?   // Cena "Kup Teraz", jeśli dostępna.
-  currency        String   @default("USD") // Waluta.
-  imageFiles      Json?    // Lista URL-i do zdjęć samochodu, przechowywana jako JSON.
-  source          String   @default("copart") // Źródło danych (np. "copart", "iaai").
-  createdAt       DateTime @default(now()) // Data dodania rekordu do bazy.
-  updatedAt       DateTime @updatedAt // Data ostatniej aktualizacji rekordu.
-
-  // Relacje
-  creatorId Int?     // Klucz obcy do użytkownika, który dodał ten samochód do bazy.
-  creator   User?    @relation(fields: [creatorId], references: [id])
-  auctions  Auction[] // Lista wszystkich aukcji powiązanych z tym samochodem (jeden samochód może być licytowany wielokrotnie).
-  favorites Favorite[] // Lista wpisów w tabeli ulubionych, które odnoszą się do tego samochodu.
+  id              Int       @id @default(autoincrement())
+  lotNumber       String    @unique
+  vin             String
+  year            Int
+  make            String
+  model           String
+  trim            String?
+  odometer        Int?
+  // ✅ DODANO PONIŻSZE POLA
+  engine          String?   // Informacje o silniku
+  startCode       String?   // Status "Run & Drive", "Stationary" itp.
+  primaryDamage   String?
+  secondaryDamage String?
+  lossType        String?
+  fuelType        String?
+  transmission    String?
+  drive           String?
+  cylinders       Int?
+  bodyStyle       String?
+  color           String?
+  auctionDate     DateTime?
+  auctionLocation String?
+  saleStatus      String?
+  currentBid      Float     @default(0)
+  buyItNowPrice   Float?
+  currency        String    @default("USD")
+  imageFiles      Json?
+  source          String    @default("copart")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  creatorId       Int?
+  creator         User?     @relation(fields: [creatorId], references: [id])
+  auctions        Auction[]
+  favorites       Favorite[]
 }
 
-// Model Aukcji - reprezentuje pojedyncze wydarzenie aukcyjne dla konkretnego samochodu.
 model Auction {
-  id          Int      @id @default(autoincrement()) // Unikalny identyfikator aukcji.
-  carId       Int      // Klucz obcy do samochodu, który jest licytowany.
+  id          Int      @id @default(autoincrement())
+  carId       Int
   car         Car      @relation(fields: [carId], references: [id])
-  startDate   DateTime // Data rozpoczęcia aukcji.
-  endDate     DateTime // Data zakończenia aukcji.
-  status      String   // Status aukcji (np. "active", "finished", "cancelled").
-  startingBid Float    // Cena wywoławcza.
-  currentBid  Float    @default(0) // Bieżąca najwyższa oferta w tej konkretnej aukcji.
-
-  // Relacje
-  bids Bid[] // Lista wszystkich ofert złożonych w ramach tej aukcji.
+  startDate   DateTime
+  endDate     DateTime
+  status      String
+  startingBid Float
+  currentBid  Float    @default(0)
+  bids        Bid[]
 }
 
-// Model Oferty (Bid) - reprezentuje pojedynczą ofertę złożoną przez użytkownika w konkretnej aukcji.
 model Bid {
-  id        Int      @id @default(autoincrement()) // Unikalny identyfikator oferty.
-  auctionId Int      // Klucz obcy do aukcji, w której złożono ofertę.
+  id        Int      @id @default(autoincrement())
+  auctionId Int
   auction   Auction  @relation(fields: [auctionId], references: [id])
-  userId    Int      // Klucz obcy do użytkownika, który złożył ofertę.
+  userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  amount    Float    // Kwota oferty.
-  createdAt DateTime @default(now()) // Czas złożenia oferty.
+  amount    Float
+  createdAt DateTime @default(now())
 }
 
-// Model Ulubionych - tabela łącząca użytkowników z samochodami, które oznaczyli jako ulubione.
 model Favorite {
-  id        Int      @id @default(autoincrement()) // Unikalny identyfikator wpisu.
-  carId     Int      // Klucz obcy do polubionego samochodu.
-  creatorId Int      // Klucz obcy do użytkownika, który polubił samochód.
-  createdAt DateTime @default(now()) // Czas dodania do ulubionych.
-
-  // Relacje
-  car     Car @relation(fields: [carId], references: [id])
-  creator User @relation(fields: [creatorId], references: [id])
+  id        Int      @id @default(autoincrement())
+  carId     Int
+  creatorId Int
+  createdAt DateTime @default(now())
+  car       Car      @relation(fields: [carId], references: [id])
+  creator   User     @relation(fields: [creatorId], references: [id])
 }

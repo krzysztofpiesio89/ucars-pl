@@ -9,7 +9,10 @@ const nextConfig = {
             "lh3.googleusercontent.com",
             "via.placeholder.com"
         ]
-    }
+    },
+     experimental: { // <-- Dodaj ten blok
+    serverActions: true,
+  },
 }
 
 module.exports = nextConfig
