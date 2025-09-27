@@ -13,6 +13,7 @@ export interface CarProps {
   engineStatus: string;
   bidPrice: string;
   buyNowPrice?: string;
+  auctionDate?: string;
   detailUrl: string;
   imageUrl: string;
   version?: string;
@@ -22,6 +23,7 @@ export interface CarProps {
   fuelType?: string;
   cylinders?: string;
   videoUrl?: string;
+  is360?: boolean;
 }
 
 /**
@@ -69,4 +71,3 @@ export interface ImageUploaderProps {
   acceptedFiles: File[];      // Nowo dodane pliki (typ File)
   existingImageFiles: string[]; // Istniejące już obrazki (jako URL lub base64)
 }
-

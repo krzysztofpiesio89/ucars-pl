@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  // Ustawiamy domyślną, standardową ścieżkę wyjściową
   output   = "../node_modules/.prisma/client"
 }
 
@@ -9,20 +8,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ... reszta Twojego schematu pozostaje bez zmian
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  favorites Favorite[]
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  password       String
+  name           String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  favorites      Favorite[]
+  billingDetails BillingDetails?
+}
+
+// ZAKTUALIZOWANY MODEL: Dodano pola dla firm i typ konta
+model BillingDetails {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  accountType  String   @default("INDIVIDUAL") // INDIVIDUAL | BUSINESS
+  firstName    String?
+  lastName     String?
+  companyName  String?  // Nazwa firmy
+  taxId        String?  // NIP
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  postalCode   String
+  country      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Car {
-  id           Int      @id @default(autoincrement())
-  stock        String   @unique
+  id           Int        @id @default(autoincrement())
+  stock        String     @unique
   year         Int
   make         String
   model        String
@@ -31,6 +50,7 @@ model Car {
   engineStatus String
   bidPrice     Float
   buyNowPrice  Float?
+  auctionDate  DateTime?
   detailUrl    String
   imageUrl     String
   version      String?
@@ -40,8 +60,9 @@ model Car {
   fuelType     String?
   cylinders    String?
   videoUrl     String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  is360        Boolean?   @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   favorites    Favorite[]
 }
 

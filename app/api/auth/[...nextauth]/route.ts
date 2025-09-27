@@ -1,57 +1,81 @@
 import NextAuth from "next-auth";
-import GithubProvider from "next-auth/providers/github";
+import { AuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google"; // Przykładowy dostawca OAuth
 import prisma from "@/utils/prisma";
+import bcrypt from "bcryptjs";
 
-const handler = NextAuth({
+export const authOptions: AuthOptions = {
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
-    }),
-  ],
-  callbacks: {
-    async session({ session }) {
-      if (session?.user && session.user.email) {
-        // pobieramy użytkownika z PostgreSQL przez Prisma
-        const sessionUser = await prisma.user.findUnique({
-          where: { email: session.user.email },
-        });
-        if (sessionUser) {
-          session.user.id = sessionUser.id.toString();
+    // Dostawca dla logowania za pomocą emaila i hasła
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials.password) {
+          throw new Error("Proszę podać email i hasło.");
         }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user || !user.password) {
+          throw new Error("Nie znaleziono użytkownika o podanym adresie email.");
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isPasswordCorrect) {
+          throw new Error("Nieprawidłowe hasło.");
+        }
+
+        // Zwracamy obiekt użytkownika bez hasła
+        return {
+            id: String(user.id),
+            name: user.name,
+            email: user.email,
+        };
+      },
+    }),
+    // Możesz dodać innych dostawców, np. Google
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID!,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    // }),
+  ],
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    // Dodajemy ID użytkownika do tokenu JWT
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    // Dodajemy ID użytkownika do obiektu sesji
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
       }
       return session;
     },
-    async signIn({ profile }): Promise<boolean> {
-      try {
-        if (!profile?.email) return false;
-
-        // sprawdzamy czy użytkownik już istnieje
-        const isUserExists = await prisma.user.findUnique({
-          where: { email: profile.email },
-        });
-
-        if (!isUserExists) {
-          // tworzymy nowego użytkownika w PostgreSQL
-          const image = `https://api.multiavatar.com/${profile.name}.svg`;
-
-          await prisma.user.create({
-            data: {
-              name: profile.name,
-              email: profile.email,
-              password: "", // GitHub login, hasło nie jest potrzebne
-              // dodatkowe pola opcjonalne
-            },
-          });
-        }
-
-        return true;
-      } catch (error) {
-        console.error(error);
-        return false;
-      }
-    },
   },
-});
+  pages: {
+      signIn: '/login', // Strona logowania
+      error: '/login', // Przekieruj na stronę logowania w razie błędu
+  }
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

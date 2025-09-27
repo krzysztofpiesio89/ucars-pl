@@ -12,51 +12,34 @@ interface Car360ViewerProps {
 }
 
 const Car360Viewer = ({ linkNumber, detailUrl, onClose }: Car360ViewerProps) => {
+  // Stan do śledzenia statusu widoku 360
   const [viewStatus, setViewStatus] = useState<'loading' | 'success' | 'error'>('loading');
 
   useEffect(() => {
-    // --- OSTATECZNA, NAJBARDZIEJ NIEZAWODNA METODA WERYFIKACJI ---
-    const checkViewExists = (): Promise<boolean> => {
-      return new Promise((resolve) => {
+    // Funkcja sprawdzająca, czy pierwsze zdjęcie z serii 360 istnieje
+    const checkViewExists = async () => {
+      try {
         const firstImageUrl = `https://mediaretriever.iaai.com/api/ThreeSixtyImageRetriever?tenant=iaai&partitionKey=${linkNumber}&imageOrder=1`;
-        
-        // Tworzymy wirtualny obrazek w pamięci przeglądarki
-        const img = new Image();
+        const response = await fetch(firstImageUrl, { method: 'HEAD' }); // Używamy HEAD dla wydajności
 
-        // Jeśli obrazek się załaduje, sprawdzamy jego rzeczywiste wymiary
-        img.onload = () => {
-          // Prawdziwe zdjęcia 360 mają znacznie większą szerokość niż 100px.
-          // Obrazki-zaślepki "Image not available" z IAAI mają szerokość 80px.
-          if (img.naturalWidth > 100) {
-            console.log(`[Car360Viewer] Sukces: Obrazek dla aukcji ${linkNumber} jest prawidłowy (wymiary: ${img.naturalWidth}x${img.naturalHeight}).`);
-            resolve(true);
-          } else {
-            console.warn(`[Car360Viewer] Wykryto obrazek-zaślepkę (wymiary: ${img.naturalWidth}x${img.naturalHeight}). Widok niedostępny.`);
-            resolve(false);
-          }
-        };
-        
-        // Jeśli wystąpi błąd sieciowy (np. 404), widok 360 nie istnieje
-        img.onerror = () => {
-          console.warn(`[Car360Viewer] Błąd: Nie można załadować obrazka dla aukcji ${linkNumber} (błąd sieci).`);
-          resolve(false);
-        };
-
-        // Rozpoczynamy ładowanie obrazka
-        img.src = firstImageUrl;
-      });
+        if (response.ok) {
+          setViewStatus('success');
+        } else {
+          console.warn(`Widok 360 dla aukcji ${linkNumber} nie istnieje (status: ${response.status})`);
+          setViewStatus('error');
+        }
+      } catch (error) {
+        console.error("Błąd sieciowy podczas sprawdzania widoku 360:", error);
+        setViewStatus('error');
+      }
     };
 
-    const verify = async () => {
-      const exists = await checkViewExists();
-      setViewStatus(exists ? 'success' : 'error');
-    };
-
-    verify();
+    checkViewExists();
   }, [linkNumber]);
 
+  // Inicjalizacja skryptu tylko jeśli widok istnieje
   useEffect(() => {
-    if (viewStatus === 'success' && typeof window.CI360?.init === 'function') {
+    if (viewStatus === 'success' && window.CI360) {
       window.CI360.init();
     }
   }, [viewStatus]);
@@ -65,12 +48,12 @@ const Car360Viewer = ({ linkNumber, detailUrl, onClose }: Car360ViewerProps) => 
 
   return (
     <>
+      {/* Skrypt jest ładowany warunkowo, tylko jeśli będzie potrzebny */}
       {viewStatus === 'success' && (
          <Script
-            strategy="lazyOnload"
             src="https://cdn.scaleflex.it/plugins/js-cloudimage-360-view/latest/js-cloudimage-360-view.min.js"
             onLoad={() => {
-              if (typeof window.CI360?.init === 'function') {
+              if (window.CI360) {
                 window.CI360.init();
               }
             }}
@@ -91,6 +74,7 @@ const Car360Viewer = ({ linkNumber, detailUrl, onClose }: Car360ViewerProps) => 
           className="relative w-full max-w-4xl p-4 bg-slate-900/80 rounded-2xl border border-slate-700"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Przycisk zamykania jest zawsze widoczny */}
           <button
             onClick={onClose}
             className="absolute top-2 right-2 z-20 p-1.5 bg-white/20 rounded-full hover:bg-white/40 transition-colors"
@@ -101,6 +85,7 @@ const Car360Viewer = ({ linkNumber, detailUrl, onClose }: Car360ViewerProps) => 
             </svg>
           </button>
 
+          {/* Ładowanie */}
           {viewStatus === 'loading' && (
             <div className="flex flex-col items-center justify-center h-64 text-white">
               <svg className="animate-spin h-8 w-8 text-white mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -111,12 +96,13 @@ const Car360Viewer = ({ linkNumber, detailUrl, onClose }: Car360ViewerProps) => 
             </div>
           )}
 
+          {/* Błąd / Brak widoku */}
           {viewStatus === 'error' && (
              <div className="flex flex-col items-center justify-center h-64 text-white text-center">
                 <h3 className="text-xl font-bold mb-2">Widok 360° jest niedostępny</h3>
                 <p className="text-slate-300 mb-4">Dla tego pojazdu nie udostępniono interaktywnego widoku.</p>
                 <Link 
-                  href={detailUrl || '#'} // POPRAWKA: Dodano fallback na '#'
+                  href={detailUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
@@ -126,6 +112,7 @@ const Car360Viewer = ({ linkNumber, detailUrl, onClose }: Car360ViewerProps) => 
              </div>
           )}
 
+          {/* Sukces - renderowanie widoku 360 */}
           {viewStatus === 'success' && (
             <div
               className="cloudimage-360"
