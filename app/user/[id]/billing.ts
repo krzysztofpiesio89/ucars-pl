@@ -5,10 +5,7 @@ import prisma from "@/utils/prisma";
  * GET - Pobiera dane rozliczeniowe dla danego użytkownika.
  */
 export const GET = async (req: NextRequest, { params }: { params: { id: string } }) => {
-  const userId = parseInt(params.id, 10);
-  if (isNaN(userId)) {
-    return NextResponse.json({ message: "Invalid User ID" }, { status: 400 });
-  }
+  const userId = params.id;
 
   try {
     const billingDetails = await prisma.billingDetails.findUnique({
@@ -25,10 +22,7 @@ export const GET = async (req: NextRequest, { params }: { params: { id: string }
  * POST - Tworzy lub aktualizuje dane rozliczeniowe użytkownika.
  */
 export const POST = async (req: Request, { params }: { params: { id: string } }) => {
-  const userId = parseInt(params.id, 10);
-  if (isNaN(userId)) {
-    return NextResponse.json({ message: "Invalid User ID" }, { status: 400 });
-  }
+  const userId = params.id;
 
   try {
     const body = await req.json();

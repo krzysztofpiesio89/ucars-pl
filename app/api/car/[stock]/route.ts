@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 
-// GET a car by id
-export const GET = async (req: Request, { params }: { params: { id: string } }) => {
-  const { id } = params;
+// GET a car by stock number
+export const GET = async (req: Request, { params }: { params: { stock: string } }) => {
+  const { stock } = params;
 
   try {
-    // Prisma używa int dla id w Twoim modelu, więc konwertujemy z string
-    const carId = parseInt(id, 10);
-
     const specificCar = await prisma.car.findUnique({
-      where: { id: carId },
+      where: { stock: stock },
     });
 
     if (!specificCar) {

@@ -1,33 +1,27 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 import bcrypt from "bcryptjs";
+import { randomUUID } from "crypto";
 
-/**
- * POST - Obsługuje tworzenie nowego użytkownika.
- */
-export const POST = async (req: Request) => {
+export const POST = async (req: NextRequest) => {
+  const { name, email, password } = await req.json();
+
+  if (!name || !email || !password) {
+    return NextResponse.json({ message: "All fields are required" }, { status: 400 });
+  }
+
   try {
-    const { name, email, password } = await req.json();
-
-    // 1. Walidacja danych
-    if (!name || !email || !password) {
-      return NextResponse.json({ message: "Wszystkie pola są wymagane." }, { status: 400 });
-    }
-
-    // 2. Sprawdzenie, czy użytkownik już istnieje
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
 
     if (existingUser) {
-      return NextResponse.json({ message: "Użytkownik o tym adresie email już istnieje." }, { status: 409 });
+      return NextResponse.json({ message: "User with this email already exists" }, { status: 409 });
     }
 
-    // 3. Haszowanie hasła
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 4. Stworzenie nowego użytkownika w bazie danych
-    const newUser = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         name,
         email,
@@ -35,10 +29,28 @@ export const POST = async (req: Request) => {
       },
     });
 
-    return NextResponse.json({ message: "Użytkownik został pomyślnie zarejestrowany.", user: newUser }, { status: 201 });
+    const verificationToken = await prisma.verificationToken.create({
+        data: {
+            email,
+            token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        }
+    });
 
+    const verificationUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify-email?token=${verificationToken.token}`;
+
+    // W środowisku deweloperskim po prostu logujemy link w konsoli.
+    // W produkcji, tutaj należy zintegrować usługę do wysyłania e-maili.
+    console.log(`Verification URL for ${email}: ${verificationUrl}`);
+
+    return NextResponse.json(
+      {
+        message: "User created successfully. Please check your email to verify your account.",
+      },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Błąd podczas rejestracji:", error);
-    return NextResponse.json({ message: "Wystąpił wewnętrzny błąd serwera." }, { status: 500 });
+    console.error("Signup error:", error);
+    return NextResponse.json({ message: "An unexpected error occurred." }, { status: 500 });
   }
 };

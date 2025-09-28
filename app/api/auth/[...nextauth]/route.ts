@@ -1,13 +1,17 @@
-import NextAuth from "next-auth";
-import { AuthOptions } from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google"; // Przykładowy dostawca OAuth
 import prisma from "@/utils/prisma";
 import bcrypt from "bcryptjs";
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
-    // Dostawca dla logowania za pomocą emaila i hasła
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -24,7 +28,11 @@ export const authOptions: AuthOptions = {
         });
 
         if (!user || !user.password) {
-          throw new Error("Nie znaleziono użytkownika o podanym adresie email.");
+          throw new Error("Nie znaleziono użytkownika o podanym adresie email lub użytkownik jest zarejestrowany przez OAuth.");
+        }
+
+        if (!user.emailVerified) {
+            throw new Error("Proszę zweryfikować swój adres email przed zalogowaniem.");
         }
 
         const isPasswordCorrect = await bcrypt.compare(
@@ -36,44 +44,46 @@ export const authOptions: AuthOptions = {
           throw new Error("Nieprawidłowe hasło.");
         }
 
-        // Zwracamy obiekt użytkownika bez hasła
-        return {
-            id: String(user.id),
-            name: user.name,
-            email: user.email,
-        };
+        return user;
       },
     }),
-    // Możesz dodać innych dostawców, np. Google
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID!,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    // }),
   ],
   session: {
-    strategy: "jwt",
+    strategy: "database",
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    // Dodajemy ID użytkownika do tokenu JWT
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    // Dodajemy ID użytkownika do obiektu sesji
-    async session({ session, token }) {
+    async session({ session, user }) {
       if (session.user) {
-        session.user.id = token.id as string;
+        session.user.id = user.id;
+        // Logika superadmina
+        if (user.email === process.env.SUPERADMIN_EMAIL) {
+          session.user.role = "ADMIN";
+        } else {
+          session.user.role = user.role;
+        }
       }
       return session;
     },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        // Logika superadmina
+        if (user.email === process.env.SUPERADMIN_EMAIL) {
+          token.role = "ADMIN";
+        } else {
+          token.role = user.role;
+        }
+      }
+      return token;
+    },
   },
   pages: {
-      signIn: '/login', // Strona logowania
-      error: '/login', // Przekieruj na stronę logowania w razie błędu
-  }
+    signIn: '/user/login',
+    error: '/user/login',
+  },
 };
 
 const handler = NextAuth(authOptions);

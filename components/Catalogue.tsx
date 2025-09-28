@@ -3,11 +3,18 @@ import Filter from "./Filter";
 import Searchbar from "./Searchbar";
 import CarCard from "./CarCard";
 import CustomButton from "./CustomButton";
-import { CatalogueProps } from "@/types";
+import { CarProps } from "@/types"; // Import CarProps
 import { updateSearchParams } from "@/utils";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CarCardSkeleton } from "./skeleton";
+
+// Definiujemy interfejs bezpośrednio tutaj, aby obejść problem z importem
+interface CatalogueProps {
+  allCars: CarProps[];
+  limit: number;
+  isLoading: boolean;
+}
 
 const Catalogue = ({ allCars, limit, isLoading }: CatalogueProps) => {
   const router = useRouter();

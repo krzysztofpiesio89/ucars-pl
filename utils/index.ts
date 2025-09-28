@@ -18,13 +18,13 @@ export const updateSearchParams = (type: string, value: string) => {
 };
 
 
-// --- FUNKCJE DO WSPÓŁPRACY Z BAZĄ DANYCH (PRZEBUDOWANE) ---
+// --- FUNKCJE DO WSPÓŁPRACY Z BAZĄ DANYCH (POPRAWIONE) ---
 
 /**
  * Pobranie ulubionych samochodów dla danego użytkownika.
- * @param userId - ID użytkownika.
+ * @param userId - ID użytkownika (jako string).
  */
-export const fetchFavoriteCars = async (userId: number) => {
+export const fetchFavoriteCars = async (userId: string) => { // POPRAWKA: userId jest teraz stringiem
   try {
     const favorites = await prisma.favorite.findMany({
       where: { userId: userId },
@@ -40,10 +40,10 @@ export const fetchFavoriteCars = async (userId: number) => {
 
 /**
  * Dodanie samochodu do ulubionych.
- * @param userId - ID użytkownika.
+ * @param userId - ID użytkownika (jako string).
  * @param carId - ID samochodu z naszej bazy danych.
  */
-export const addToFavorites = async (userId: number, carId: number) => {
+export const addToFavorites = async (userId: string, carId: number) => { // POPRAWKA: userId jest teraz stringiem
   try {
     const existingFavorite = await prisma.favorite.findUnique({
       where: {
@@ -71,10 +71,10 @@ export const addToFavorites = async (userId: number, carId: number) => {
 
 /**
  * Usunięcie samochodu z ulubionych.
- * @param userId - ID użytkownika.
+ * @param userId - ID użytkownika (jako string).
  * @param carId - ID samochodu.
  */
-export const removeFromFavorites = async (userId: number, carId: number) => {
+export const removeFromFavorites = async (userId: string, carId: number) => { // POPRAWKA: userId jest teraz stringiem
   try {
     await prisma.favorite.delete({
       where: {
@@ -94,10 +94,10 @@ export const removeFromFavorites = async (userId: number, carId: number) => {
 
 /**
  * Sprawdzenie, czy samochód jest w ulubionych danego użytkownika.
- * @param userId - ID użytkownika.
+ * @param userId - ID użytkownika (jako string).
  * @param carId - ID samochodu.
  */
-export const isCarFavorite = async (userId: number, carId: number) => {
+export const isCarFavorite = async (userId: string, carId: number) => { // POPRAWKA: userId jest teraz stringiem
   try {
     const favorite = await prisma.favorite.findUnique({
       where: {
@@ -110,4 +110,3 @@ export const isCarFavorite = async (userId: number, carId: number) => {
     return false;
   }
 };
-

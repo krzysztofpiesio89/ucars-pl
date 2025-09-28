@@ -55,7 +55,10 @@ const AccountPage = () => {
           ]);
 
           const favData = await favRes.json();
-          if (favRes.ok) setFavoriteCars(favData);
+          if (favRes.ok) {
+            const cars = favData.map((fav: { car: CarProps }) => fav.car);
+            setFavoriteCars(cars);
+          }
 
           const billData = await billRes.json();
           if (billRes.ok && billData) setBillingDetails(billData);

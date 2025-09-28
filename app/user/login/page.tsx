@@ -1,8 +1,8 @@
 'use client'
 import { getProviders, signIn, useSession } from 'next-auth/react';
-import Link from 'next/link'
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
 const Login = () => {
@@ -24,7 +24,11 @@ const Login = () => {
             setProviders(response);
         }
         setupProviders();
-    }, []);
+
+        if (searchParams.get('verified') === 'true') {
+            toast.success("Email zweryfikowany pomyślnie! Możesz się teraz zalogować.");
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         if (session?.user?.id) {
@@ -101,7 +105,7 @@ const Login = () => {
                     </button>
                     <p className='text-center text-sm text-slate-500 dark:text-slate-400'>
                         Nie masz konta?
-                        <Link href='/signup' className='font-semibold text-blue-600 dark:text-pink-400 hover:underline ml-1'> Zarejestruj się </Link>
+                        <Link href='/user/signup' className='font-semibold text-blue-600 dark:text-pink-400 hover:underline ml-1'> Zarejestruj się </Link>
                     </p>
                 </form>
 

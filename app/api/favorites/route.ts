@@ -19,7 +19,7 @@ export const GET = async (req: NextRequest) => {
 
   try {
     const favorites: FavoriteWithCar[] = await prisma.favorite.findMany({
-      where: { userId: parseInt(userId, 10) },
+      where: { userId: userId },
       include: {
         car: true, // Dołączamy pełne dane samochodu
       },
@@ -40,7 +40,7 @@ export const GET = async (req: NextRequest) => {
 
 /**
  * POST - Dodaje samochód do listy ulubionych użytkownika.
- * Oczekuje w ciele zapytania: { userId: number, carId: number }
+ * Oczekuje w ciele zapytania: { userId: string, carId: number }
  */
 export const POST = async (req: Request) => {
   try {
@@ -77,7 +77,7 @@ export const POST = async (req: Request) => {
 
 /**
  * DELETE - Usuwa samochód z listy ulubionych użytkownika.
- * Oczekuje w ciele zapytania: { userId: number, carId: number }
+ * Oczekuje w ciele zapytania: { userId: string, carId: number }
  */
 export const DELETE = async (req: Request) => {
   try {
@@ -101,5 +101,5 @@ export const DELETE = async (req: Request) => {
     console.error("DELETE /api/favorites error:", error);
     return NextResponse.json({ message: "Failed to remove car from favorites" }, { status: 500 });
   }
-};Q
+};
 

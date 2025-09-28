@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
@@ -10,18 +10,24 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
 // Mały komponent do wyświetlania szczegółów w siatce
-const InfoPill = ({ label, value }: { label: string; value: string | undefined | null }) => (
+const InfoPill = ({ label, value }: { label: string; value: string | undefined | null | number }) => (
     <div className="text-xs">
         <span className="font-semibold text-slate-500 dark:text-slate-400">{label}: </span>
         <span className="text-slate-700 dark:text-white font-medium">{value || 'N/A'}</span>
     </div>
 );
 
-const CarCard = ({ car }: { car: CarProps }) => {
+interface CarCardProps {
+  car: CarProps;
+  isInitiallyFavorite?: boolean;
+  onFavoriteChange?: (carId: number, isFavorite: boolean) => void;
+}
+
+const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCardProps) => {
     const { data: session } = useSession();
     const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
     const [is360ViewerOpen, setIs360ViewerOpen] = useState(false);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(isInitiallyFavorite);
     const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
 
     const isIAAI = car.detailUrl.includes('iaai.com');
@@ -56,14 +62,18 @@ const CarCard = ({ car }: { car: CarProps }) => {
             method: isFavorite ? 'DELETE' : 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              userId: parseInt(session.user.id, 10),
+              userId: session.user.id,
               carId: car.id, // Assuming car object has an id from the DB
             }),
           });
     
           if (response.ok) {
-            setIsFavorite(!isFavorite);
-            toast.success(isFavorite ? "Usunięto z ulubionych!" : "Dodano do ulubionych!");
+            const newIsFavorite = !isFavorite;
+            setIsFavorite(newIsFavorite);
+            toast.success(newIsFavorite ? "Dodano do ulubionych!" : "Usunięto z ulubionych!");
+            if (onFavoriteChange) {
+              onFavoriteChange(car.id, newIsFavorite);
+            }
           } else {
             const data = await response.json();
             toast.error(data.message || "Wystąpił błąd.");
@@ -79,7 +89,7 @@ const CarCard = ({ car }: { car: CarProps }) => {
         if (price === null || price === undefined) return "N/A";
         const priceString = String(price);
         const number = parseFloat(priceString.replace(/[^0-9.]/g, ''));
-        return isNaN(number) ? priceString : `$${number.toLocaleString('en-US')}`;
+        return isNaN(number) ? priceString : `${number.toLocaleString('en-US')}`;
     };
 
     const formatAuctionDate = (dateString: string | null | undefined) => {
@@ -185,7 +195,7 @@ const CarCard = ({ car }: { car: CarProps }) => {
                                 </svg>
                             </Link>
                         </div>
-                        <Link href={`/auction/${car.id}`} className="w-full">
+                        <Link href={`/auction/${car.stock}`} className="w-full">
                             <button className="w-full bg-blue-600 text-white text-sm font-bold py-2 px-4 rounded-full hover:bg-blue-700 dark:bg-pink-500 dark:hover:bg-pink-600 transition-colors duration-300">
                                 Licytuj z Nami
                             </button>
@@ -196,6 +206,7 @@ const CarCard = ({ car }: { car: CarProps }) => {
             
             {isVideoPlayerOpen && car.videoUrl && (
                 <VideoPlayer 
+                    iaaiUrl={car.detailUrl}
                     videoUrl={car.videoUrl} 
                     onClose={() => setIsVideoPlayerOpen(false)} 
                 />
@@ -212,4 +223,3 @@ const CarCard = ({ car }: { car: CarProps }) => {
 };
 
 export default CarCard;
-
