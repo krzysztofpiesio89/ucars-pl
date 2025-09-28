@@ -108,12 +108,12 @@ const CarCard = ({ car }: { car: CarProps }) => {
                 
                 <div className="relative w-full h-48 overflow-hidden">
                     <Image
-                        src={car.imageUrl || "/images/fallback-car.webp"}
+                        src={car.imageUrl || "/cars/fallback.webp"}
                         alt={`${car.make} ${car.model}`}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        onError={(e) => { e.currentTarget.src = "/images/fallback-car.webp"; }}
+                        onError={(e) => { e.currentTarget.src = "/cars/fallback.webp"; }}
                     />
                     <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
                         {isIAAI && (
