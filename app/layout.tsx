@@ -4,6 +4,8 @@ import "@/styles/globals.css";
 import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { CurrencyProvider } from "@/context/CurrencyProvider";
+import { TopBarProvider } from "@/context/TopBarContext";
+import MainContent from "@/components/MainContent";
 import TopBar from "@/components/TopBar";
 
 export const metadata = {
@@ -23,16 +25,17 @@ export default function RootLayout({
       <html lang="en">
         <body className="app bg-slate-50 dark:bg-[#0b1120]">
           <CurrencyProvider>
-            <CustomThemeProvider>
-              <main>
-                <Navbar />
-                <div className="pt-28">
-                  {children}
-                </div>
-              </main>
-              <Footer />
-              <Toaster position="top-left" reverseOrder={false} />
-            </CustomThemeProvider>
+            <TopBarProvider>
+              <CustomThemeProvider>
+                <header className="fixed top-0 left-0 right-0 z-50 border-b dark:border-b-gray-800 shadow-sm">
+                  <Navbar />
+                  <TopBar />
+                </header>
+                <MainContent>{children}</MainContent>
+                <Footer />
+                <Toaster position="top-left" reverseOrder={false} />
+              </CustomThemeProvider>
+            </TopBarProvider>
           </CurrencyProvider>
         </body>
       </html>

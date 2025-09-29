@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Image from "next/image";
 import Link from "next/link";
@@ -6,13 +6,10 @@ import React, { useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
 import { getProviders, signIn, signOut, useSession } from "next-auth/react";
 import ThemeSwitcher from "./theme/ThemeSwitcher";
-// ✅ 1. Zaktualizowano importy ikon
 import { BsX, BsInstagram, BsFacebook } from "react-icons/bs";
 import { useTheme } from "next-themes";
 import { RiMenu3Line } from "react-icons/ri";
-import TopBar from "./TopBar";
 
-// ✅ 2. Stworzono reużywalny komponent dla linków społecznościowych
 const SocialLinks = ({ className }: { className?: string }) => (
     <div className={`flex items-center gap-4 ${className}`}>
         <Link href={"https://x.com/TWOJ_PROFIL"} target="_blank" aria-label="Odwiedź nasz profil na X">
@@ -26,7 +23,6 @@ const SocialLinks = ({ className }: { className?: string }) => (
         </Link>
     </div>
 );
-
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -45,7 +41,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="fixed z-50 left-0 right-0 top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b dark:border-b-gray-800 shadow-sm">
+    <nav className="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
       <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto h-16">
         <Link href={"/"}>
           <span className="text-xl md:text-2xl text-blue-600 font-bold dark:text-white">
@@ -92,7 +88,6 @@ const Navbar = () => {
             />
           )}
 
-          {/* ✅ 3. Sekcja z ikonami i przełącznikiem motywu */}
           <div className="flex items-center gap-4 border-l dark:border-slate-700 ml-4 pl-4">
             <SocialLinks />
             <ThemeSwitcher />
@@ -139,12 +134,10 @@ const Navbar = () => {
             
             <hr className="dark:border-gray-700 my-2" />
             
-            {/* ✅ 4. Linki społecznościowe w menu mobilnym */}
             <SocialLinks />
           </div>
         )}
       </div>
-      <TopBar />
     </nav>
   );
 };
