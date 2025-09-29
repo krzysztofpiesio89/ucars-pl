@@ -2,7 +2,11 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+type Currency = 'USD' | 'PLN';
+
 interface CurrencyContextType {
+  currency: Currency;
+  setCurrency: (currency: Currency) => void;
   rate: number | null;
   isLoading: boolean;
 }
@@ -10,11 +14,13 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
+  const [currency, setCurrency] = useState<Currency>('USD');
   const [rate, setRate] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchRate = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch('/api/currency');
         if (!response.ok) {
@@ -25,7 +31,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
       } catch (error) {
         console.error(error);
         // W przypadku błędu, można ustawić domyślny kurs
-        setRate(4.0); 
+        setRate(4.0);
       } finally {
         setIsLoading(false);
       }
@@ -35,7 +41,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <CurrencyContext.Provider value={{ rate, isLoading }}>
+    <CurrencyContext.Provider value={{ currency, setCurrency, rate, isLoading }}>
       {children}
     </CurrencyContext.Provider>
   );

@@ -9,6 +9,7 @@ import Car360Viewer from "./Car360Viewer";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { translateFuel } from "@/utils/fuelTranslations"; // 👈 dodaj ten import
+import { useCurrency } from "@/context/CurrencyProvider";
 
 // T
 // NOWY KOMPONENT: Zegar Odliczający Czas do Aukcji
@@ -91,6 +92,7 @@ interface CarCardProps {
 
 const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCardProps) => {
     const { data: session } = useSession();
+    const { currency, rate, isLoading: isCurrencyLoading } = useCurrency();
     const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
     const [is360ViewerOpen, setIs360ViewerOpen] = useState(false);
     const [isFavorite, setIsFavorite] = useState(isInitiallyFavorite);
@@ -153,7 +155,19 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
         if (price === null || price === undefined) return "N/A";
         const priceString = String(price);
         const number = parseFloat(priceString.replace(/[^0-9.]/g, ''));
-        return isNaN(number) ? priceString : `${number.toLocaleString('en-US')}`;
+
+        if (isNaN(number)) return priceString;
+
+        if (isCurrencyLoading) {
+            return 'Ładowanie...';
+        }
+
+        if (currency === 'PLN' && rate) {
+            return `${(number * rate).toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}`;
+        }
+        
+        // Domyślnie formatuj jako USD
+        return `${number.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}`;
     };
 
     const currentBid = formatPrice(car.bidPrice);
@@ -229,7 +243,7 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
                             <div>
                              <p className="text-xs text-slate-500 dark:text-slate-400">Cena kup teraz:</p>
                                 <p className="text-2xl font-extrabold text-green-600 dark:text-green-400 tracking-tight">
-                                {buyNowPrice}$
+                                {buyNowPrice}
                                 </p>
 
                                 {buyNowPrice && (
