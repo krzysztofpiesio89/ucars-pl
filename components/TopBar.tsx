@@ -6,30 +6,82 @@ import { useTopBar } from '@/context/TopBarContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TimeClock = ({ timeZone, label }: { timeZone: string; label: string }) => {
-  const getInitialTime = () => new Date().toLocaleTimeString('pl-PL', {
-    timeZone,
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const getDate = () => new Date(new Date().toLocaleString('en-US', { timeZone }));
 
-  const [time, setTime] = useState(getInitialTime());
+  const [date, setDate] = useState(getDate());
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTime(new Date().toLocaleTimeString('pl-PL', {
-        timeZone,
-        hour: '2-digit',
-        minute: '2-digit',
-      }));
+      setDate(getDate());
     }, 1000);
 
     return () => clearInterval(timer);
   }, [timeZone]);
 
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  // kąty dla wskazówek
+  const hourAngle = (hours % 12) * 30 + minutes * 0.5;
+  const minuteAngle = minutes * 6;
+  const secondAngle = seconds * 6;
+
+  const digitalTime = date.toLocaleTimeString('pl-PL', {
+    timeZone,
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
   return (
     <div className="flex items-center gap-2">
+      {/* Mini analog clock */}
+      <svg
+        viewBox="0 0 50 50"
+        className="w-5 h-5 text-slate-600 dark:text-slate-300"
+      >
+        <circle cx="25" cy="25" r="24" fill="none" stroke="currentColor" strokeWidth="2" />
+        
+        {/* Hour hand */}
+        <line
+          x1="25"
+          y1="25"
+          x2="25"
+          y2="15"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          transform={`rotate(${hourAngle} 25 25)`}
+        />
+        
+        {/* Minute hand */}
+        <line
+          x1="25"
+          y1="25"
+          x2="25"
+          y2="10"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          transform={`rotate(${minuteAngle} 25 25)`}
+        />
+        
+        {/* Second hand */}
+        <line
+          x1="25"
+          y1="25"
+          x2="25"
+          y2="8"
+          stroke="red"
+          strokeWidth="1"
+          strokeLinecap="round"
+          transform={`rotate(${secondAngle} 25 25)`}
+        />
+      </svg>
+
+      {/* Label + digital */}
       <span className="font-medium text-slate-500 dark:text-slate-400">{label}:</span>
-      <span className="font-bold text-green-500 dark:text-green-400 tabular-nums">{time}</span>
+      <span className="font-bold text-green-500 dark:text-green-400 tabular-nums">{digitalTime}</span>
     </div>
   );
 };

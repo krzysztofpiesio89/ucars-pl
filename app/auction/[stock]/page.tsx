@@ -13,6 +13,7 @@ import Car360Viewer from "@/components/Car360Viewer";
 import Lightbox from "@/components/Lightbox";
 import { generateIAAIImages } from "@/utils/iaaiUtils";
 import CostCalculator from "@/components/CostCalculator";
+import { useCurrency } from "@/context/CurrencyProvider";
 
 // Komponent do wyświetlania pojedynczej informacji o aucie (przeniesiony z /cars/[id])
 const DetailItem = ({ label, value }: { label: string; value: string | number | undefined | null }) => (
@@ -33,6 +34,9 @@ const LicytujPage = ({ params }: { params: { stock: string } }) => {
       const [mainImage, setMainImage] = useState<string | null>(null);
       const [isLightboxOpen, setIsLightboxOpen] = useState(false);
       const [isMainImageLoading, setIsMainImageLoading] = useState(true);
+
+      const { rate: currencyRate, isLoading: isCurrencyLoading } = useCurrency();
+      const [priceInPLN, setPriceInPLN] = useState<number | null>(null);
   
       useEffect(() => {
           const fetchCarDetails = async () => {
@@ -53,6 +57,12 @@ const LicytujPage = ({ params }: { params: { stock: string } }) => {
           };
           fetchCarDetails();
       }, [params.stock]);
+
+      useEffect(() => {
+        if (car?.bidPrice && currencyRate) {
+          setPriceInPLN(car.bidPrice * currencyRate);
+        }
+      }, [car?.bidPrice, currencyRate]);
 
   const handleThumbnailClick = (hdUrl: string) => {
     if (hdUrl === mainImage) return;
@@ -95,6 +105,11 @@ const LicytujPage = ({ params }: { params: { stock: string } }) => {
   if (!car) {
     return <div className="flex justify-center items-center min-h-screen">Nie znaleziono pojazdu.</div>;
   }
+
+  const carForCalculator: CarProps = {
+    ...car,
+    bidPrice: car.bidPrice || 0,
+  };
 
   return (
     <>
@@ -212,6 +227,11 @@ const LicytujPage = ({ params }: { params: { stock: string } }) => {
                     <div>
                         <p className="text-slate-600 dark:text-slate-400">Aktualna oferta</p>
                         <p className="text-4xl font-bold text-slate-900 dark:text-white mt-1">${(car.bidPrice || 0).toLocaleString('en-US')}</p>
+                        {isCurrencyLoading ? (
+                            <div className="h-6 w-32 bg-slate-200 dark:bg-slate-700 rounded-md animate-pulse mt-1" />
+                        ) : (
+                            priceInPLN && <p className="text-lg font-medium text-slate-500 dark:text-slate-400">≈ {priceInPLN.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}</p>
+                        )}
                     </div>
                     <div>
                         <label htmlFor="maxBid" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Twoja maksymalna oferta (USD)</label>
@@ -269,7 +289,7 @@ const LicytujPage = ({ params }: { params: { stock: string } }) => {
                 </div>
               </div>
             )}
-            <CostCalculator car={car} />
+            <CostCalculator car={carForCalculator} />
           </div>
         </div>
       </motion.main>

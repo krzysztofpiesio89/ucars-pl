@@ -227,11 +227,16 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
 
                         <div className="flex justify-between items-center">
                             <div>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">Aktualna oferta</p>
-                                <p className="text-xl font-bold text-slate-900 dark:text-white">{currentBid}$</p>
-                                    {buyNowPrice && (
-                                        <p className="text-xs text-green-600 dark:text-green-400 font-semibold">Kup Teraz: {buyNowPrice}$</p>
-                                    )}
+                             <p className="text-xs text-slate-500 dark:text-slate-400">Cena kup teraz:</p>
+                                <p className="text-2xl font-extrabold text-green-600 dark:text-green-400 tracking-tight">
+                                {buyNowPrice}$
+                                </p>
+
+                                {buyNowPrice && (
+                                <p className="text-xs text-orange-600 dark:text-orange-400 font-semibold">
+                                    Aktualna oferta: {currentBid}
+                                </p>
+                                )}
                             </div>
                             <Link
                                 href={car.detailUrl}
