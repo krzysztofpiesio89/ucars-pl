@@ -30,22 +30,24 @@ export default function Home({ searchParams }: { searchParams: FetchCarProps }) 
   }, [model, year, manufacturer, fuelType, limit]);
 
   return (
-    <main className="overflow-hidden relative  dark:bg-slate-900 backdrop-blur-3xl backdrop-filter">
-      <div className="w-44 h-44 hidden md:flex dark:bg-gradient-radial from-pink-500 to-purple-700 rounded-full rotate-12 absolute top-3/4 right-1/2 blur-3xl" />
-      <div className="w-44 h-44 dark:bg-gradient-radial from-blue-500 to-violet-950 rounded-2xl rotate-12 absolute top-[98%] left-1/2 blur-3xl" />
-      <div className="w-72 h-72 dark:bg-gradient-radial from-indigo-900 to-purple-700 rounded-2xl rotate-12 absolute top-1/2 left-1/2 blur-3xl" />
-      <div className="w-72 h-20 dark:bg-gradient-radial from-teal-500 to-green-700 rounded-2xl rotate-12 absolute top-0 left-4 blur-3xl" />
-      <div className="w-72 h-72 dark:bg-gradient-radial from-slate-700 to-[#343434] rounded-2xl rotate-12 absolute top-[15%] right-0 blur-3xl" />
+    <main className="overflow-hidden relative  dark:bg-slate-900">
+      <div className="absolute inset-0 backdrop-blur-3xl backdrop-filter" />
+      <div className="relative z-10">
+        <div className="w-44 h-44 hidden md:flex dark:bg-gradient-radial from-pink-500 to-purple-700 rounded-full rotate-12 absolute top-3/4 right-1/2 blur-3xl" />
+        <div className="w-44 h-44 dark:bg-gradient-radial from-blue-500 to-violet-950 rounded-2xl rotate-12 absolute top-[98%] left-1/2 blur-3xl" />
+        <div className="w-72 h-72 dark:bg-gradient-radial from-indigo-900 to-purple-700 rounded-2xl rotate-12 absolute top-1/2 left-1/2 blur-3xl" />
+        <div className="w-72 h-20 dark:bg-gradient-radial from-teal-500 to-green-700 rounded-2xl rotate-12 absolute top-0 left-4 blur-3xl" />
+        <div className="w-72 h-72 dark:bg-gradient-radial from-slate-700 to-[#343434] rounded-2xl rotate-12 absolute top-[15%] right-0 blur-3xl" />
 
-      <Hero />
-       <AboutUs /> 
-       <ProcessSection />
-      { allCars && <Catalogue
-        isLoading={isLoading}
-        allCars={allCars}
-        limit={(limit || 20) / 10}
-      />}
-
+        <Hero />
+        <AboutUs /> 
+        <ProcessSection />
+        { allCars && <Catalogue
+          isLoading={isLoading}
+          allCars={allCars}
+          limit={(limit || 20) / 10}
+        />}
+      </div>
     </main>
   );
 }

@@ -60,9 +60,9 @@ export const VideoPlayer = ({ iaaiUrl, onClose }: VideoPlayerProps) => {
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 20 }}
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.9 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
         className="relative w-full max-w-4xl bg-black rounded-lg shadow-2xl overflow-hidden aspect-video"
         onClick={(e) => e.stopPropagation()}
