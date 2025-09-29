@@ -1,13 +1,79 @@
 'use client';
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CarProps } from "@/types";
-import VideoPlayer from "./VideoPlayer";
+import { VideoPlayer } from "@/components/VideoPlayer";
 import Car360Viewer from "./Car360Viewer";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { translateFuel } from "@/utils/fuelTranslations"; // 👈 dodaj ten import
+
+// T
+// NOWY KOMPONENT: Zegar Odliczający Czas do Aukcji
+// ============================================================================
+interface AuctionCountdownProps {
+    targetDate: string | null | undefined;
+}
+
+const AuctionCountdown = ({ targetDate }: AuctionCountdownProps) => {
+    const calculateTimeLeft = () => {
+        if (!targetDate) return null;
+        const difference = +new Date(targetDate) - +new Date();
+        
+        if (difference > 0) {
+            return {
+                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                minutes: Math.floor((difference / 1000 / 60) % 60),
+                seconds: Math.floor((difference / 1000) % 60),
+            };
+        }
+        return null;
+    };
+
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+    useEffect(() => {
+        if (!targetDate) return;
+
+        const timer = setInterval(() => {
+            setTimeLeft(calculateTimeLeft());
+        }, 1000);
+
+        // Wyczyszczenie interwału, gdy komponent jest odmontowywany
+        return () => clearInterval(timer);
+    }, [targetDate]);
+
+    if (!targetDate) {
+        return <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Data aukcji nieustalona</span>;
+    }
+
+    if (!timeLeft) {
+        return <span className="text-sm font-bold text-red-600 dark:text-red-400">Aukcja zakończona</span>;
+    }
+
+    const TimeBlock = ({ value, label }: { value: number, label: string }) => (
+        <div className="flex flex-col items-center">
+            <span className="text-xl font-bold text-slate-800 dark:text-white leading-none">{String(value).padStart(2, '0')}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 uppercase">{label}</span>
+        </div>
+    );
+
+    return (
+        <div className="flex items-center justify-center gap-2 text-center w-full">
+            <TimeBlock value={timeLeft.days} label="Dni" />
+            <span className="text-xl font-bold text-slate-500 dark:text-slate-400 -mt-3">:</span>
+            <TimeBlock value={timeLeft.hours} label="Godz" />
+            <span className="text-xl font-bold text-slate-500 dark:text-slate-400 -mt-3">:</span>
+            <TimeBlock value={timeLeft.minutes} label="Min" />
+            <span className="text-xl font-bold text-slate-500 dark:text-slate-400 -mt-3">:</span>
+            <TimeBlock value={timeLeft.seconds} label="Sek" />
+        </div>
+    );
+};
+
 
 // Mały komponent do wyświetlania szczegółów w siatce
 const InfoPill = ({ label, value }: { label: string; value: string | undefined | null | number }) => (
@@ -18,9 +84,9 @@ const InfoPill = ({ label, value }: { label: string; value: string | undefined |
 );
 
 interface CarCardProps {
-  car: CarProps;
-  isInitiallyFavorite?: boolean;
-  onFavoriteChange?: (carId: number, isFavorite: boolean) => void;
+    car: CarProps;
+    isInitiallyFavorite?: boolean;
+    onFavoriteChange?: (carId: number, isFavorite: boolean) => void;
 }
 
 const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCardProps) => {
@@ -47,41 +113,39 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
         }
     }, [isIAAI, car.detailUrl]);
 
-
-    // TODO: W przyszłości zaimplementuj sprawdzanie statusu ulubionych przy ładowaniu komponentu
     const handleFavoriteClick = async () => {
         if (!session?.user?.id) {
-          toast.error("Musisz się zalogować, aby dodać do ulubionych.");
-          return;
+            toast.error("Musisz się zalogować, aby dodać do ulubionych.");
+            return;
         }
     
         setIsLoadingFavorite(true);
     
         try {
-          const response = await fetch('/api/favorites', {
-            method: isFavorite ? 'DELETE' : 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId: session.user.id,
-              carId: car.id, // Assuming car object has an id from the DB
-            }),
-          });
+            const response = await fetch('/api/favorites', {
+                method: isFavorite ? 'DELETE' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: session.user.id,
+                    carId: car.id,
+                }),
+            });
     
-          if (response.ok) {
-            const newIsFavorite = !isFavorite;
-            setIsFavorite(newIsFavorite);
-            toast.success(newIsFavorite ? "Dodano do ulubionych!" : "Usunięto z ulubionych!");
-            if (onFavoriteChange) {
-              onFavoriteChange(car.id, newIsFavorite);
+            if (response.ok) {
+                const newIsFavorite = !isFavorite;
+                setIsFavorite(newIsFavorite);
+                toast.success(newIsFavorite ? "Dodano do ulubionych!" : "Usunięto z ulubionych!");
+                if (onFavoriteChange) {
+                    onFavoriteChange(car.id, newIsFavorite);
+                }
+            } else {
+                const data = await response.json();
+                toast.error(data.message || "Wystąpił błąd.");
             }
-          } else {
-            const data = await response.json();
-            toast.error(data.message || "Wystąpił błąd.");
-          }
         } catch (error) {
-          toast.error("Błąd sieci. Spróbuj ponownie.");
+            toast.error("Błąd sieci. Spróbuj ponownie.");
         } finally {
-          setIsLoadingFavorite(false);
+            setIsLoadingFavorite(false);
         }
     };
 
@@ -92,24 +156,9 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
         return isNaN(number) ? priceString : `${number.toLocaleString('en-US')}`;
     };
 
-    const formatAuctionDate = (dateString: string | null | undefined) => {
-        if (!dateString) return null;
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return "Nieprawidłowa data";
-
-            return new Intl.DateTimeFormat('pl-PL', {
-                day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false,
-            }).format(date);
-        } catch (error) {
-            console.error("Błąd formatowania daty:", error);
-            return "Błąd daty";
-        }
-    };
-
     const currentBid = formatPrice(car.bidPrice);
     const buyNowPrice = car.buyNowPrice ? formatPrice(car.buyNowPrice) : null;
-    const auctionDate = formatAuctionDate(car.auctionDate);
+
 
     return (
         <>
@@ -136,11 +185,11 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
                                 <Image src="/icons/360-degrees.svg" alt="360 view icon" width={20} height={20} />
                             </button>
                         )}
-                        {car.videoUrl && (
+                        {isIAAI && (
                             <button onClick={() => setIsVideoPlayerOpen(true)} className="p-1.5 bg-black/50 rounded-full hover:bg-black/75 transition-colors" aria-label="Odtwórz wideo">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
-                                  <path d="M4.5 4.5a3 3 0 00-3 3v9a3 3 0 003 3h8.25a3 3 0 003-3v-9a3 3 0 00-3-3H4.5z" />
-                                  <path d="M19.94 18.75l-2.69-2.69V7.94l2.69-2.69A1.5 1.5 0 0121 9v6a1.5 1.5 0 01-1.06 1.44z" />
+                                    <path d="M4.5 4.5a3 3 0 00-3 3v9a3 3 0 003 3h8.25a3 3 0 003-3v-9a3 3 0 00-3-3H4.5z" />
+                                    <path d="M19.94 18.75l-2.69-2.69V7.94l2.69-2.69A1.5 1.5 0 0121 9v6a1.5 1.5 0 01-1.06 1.44z" />
                                 </svg>
                             </button>
                         )}
@@ -154,34 +203,35 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
 
                 <div className="p-4 flex flex-col flex-grow">
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white truncate">
-                        {car.year} {car.make} {car.model}
+                        {car.year} {car.make} {car.model} {car.version}
                     </h3>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2 border-t border-slate-200 dark:border-slate-700 pt-2">
                         <InfoPill label="Przebieg" value={car.mileage} />
                         <InfoPill label="Uszkodzenie" value={car.damageType} />
                         <InfoPill label="Status" value={car.engineStatus} />
                         <InfoPill label="Lot" value={car.stock} />
+                        <InfoPill label="Rocznik" value={car.year} />
+                        <InfoPill label="Silnik" value={car.cylinders} />
+                        <InfoPill label="Paliwo" value={car.fuelType ? translateFuel(car.fuelType) : "Nieznane"} />
+                        <InfoPill label="VIN" value={car.vin} />
+                        <InfoPill label="Typ uszkodzeń" value={car.damageType} />
+                        <InfoPill label="Wersja" value={car.version} />
+
                     </div>
 
                     <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-700 flex flex-col gap-3">
-                        <div className="flex items-center justify-center gap-2 text-base font-bold -mt-1 mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-500 dark:text-slate-400" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                            </svg>
-                            {auctionDate ? (
-                                <span className="text-blue-600 dark:text-pink-400">Aukcja: {auctionDate}</span>
-                            ) : (
-                                <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Data aukcji nieustalona</span>
-                            )}
+                        {/* Zaktualizowana sekcja daty aukcji */}
+                        <div className="flex items-center justify-center -mt-1 mb-2 h-10">
+                            <AuctionCountdown targetDate={car.auctionDate} />
                         </div>
 
                         <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-xs text-slate-500 dark:text-slate-400">Aktualna oferta</p>
-                                <p className="text-xl font-bold text-slate-900 dark:text-white">{currentBid}</p>
-                                   {buyNowPrice && (
-                                      <p className="text-xs text-green-600 dark:text-green-400 font-semibold">Kup Teraz: {buyNowPrice}</p>
-                                   )}
+                                <p className="text-xl font-bold text-slate-900 dark:text-white">{currentBid}$</p>
+                                    {buyNowPrice && (
+                                        <p className="text-xs text-green-600 dark:text-green-400 font-semibold">Kup Teraz: {buyNowPrice}$</p>
+                                    )}
                             </div>
                             <Link
                                 href={car.detailUrl}
@@ -204,13 +254,13 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
                 </div>
             </div>
             
-            {isVideoPlayerOpen && car.videoUrl && (
-                <VideoPlayer 
-                    iaaiUrl={car.detailUrl}
-                    videoUrl={car.videoUrl} 
-                    onClose={() => setIsVideoPlayerOpen(false)} 
-                />
-            )}
+            {isVideoPlayerOpen && isIAAI && (
+            <VideoPlayer
+                iaaiUrl={car.detailUrl}
+                onClose={() => setIsVideoPlayerOpen(false)} 
+            />
+        )}
+
             {is360ViewerOpen && linkNumberFor360 && (
                 <Car360Viewer
                     linkNumber={linkNumberFor360}

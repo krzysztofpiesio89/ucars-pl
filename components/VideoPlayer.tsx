@@ -1,24 +1,62 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React from "react";
-
-// --------------------------------------------------------------------
-// Komponent odtwarzacza wideo (dostarczony przez Ciebie)
-// --------------------------------------------------------------------
+import { useState, useEffect } from "react";
 
 interface VideoPlayerProps {
-  videoUrl: string;
+  iaaiUrl: string;
   onClose: () => void;
 }
 
-const VideoPlayer = ({ videoUrl, onClose }: VideoPlayerProps) => {
+export const VideoPlayer = ({ iaaiUrl, onClose }: VideoPlayerProps) => {
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const match = iaaiUrl.match(/VehicleDetail\/(\d+)/);
+    const vehicleId = match ? match[1] : null;
+
+    if (!vehicleId) {
+      setError(true);
+      setIsLoading(false);
+      return;
+    }
+
+    const url = `https://mediastorageaccountprod.blob.core.windows.net/media/${vehicleId}_VES-100_1`;
+    setVideoUrl(url);
+
+    const videoElement = document.createElement("video");
+    videoElement.src = url;
+
+    const timer = setTimeout(() => {
+      setError(true);
+      setIsLoading(false);
+    }, 10000); // 10-sekundowy timeout
+
+    videoElement.onloadeddata = () => {
+      clearTimeout(timer);
+      setIsLoading(false);
+      setError(false);
+    };
+
+    videoElement.onerror = () => {
+      clearTimeout(timer);
+      setError(true);
+      setIsLoading(false);
+    };
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [iaaiUrl]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md"
       onClick={onClose}
     >
       <motion.div
@@ -26,12 +64,46 @@ const VideoPlayer = ({ videoUrl, onClose }: VideoPlayerProps) => {
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        className="relative w-full max-w-4xl bg-black rounded-lg shadow-2xl overflow-hidden"
+        className="relative w-full max-w-4xl bg-black rounded-lg shadow-2xl overflow-hidden aspect-video"
         onClick={(e) => e.stopPropagation()}
       >
-        <video src={videoUrl} controls autoPlay className="w-full aspect-video">
-          Twoja przeglądarka nie obsługuje tagu wideo.
-        </video>
+        {isLoading && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+            <svg className="animate-spin h-10 w-10 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p className="text-white text-lg font-semibold">Ładowanie wideo...</p>
+          </div>
+        )}
+
+        {!isLoading && error && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center p-4">
+            <p className="text-white text-lg font-semibold">Wideo jest w tej chwili niedostępne.</p>
+            <p className="text-slate-400">Zapraszamy do obejrzenia w serwisie{" "}
+              <a
+                href={iaaiUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline hover:text-blue-300"
+              >
+                IAAI
+              </a>.
+            </p>
+          </div>
+        )}
+
+        {!isLoading && !error && videoUrl && (
+          <video
+            className="w-full h-full"
+            src={videoUrl}
+            controls
+            autoPlay
+          >
+            Twoja przeglądarka nie obsługuje tagu wideo.
+          </video>
+        )}
+
         <button
           onClick={onClose}
           className="absolute top-2 right-2 z-10 p-1.5 bg-white/20 rounded-full hover:bg-white/40 transition-colors"
@@ -56,51 +128,3 @@ const VideoPlayer = ({ videoUrl, onClose }: VideoPlayerProps) => {
     </motion.div>
   );
 };
-
-// --------------------------------------------------------------------
-// NOWY KOMPONENT Z LOGIKĄ PORÓWNYWANIA
-// --------------------------------------------------------------------
-
-interface ConditionalVideoPlayerProps {
-  iaaiUrl: string;
-  videoUrl: string;
-  onClose: () => void;
-}
-
-/**
- * Wyświetla odtwarzacz wideo tylko wtedy, gdy numery ID
- * w linkach iaaiUrl i videoUrl są identyczne.
- */
-const ConditionalVideoPlayer = ({
-  iaaiUrl,
-  videoUrl,
-  onClose,
-}: ConditionalVideoPlayerProps) => {
-  
-  /**
-   * Wyodrębnia numer ID z podanego adresu URL za pomocą wyrażenia regularnego.
-   * @param url - Adres URL do przeszukania.
-   * @param regex - Wyrażenie regularne z jedną grupą przechwytującą numer.
-   * @returns Wyodrębniony numer jako string lub null, jeśli nie znaleziono.
-   */
-  const extractId = (url: string, regex: RegExp): string | null => {
-    const match = url.match(regex);
-    return match ? match[1] : null;
-  };
-
-  // Wyciągamy ID z obu linków
-  const iaaiId = extractId(iaaiUrl, /\/(\d+)~/);
-  const videoId = extractId(videoUrl, /\/media\/(\d+)_VES/);
-
-  // Sprawdzamy, czy oba ID istnieją i czy są takie same
-  const shouldShowVideo = iaaiId && videoId && iaaiId === videoId;
-
-  if (shouldShowVideo) {
-    return <VideoPlayer videoUrl={videoUrl} onClose={onClose} />;
-  }
-
-  // Jeśli warunki nie są spełnione, nic nie renderuj
-  return null;
-};
-
-export default ConditionalVideoPlayer;

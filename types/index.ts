@@ -98,6 +98,8 @@ export interface CarProps {
   buyNowPrice?: number | null;
   auctionDate?: string;
   detailUrl: string;
+  iaaiUrl: string;
+
   imageUrl: string;
   version?: string;
   origin?: string;

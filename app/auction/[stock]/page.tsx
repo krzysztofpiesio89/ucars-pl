@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 
-import VideoPlayer from "@/components/VideoPlayer";
+import { VideoPlayer } from "@/components/VideoPlayer";
 import Car360Viewer from "@/components/Car360Viewer";
 import Lightbox from "@/components/Lightbox";
 import { generateIAAIImages } from "@/utils/iaaiUtils";
@@ -275,9 +275,13 @@ const LicytujPage = ({ params }: { params: { stock: string } }) => {
       {isLightboxOpen && mainImage && (
         <Lightbox imageUrl={mainImage} onClose={() => setIsLightboxOpen(false)} />
       )}
-      {isVideoPlayerOpen && car.videoUrl && (
-        <VideoPlayer iaaiUrl={car.detailUrl} videoUrl={car.videoUrl} onClose={() => setIsVideoPlayerOpen(false)} />
-      )}
+         {isVideoPlayerOpen && isIAAI && (
+            <VideoPlayer
+                iaaiUrl={car.detailUrl}
+                onClose={() => setIsVideoPlayerOpen(false)} 
+            />
+        )}
+
       {is360ViewerOpen && isIAAI && linkNumberFor360 && (
         <Car360Viewer linkNumber={linkNumberFor360} detailUrl={car.detailUrl} onClose={() => setIs360ViewerOpen(false)} />
       )}
