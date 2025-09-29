@@ -12,6 +12,7 @@ import { VideoPlayer } from "@/components/VideoPlayer";
 import Car360Viewer from "@/components/Car360Viewer";
 import Lightbox from "@/components/Lightbox";
 import { generateIAAIImages } from "@/utils/iaaiUtils";
+import CostCalculator from "@/components/CostCalculator";
 
 // Komponent do wyświetlania pojedynczej informacji o aucie (przeniesiony z /cars/[id])
 const DetailItem = ({ label, value }: { label: string; value: string | number | undefined | null }) => (
@@ -268,6 +269,7 @@ const LicytujPage = ({ params }: { params: { stock: string } }) => {
                 </div>
               </div>
             )}
+            <CostCalculator car={car} />
           </div>
         </div>
       </motion.main>

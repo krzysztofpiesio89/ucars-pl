@@ -128,7 +128,7 @@ const ImportGuidePage = () => {
                 }}
             >
                  <Image
-                    src="/images/happy-woman-car.webp"
+                    src="/images/ucars-eksluzywneauta.webp"
                     alt="Szczęśliwa kobieta z nowym samochodem z USA"
                     width={500}
                     height={320}

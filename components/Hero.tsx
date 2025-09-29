@@ -1,15 +1,30 @@
-"use client";
+'use client';
 import { CustomButton } from "@/components";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import AboutUs from "@/components/AboutUs"; // <-- Zaimportuj nowy komponent
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const images = [
+  '/images/hero-carousel/1.webp',
+  '/images/hero-carousel/2.webp',
+];
 
 const Hero = () => {
   const { data: session } = useSession();
   const { theme } = useTheme();
   const isUser = session?.user;
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 5000); // Change image every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="max-w-[1440px] mx-auto relative flex flex-col md:flex-row items-center bg-contain light dark:dark bg-no-repeat bg-bottom gradient-radial">
       <div className="flex-1 p-4 md:p-16 pt-32 md:pt-28">
@@ -39,24 +54,30 @@ const Hero = () => {
         </Link>
       </div>
 
-    <div className="flex items-end lg:flex-[1.25] justify-end w-full h-[590px] lg:h-screen">
-  <div className="relative w-full h-full flex justify-center items-center px-[5%]">
-    <Image
-      src={"/images/usa-main-car.png"}
-      alt="hero"
-      quality={100}
-      width={800} // szerokość bazowa
-      height={600} // wysokość bazowa
-      className="w-full h-auto object-contain"
-    />
-  </div>
-</div>
-  
+      <div className="flex items-end lg:flex-[1.25] justify-end w-full h-[590px] lg:h-screen">
+        <div className="relative w-full h-full flex justify-center items-center px-[5%]">
+          <AnimatePresence>
+            <motion.div
+              key={index}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5 }}
+              className="absolute w-full h-full"
+            >
+              <Image
+                src={images[index]}
+                alt="hero carousel"
+                quality={100}
+                fill
+                className="object-contain"
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
     </section>
-    
   );
-
 };
- <AboutUs /> 
 
 export default Hero;

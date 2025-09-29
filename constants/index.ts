@@ -74,7 +74,7 @@ export const footerLinks = [
     {
         title: 'O nas',
         links: [
-            { title: 'Jak pracujemy', url: '/' },
+            { title: 'Jak pracujemy', url: '/how-we-work' },
             { title: 'Wyróżnione', url: '/' },
             { title: 'Współpraca', url: '/' },
             { title: 'Relacje biznesowe', url: '/' },

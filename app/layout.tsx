@@ -3,6 +3,8 @@ import CustomThemeProvider from "@/components/theme/CustomThemeProvider";
 import "@/styles/globals.css";
 import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
+import { CurrencyProvider } from "@/context/CurrencyProvider";
+import TopBar from "@/components/TopBar";
 
 export const metadata = {
   title: "uCars.pl",
@@ -20,14 +22,18 @@ export default function RootLayout({
     <Provider session={session}>
       <html lang="en">
         <body className="app bg-slate-50 dark:bg-[#0b1120]">
-          <CustomThemeProvider>
-            <main>
-              <Navbar />
-              {children}
-            </main>
-            <Footer />
-            <Toaster position="top-left" reverseOrder={false} />
-          </CustomThemeProvider>
+          <CurrencyProvider>
+            <CustomThemeProvider>
+              <main>
+                <Navbar />
+                <div className="pt-28">
+                  {children}
+                </div>
+              </main>
+              <Footer />
+              <Toaster position="top-left" reverseOrder={false} />
+            </CustomThemeProvider>
+          </CurrencyProvider>
         </body>
       </html>
     </Provider>

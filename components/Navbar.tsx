@@ -9,7 +9,8 @@ import ThemeSwitcher from "./theme/ThemeSwitcher";
 // ✅ 1. Zaktualizowano importy ikon
 import { BsX, BsInstagram, BsFacebook } from "react-icons/bs";
 import { useTheme } from "next-themes";
-import { RiLogoutBoxLine, RiMenu3Line } from "react-icons/ri";
+import { RiMenu3Line } from "react-icons/ri";
+import TopBar from "./TopBar";
 
 // ✅ 2. Stworzono reużywalny komponent dla linków społecznościowych
 const SocialLinks = ({ className }: { className?: string }) => (
@@ -143,6 +144,7 @@ const Navbar = () => {
           </div>
         )}
       </div>
+      <TopBar />
     </nav>
   );
 };
