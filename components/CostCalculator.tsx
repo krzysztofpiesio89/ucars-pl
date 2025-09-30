@@ -18,14 +18,14 @@ const CostCalculator = ({ car }: CostCalculatorProps) => {
   const componentRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
-    contentRef: componentRef, // <-- starsza wersja używa contentRef
+    contentRef: componentRef, // starsza wersja react-to-print
     documentTitle: `Oferta-${car.make}-${car.model}-${car.stock}`,
     onAfterPrint: () => alert('Plik PDF został wygenerowany'),
   });
 
   const USD_TO_PLN_RATE = rate || 4.0;
 
-  // --- Stałe i założenia ---
+  // --- Stałe ---
   const AUCTION_FEE_PERCENTAGE = 0.12;
   const US_LAND_TRANSPORT_USD = 600;
   const SEA_TRANSPORT_USD = 1300;
@@ -41,25 +41,15 @@ const CostCalculator = ({ car }: CostCalculatorProps) => {
     const capacityCm3 = car.engineCapacityL ? car.engineCapacityL * 1000 : 0;
     const fuel = car.fuelType;
 
-    if (fuel === 'Electric') {
-      return { rate: 0, description: '0% (Elektryczny)' };
-    }
+    if (fuel === 'Electric') return { rate: 0, description: '0% (Elektryczny)' };
 
     if (fuel === 'Hybrid' || fuel === 'PHEV') {
-      if (capacityCm3 <= 2000) {
-        return { rate: 0.0155, description: '1.55% (Hybryda do 2.0L)' };
-      } else {
-        return { rate: 0.093, description: '9.3% (Hybryda > 2.0L)' };
-      }
+      if (capacityCm3 <= 2000) return { rate: 0.0155, description: '1.55% (Hybryda do 2.0L)' };
+      else return { rate: 0.093, description: '9.3% (Hybryda > 2.0L)' };
     }
 
-    if (capacityCm3 > 0 && capacityCm3 <= 2000) {
-      return { rate: 0.031, description: '3.1% (do 2.0L)' };
-    }
-
-    if (capacityCm3 > 2000) {
-      return { rate: 0.186, description: '18.6% (> 2.0L)' };
-    }
+    if (capacityCm3 > 0 && capacityCm3 <= 2000) return { rate: 0.031, description: '3.1% (do 2.0L)' };
+    if (capacityCm3 > 2000) return { rate: 0.186, description: '18.6% (> 2.0L)' };
 
     return { rate: 0.186, description: '18.6% (Założono > 2.0L)' };
   };
@@ -203,11 +193,17 @@ const CostCalculator = ({ car }: CostCalculatorProps) => {
             uwzględniono dane pojazdu.
           </p>
 
-          <div className="mt-6 flex justify-end">
+          {/* Dwa przyciski: Drukuj i Pobierz PDF */}
+          <div className="mt-6 flex justify-end gap-4">
             <CustomButton
               title="Drukuj Ofertę"
               handleClick={handlePrint}
               containerStyle="w-full sm:w-auto py-[16px] rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[14px] leading-[17px] font-bold"
+            />
+            <CustomButton
+              title="Pobierz PDF"
+              handleClick={handlePrint}
+              containerStyle="w-full sm:w-auto py-[16px] rounded-full bg-green-600 hover:bg-green-700 text-white text-[14px] leading-[17px] font-bold"
             />
           </div>
 
