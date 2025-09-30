@@ -85,6 +85,13 @@ CREATE TABLE "public"."Car" (
     "is360" BOOLEAN DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "engineCapacityL" DOUBLE PRECISION,
+    "cylinderArrangement" TEXT,
+    "injectionType" TEXT,
+    "camshaftType" TEXT,
+    "valveTiming" TEXT,
+    "isTurbo" BOOLEAN,
+    "horsepower" INTEGER,
 
     CONSTRAINT "Car_pkey" PRIMARY KEY ("id")
 );

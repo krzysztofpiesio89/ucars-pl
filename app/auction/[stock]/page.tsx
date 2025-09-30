@@ -123,7 +123,29 @@ const LicytujPage = ({ params }: { params: { stock: string } }) => {
           {/* Kolumna ze zdjęciem i galerią */}
           <div className="lg:col-span-1">
             <h1 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white">{car.year} {car.make} {car.model}</h1>
-            <p className="text-slate-600 dark:text-slate-400 mt-2">Numer LOT: {car.stock}</p>
+            <p className="text-slate-600 dark:text-slate-400 mt-2">Numer LOT: {car.stock} | Wersja: {car.version}</p>
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mt-4">
+  {/* Kup teraz */}
+  <div className="flex items-center gap-2">
+    <span className="px-3 py-1 text-sm font-semibold bg-green-100 text-green-700 rounded-full">
+      Kup teraz
+    </span>
+    <h3 className="text-2xl md:text-3xl font-bold text-green-600 dark:text-green-400">
+      {car.buyNowPrice}
+    </h3>
+  </div>
+
+  {/* Licytacja */}
+  <div className="flex items-center gap-2">
+    <span className="px-3 py-1 text-sm font-semibold bg-orange-100 text-orange-700 rounded-full">
+      Licytacja
+    </span>
+    <h3 className="text-xl md:text-2xl font-bold text-orange-600 dark:text-orange-400">
+      {car.bidPrice}
+    </h3>
+  </div>
+</div>
+
             
             <div className="relative w-full aspect-video rounded-xl overflow-hidden mt-6 shadow-lg group bg-slate-200 dark:bg-slate-800 flex items-center justify-center">
                 {isMainImageLoading && (
@@ -213,6 +235,8 @@ const LicytujPage = ({ params }: { params: { stock: string } }) => {
                 <DetailItem label="Rodzaj paliwa" value={car.fuelType} />
                 <DetailItem label="Uszkodzenie główne" value={car.damageType} />
                 <DetailItem label="Status silnika" value={car.engineStatus} />
+                <DetailItem label="Pojemność silnika" value={car.engineCapacityL} />
+                <DetailItem label="Silnik" value={car.engineInfo} />
             </div>
           </div>
 

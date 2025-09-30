@@ -12,7 +12,6 @@ const CostCalculator = ({ car }: CostCalculatorProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { rate, isLoading: isCurrencyLoading } = useCurrency();
 
-  // Użyj kursu z kontekstu lub domyślnego, jeśli nie jest dostępny
   const USD_TO_PLN_RATE = rate || 4.0;
 
   // --- Stałe i założenia ---
@@ -24,11 +23,40 @@ const CostCalculator = ({ car }: CostCalculatorProps) => {
   const PL_TRANSPORT_PLN = 1000;
   const PORT_FEES_PLN = 2500;
 
-  const engineCapacityAssumed = 2500;
-  const exciseRate = engineCapacityAssumed > 2000 ? 0.186 : 0.031;
-
   // --- Obliczenia ---
-  const purchasePriceUSD = car.bidPrice;
+  const purchasePriceUSD = car.buyNowPrice || car.bidPrice;
+
+  // Excise tax calculation
+  const getExciseRate = () => {
+    const capacityCm3 = car.engineCapacityL ? car.engineCapacityL * 1000 : 0;
+    const fuel = car.fuelType;
+
+    if (fuel === 'Electric') {
+      return { rate: 0, description: "0% (Elektryczny)" };
+    }
+
+    if (fuel === 'Hybrid' || fuel === 'PHEV') { // Assuming PHEV is a type of Hybrid for now
+      if (capacityCm3 <= 2000) {
+        return { rate: 0.0155, description: "1.55% (Hybryda do 2.0L)" };
+      } else {
+        return { rate: 0.093, description: "9.3% (Hybryda > 2.0L)" };
+      }
+    }
+
+    // Standard combustion engines
+    if (capacityCm3 > 0 && capacityCm3 <= 2000) {
+      return { rate: 0.031, description: "3.1% (do 2.0L)" };
+    }
+    if (capacityCm3 > 2000) {
+      return { rate: 0.186, description: "18.6% (> 2.0L)" };
+    }
+
+    // Fallback if engine capacity is unknown
+    return { rate: 0.186, description: "18.6% (Założono > 2.0L)" };
+  };
+
+  const { rate: exciseRate, description: exciseDescription } = getExciseRate();
+
   const auctionFeeUSD = purchasePriceUSD * AUCTION_FEE_PERCENTAGE;
   const carValueAfterPurchaseUSD = purchasePriceUSD + auctionFeeUSD;
   
@@ -84,7 +112,7 @@ const CostCalculator = ({ car }: CostCalculatorProps) => {
             <CalculationRow isLoading={isCurrencyLoading} label="Transport morski" value={formatCurrency(SEA_TRANSPORT_USD * USD_TO_PLN_RATE)} />
             <CalculationRow isLoading={isCurrencyLoading} label="Ubezpieczenie transportu" value={formatCurrency(TRANSPORT_INSURANCE_USD * USD_TO_PLN_RATE)} />
             <CalculationRow isLoading={isCurrencyLoading} label="Cło (10%)" value={formatCurrency(customsDutyUSD * USD_TO_PLN_RATE)} />
-            <CalculationRow isLoading={isCurrencyLoading} label="Akcyza (18.6% - założono silnik >2.0L)" value={formatCurrency(exciseTaxUSD * USD_TO_PLN_RATE)} />
+            <CalculationRow isLoading={isCurrencyLoading} label={`Akcyza (${exciseDescription})`} value={formatCurrency(exciseTaxUSD * USD_TO_PLN_RATE)} />
             <CalculationRow isLoading={isCurrencyLoading} label="VAT (23%)" value={formatCurrency(vatUSD * USD_TO_PLN_RATE)} />
             <CalculationRow isLoading={isCurrencyLoading} label="Prowizja importera" value={formatCurrency(importerCommissionUSD * USD_TO_PLN_RATE)} />
             <CalculationRow label="Opłaty portowe i celne w PL" value={formatCurrency(PORT_FEES_PLN)} />
@@ -100,7 +128,7 @@ const CostCalculator = ({ car }: CostCalculatorProps) => {
           </div>
 
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-4">
-            <strong>Uwaga:</strong> Stawka akcyzy jest zależna od pojemności silnika (3.1% dla silników do 2000cm³, 18.6% powyżej). W kalkulacji przyjęto wyższą stawkę jako założenie.
+            <strong>Uwaga:</strong> Stawka akcyzy jest zależna od pojemności i typu silnika. W kalkulacji uwzględniono dane pojazdu.
           </p>
         </div>
       )}

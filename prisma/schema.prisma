@@ -99,6 +99,15 @@ model Car {
   updatedAt             DateTime               @updatedAt
   favorites             Favorite[]
   auctionParticipations AuctionParticipation[]
+
+  // Parsed Engine Info
+  engineCapacityL       Float?
+  cylinderArrangement   String?
+  injectionType         String?
+  camshaftType          String?
+  valveTiming           String?
+  isTurbo               Boolean?
+  horsepower            Int?
 }
 
 model Favorite {

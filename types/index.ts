@@ -109,6 +109,15 @@ export interface CarProps {
   cylinders?: string;
   videoUrl?: string;
   is360?: boolean;
+
+  // Parsed Engine Info
+  engineCapacityL?: number | null;
+  cylinderArrangement?: string | null;
+  injectionType?: string | null;
+  camshaftType?: string | null;
+  valveTiming?: string | null;
+  isTurbo?: boolean | null;
+  horsepower?: number | null;
 }
 
 export interface FetchCarProps {

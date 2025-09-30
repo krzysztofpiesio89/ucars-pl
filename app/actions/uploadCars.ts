@@ -1,6 +1,7 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
+import { parseEngineInfo } from '@/utils/engineParser';
 
 const prisma = new PrismaClient();
 
@@ -128,6 +129,8 @@ export async function uploadCars(formData: FormData) {
     }
 
     const transactions = cars.map((car) => {
+      const parsedEngineData = car.engineInfo ? parseEngineInfo(car.engineInfo) : {};
+
       const carDataForDb = {
         stock: car.stock,
         year: parseInt(car.year, 10),
@@ -149,6 +152,7 @@ export async function uploadCars(formData: FormData) {
         videoUrl: car.videoUrl,
         auctionDate: parseField.toDate(car.auctionDate),
         is360: car.is360 || false, // Obsługa nowego pola
+        ...parsedEngineData,
       };
 
       return prisma.car.upsert({
