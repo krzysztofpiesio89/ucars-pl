@@ -217,8 +217,9 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
 
                 <div className="p-4 flex flex-col flex-grow">
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white truncate">
-                        {car.year} {car.make} {car.model} {car.version}
+                        {car.year} {car.make} {car.model}
                     </h3>
+                    <h6 className="">{car.version} {car.engineInfo}</h6>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2 border-t border-slate-200 dark:border-slate-700 pt-2">
                         <InfoPill label="Przebieg" value={car.mileage} />
                         <InfoPill label="Uszkodzenie" value={car.damageType} />
