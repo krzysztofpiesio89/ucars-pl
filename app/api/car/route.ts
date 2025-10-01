@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 
+export const dynamic = 'force-dynamic';
+
 // GET all cars with optional filters, adapted for the new schema
 export const GET = async (req: NextRequest) => {
   try {

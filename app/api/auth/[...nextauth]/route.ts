@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/utils/prisma";
 import bcrypt from "bcryptjs";
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   // Adapter do bazy danych Prisma
   adapter: PrismaAdapter(prisma),
 

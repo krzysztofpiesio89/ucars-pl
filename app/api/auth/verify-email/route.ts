@@ -20,18 +20,18 @@ export const GET = async (req: NextRequest) => {
 
     if (new Date() > verificationToken.expires) {
         // Token wygasł, usuwamy go
-        await prisma.verificationToken.delete({ where: { id: verificationToken.id } });
+        await prisma.verificationToken.delete({ where: { token } });
         return NextResponse.redirect(new URL("/user/login?error=ExpiredToken", req.url));
     }
 
     // Znajdź użytkownika i zaktualizuj jego status weryfikacji
     const user = await prisma.user.update({
-      where: { email: verificationToken.email },
+      where: { email: verificationToken.identifier },
       data: { emailVerified: new Date() },
     });
 
     // Usuń token po pomyślnej weryfikacji
-    await prisma.verificationToken.delete({ where: { id: verificationToken.id } });
+    await prisma.verificationToken.delete({ where: { token } });
 
     // Przekieruj na stronę logowania z komunikatem o sukcesie
     return NextResponse.redirect(new URL("/user/login?verified=true", req.url));

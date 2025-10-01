@@ -31,7 +31,7 @@ export const POST = async (req: NextRequest) => {
 
     const verificationToken = await prisma.verificationToken.create({
         data: {
-            email,
+            identifier: email,
             token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
             expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
         }
