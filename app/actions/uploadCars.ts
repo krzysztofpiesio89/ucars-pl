@@ -2,6 +2,13 @@
 
 import { PrismaClient } from '@prisma/client';
 import { parseEngineInfo } from '@/utils/engineParser';
+import {
+  startJob,
+  updateJobProgress,
+  completeJob,
+  failJob,
+} from '@/utils/uploadProgress';
+import { randomUUID } from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -13,7 +20,7 @@ interface AuctionCarData {
   model: string;
   version?: string;
   auctionDate?: string;
-  is360?: boolean; // Nowe pole
+  is360?: boolean;
   damageType: string;
   mileage: string;
   engineStatus: string | null;
@@ -38,7 +45,7 @@ const parseField = {
   },
   toFloat: (value?: string): number | null => {
     if (!value) return null;
-    const cleanedValue = value.replace(/[^0-9.]/g, '');
+    const cleanedValue = value.replace(/,/g, '').replace(/[^0-9.]/g, '');
     const parsed = parseFloat(cleanedValue);
     return isNaN(parsed) ? null : parsed;
   },
@@ -46,53 +53,43 @@ const parseField = {
     if (!value) return null;
 
     try {
-        // Mapowanie popularnych amerykańskich stref czasowych na offset UTC
+        const monthMap: { [key: string]: string } = {
+            'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+            'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12',
+        };
+
         const tzOffsets: { [key: string]: string } = {
             'EDT': '-04:00', 'EST': '-05:00',
             'CDT': '-05:00', 'CST': '-06:00',
             'MDT': '-06:00', 'MST': '-07:00',
             'PDT': '-07:00', 'PST': '-08:00',
         };
-
-        const monthMap: { [key: string]: string } = {
-            'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-            'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12',
-        };
-
-        // Przykładowy format: "Fri Sep 26, 8:30am CDT"
-        const regex = /(\w{3})\s(\w{3})\s(\d{1,2}),?\s(\d{1,2}):(\d{2})(am|pm)\s(\w{3,4})/;
-        const match = value.match(regex);
         
-        if (!match) {
-            console.warn(`Nie udało się przetworzyć daty za pomocą regex: ${value}`);
+        const dateParts = value.match(/(\w{3})\s(\d{1,2})/);
+        const timeParts = value.match(/(\d{1,2})(?::(\d{2}))?(am|pm)\s([A-Z]{3})/);
+        
+        if (!dateParts || !timeParts) {
+            console.warn(`Nie udało się przetworzyć daty (nowy regex): ${value}`);
             return null;
         }
 
-        const [, dayName, monthStr, day, hourStr, minute, ampm, tz] = match;
-
+        const [, monthStr, day] = dateParts;
+        const [, hourStr, minute, ampm, tz] = timeParts;
+        const finalMinute = minute || '00';
         const month = monthMap[monthStr];
-        const year = new Date().getFullYear();
-        
+        const year = new Date().getFullYear(); 
+
         let hour = parseInt(hourStr, 10);
-        if (ampm.toLowerCase() === 'pm' && hour < 12) {
-            hour += 12;
-        }
-        if (ampm.toLowerCase() === 'am' && hour === 12) { // Obsługa północy (12am)
-            hour = 0;
-        }
+        if (ampm.toLowerCase() === 'pm' && hour < 12) hour += 12;
+        if (ampm.toLowerCase() === 'am' && hour === 12) hour = 0; 
 
         const offset = tzOffsets[tz];
-        
         if (!month || !offset) {
-            console.warn(`Nie udało się przetworzyć daty: ${value}. Nieznany miesiąc lub strefa czasowa.`);
+            console.warn(`Nieznany miesiąc lub strefa czasowa w dacie: ${value}`);
             return null;
         }
 
-        const dayPadded = day.padStart(2, '0');
-        const hourPadded = String(hour).padStart(2, '0');
-        
-        // Tworzenie daty w formacie ISO 8601, który jest uniwersalnie rozumiany
-        const isoString = `${year}-${month}-${dayPadded}T${hourPadded}:${minute}:00${offset}`;
+        const isoString = `${year}-${month}-${day.padStart(2, '0')}T${String(hour).padStart(2, '0')}:${finalMinute}:00${offset}`;
         const finalDate = new Date(isoString);
 
         if (isNaN(finalDate.getTime())) {
@@ -108,17 +105,8 @@ const parseField = {
   }
 };
 
-/**
- * Przetwarza i zapisuje dane samochodów z pliku JSON do bazy danych Prisma.
- * @param formData - Dane formularza zawierające plik JSON.
- * @returns Obiekt z informacją o sukcesie lub błędzie.
- */
-export async function uploadCars(formData: FormData) {
+async function processCarsFile(jobId: string, formData: FormData) {
   const file = formData.get('carDataFile') as File;
-
-  if (!file || file.size === 0) {
-    return { success: false, message: 'Nie wybrano pliku.' };
-  }
 
   try {
     const fileContent = await file.text();
@@ -128,46 +116,57 @@ export async function uploadCars(formData: FormData) {
       throw new Error('Plik JSON musi zawierać tablicę obiektów samochodów.');
     }
 
-    const transactions = cars.map((car) => {
-      const parsedEngineData = car.engineInfo ? parseEngineInfo(car.engineInfo) : {};
+    const totalCars = cars.length;
+    const batchSize = 1000;
+    let totalProcessed = 0;
 
-      const carDataForDb = {
-        stock: car.stock,
-        year: parseInt(car.year, 10),
-        make: car.make,
-        model: car.model,
-        damageType: car.damageType,
-        mileage: parseField.toInt(car.mileage),
-        engineStatus: car.engineStatus || 'Unknown',
-        bidPrice: parseField.toFloat(car.bidPrice) || 0,
-        buyNowPrice: parseField.toFloat(car.buyNowPrice),
-        detailUrl: car.detailUrl,
-        imageUrl: car.imageUrl,
-        version: car.version,
-        origin: car.origin,
-        vin: car.vin,
-        engineInfo: car.engineInfo,
-        fuelType: car.fuelType,
-        cylinders: car.cylinders,
-        videoUrl: car.videoUrl,
-        auctionDate: parseField.toDate(car.auctionDate),
-        is360: car.is360 || false, // Obsługa nowego pola
-        ...parsedEngineData,
-      };
+    updateJobProgress(jobId, 0, totalCars);
 
-      return prisma.car.upsert({
-        where: { stock: carDataForDb.stock },
-        update: carDataForDb,
-        create: carDataForDb,
+    for (let i = 0; i < cars.length; i += batchSize) {
+      const batch = cars.slice(i, i + batchSize);
+
+      const transactions = batch.map((car) => {
+        const parsedEngineData = car.engineInfo ? parseEngineInfo(car.engineInfo) : {};
+
+        const carDataForDb = {
+          stock: car.stock,
+          year: parseInt(car.year, 10),
+          make: car.make,
+          model: car.model,
+          damageType: car.damageType,
+          mileage: parseField.toInt(car.mileage),
+          engineStatus: car.engineStatus || 'Unknown',
+          bidPrice: parseField.toFloat(car.bidPrice) || 0,
+          buyNowPrice: parseField.toFloat(car.buyNowPrice),
+          detailUrl: car.detailUrl,
+          imageUrl: car.imageUrl,
+          version: car.version,
+          origin: car.origin,
+          vin: car.vin,
+          engineInfo: car.engineInfo,
+          fuelType: car.fuelType,
+          cylinders: car.cylinders,
+          videoUrl: car.videoUrl,
+          auctionDate: parseField.toDate(car.auctionDate),
+          is360: car.is360 || false,
+          ...parsedEngineData,
+        };
+
+        return prisma.car.upsert({
+          where: { stock: carDataForDb.stock },
+          update: carDataForDb,
+          create: carDataForDb,
+        });
       });
-    });
 
-    const result = await prisma.$transaction(transactions);
+      const result = await prisma.$transaction(transactions);
+      totalProcessed += result.length;
 
-    return {
-      success: true,
-      message: `Pomyślnie dodano lub zaktualizowano ${result.length} samochodów.`,
-    };
+      updateJobProgress(jobId, totalProcessed, totalCars);
+    }
+
+    completeJob(jobId, `Pomyślnie dodano lub zaktualizowano ${totalProcessed} samochodów.`);
+
   } catch (error: any) {
     console.error('Błąd podczas przetwarzania pliku:', error);
     let errorMessage = 'Wystąpił błąd podczas przetwarzania pliku.';
@@ -176,7 +175,31 @@ export async function uploadCars(formData: FormData) {
     } else if (error.message) {
       errorMessage = error.message;
     }
-    return { success: false, message: errorMessage };
+    failJob(jobId, errorMessage);
   }
 }
 
+/**
+ * Starts the car upload process and returns a job ID for tracking.
+ * @param formData - Dane formularza zawierające plik JSON.
+ * @returns Obiekt z jobId lub informacją o błędzie.
+ */
+export async function uploadCars(formData: FormData) {
+  const file = formData.get('carDataFile') as File;
+
+  if (!file || file.size === 0) {
+    return { success: false, message: 'Nie wybrano pliku.' };
+  }
+
+  const jobId = randomUUID();
+  startJob(jobId);
+
+  // Don't await this, let it run in the background on the server.
+  // NOTE: This has implications in serverless environments where the
+  // function might terminate before the background task is complete.
+  // For Vercel, this should be okay for tasks under ~15 seconds.
+  // For longer tasks, a different solution (like Vercel Functions, or a queue) is needed.
+  processCarsFile(jobId, formData);
+
+  return { success: true, jobId };
+}
