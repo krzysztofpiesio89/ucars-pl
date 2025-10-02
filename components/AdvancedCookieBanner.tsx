@@ -147,12 +147,12 @@ const AdvancedCookieBanner = () => {
           )
         }
 
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4">
             <div className="flex gap-4">
                 <button onClick={() => setTab('consent')} className={`text-sm ${tab === 'consent' ? 'font-bold border-b-2 border-blue-500' : 'text-gray-400'}`}>Zgoda</button>
                 <button onClick={() => setTab('details')} className={`text-sm ${tab === 'details' ? 'font-bold border-b-2 border-blue-500' : 'text-gray-400'}`}>Szczegóły</button>
             </div>
-            <div className="flex gap-4">
+            <div className="flex justify-end gap-4">
                 <button onClick={handleDecline} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md text-sm">Odmowa</button>
                 <button onClick={handleAllowSelection} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md text-sm">Zezwól na wybór</button>
                 <button onClick={handleAllowAll} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md text-sm">Zezwól na wszystkie</button>

@@ -24,6 +24,15 @@ Pracujemy nad aplikacją `ucars.pl`, która jest platformą do przeglądania i l
 
 ## Dziennik Zmian (Changelog)
 
+### 02.10.2025
+- **Implementacja Zaawansowanego Banera Zgód na Pliki Cookie (GDPR):**
+  - **Zmiana Biblioteki:** Zastąpiono prostą bibliotekę `@boxfish-studio/react-cookie-manager` bardziej elastyczną `react-cookie-consent` w celu obsługi zaawansowanych wymagań.
+  - **Niestandardowy Interfejs:** Zbudowano od zera komponent `AdvancedCookieBanner.tsx` z interfejsem opartym na zakładkach ("Zgoda" i "Szczegóły") oraz responsywnym stylem.
+  - **Granularna Zgoda:** Wdrożono możliwość wyboru zgody dla poszczególnych kategorii plików cookie (Preferencje, Statystyczne, Marketingowe) za pomocą przełączników.
+  - **Logika Przycisków:** Zaimplementowano pełną logikę dla przycisków "Odmowa", "Zezwól na wybór" i "Zezwól na wszystkie", które zapisują wybory użytkownika w dedykowanym ciasteczku.
+  - **Zarządzanie Zgodą:** Dodano w stopce (`Footer.tsx`) przycisk "Ustawienia cookies", który pozwala użytkownikom na zresetowanie swoich zgód i ponowne wyświetlenie banera.
+  - **Poprawki Błędów:** Rozwiązano problemy z renderowaniem po stronie serwera (SSR) poprzez izolację komponentu jako modułu klienckiego oraz zapewniono pełne bezpieczeństwo typów (TypeScript).
+
 ### 28.09.2025
 - Ustanowiono plik `GEMINI.MD` jako miejsce do prowadzenia dziennika zmian w projekcie.
 - **Seria poprawek w `app/auction/[stock]/page.tsx`:**
