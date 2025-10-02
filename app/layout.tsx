@@ -7,7 +7,8 @@ import { CurrencyProvider } from "@/context/CurrencyProvider";
 import { TopBarProvider } from "@/context/TopBarContext";
 import MainContent from "@/components/MainContent";
 import TopBar from "@/components/TopBar";
-import CookieBanner from "@/components/CookieBanner";
+import AdvancedCookieBanner from "@/components/AdvancedCookieBanner";
+// import CookieBanner from "@/components/CookieBanner";
 
 export const metadata = {
   title: "uCars.pl",
@@ -38,7 +39,8 @@ export default function RootLayout({
               </CustomThemeProvider>
             </TopBarProvider>
           </CurrencyProvider>
-          <CookieBanner />
+          {/* <CookieBanner /> */}
+          <AdvancedCookieBanner />
         </body>
       </html>
     </Provider>
