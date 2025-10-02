@@ -1,8 +1,17 @@
+'use client';
+
 import { footerLinks } from '@/constants';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Cookies } from 'react-cookie-consent';
 
 const Footer = () => {
+
+    const handleResetConsent = () => {
+        Cookies.remove('ucars-consent-choices');
+        window.location.reload();
+    };
+
     return (
         <footer>
             <div className='flex flex-col items-center justify-between md:flex-row mt-16 border-t dark:border-slate-800 group group-hover:shadow-lg gap-2'>
@@ -26,9 +35,10 @@ const Footer = () => {
             </div>
             <div className='border-t dark:border-slate-800 p-4 md:p-12 flex items-center md:justify-between flex-col md:flex-row gap-2'>
                 <p className='text-sm text-gray-400'>&copy;2025 uCars.pl. Wszelkie prawa zastrzeżone</p>
-                <div className='flex items-center gap-2'>
+                <div className='flex items-center gap-4'>
                     <Link href={'/'} className='text-gray-400 text-sm'>Polityka prywatności</Link>
                     <Link href={'/'} className='text-gray-400 text-sm'>Regulamin</Link>
+                    <button onClick={handleResetConsent} className='text-gray-400 text-sm hover:text-white'>Ustawienia cookies</button>
                 </div>
             </div>
         </footer>

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Cookies } from 'react-cookie-consent';
 
 // Define types for type safety
 interface IConsentChoices {
@@ -52,8 +53,11 @@ const cookieCategories: ICookieCategory[] = [
   },
 ];
 
+const COOKIE_NAME = 'ucars-consent-choices';
+
 const AdvancedCookieBanner = () => {
-  const [tab, setTab] = useState('consent'); // 'consent' or 'details'
+  const [isVisible, setIsVisible] = useState(false);
+  const [tab, setTab] = useState('consent'); // 'consent' or 'details');
   const [consentChoices, setConsentChoices] = useState<IConsentChoices>({
     preferences: true,
     statistics: true,
@@ -61,9 +65,48 @@ const AdvancedCookieBanner = () => {
     unclassified: true,
   });
 
+  useEffect(() => {
+    if (!Cookies.get(COOKIE_NAME)) {
+      setIsVisible(true);
+    }
+  }, []);
+
   const handleCheckboxChange = (category: ConsentCategory) => {
     setConsentChoices(prev => ({ ...prev, [category]: !prev[category] }));
   };
+
+  const setCookieConsent = (choices: IConsentChoices) => {
+    Cookies.set(COOKIE_NAME, JSON.stringify(choices), { expires: 150 });
+    setIsVisible(false);
+  };
+
+  const handleDecline = () => {
+    const allFalse: IConsentChoices = {
+        preferences: false,
+        statistics: false,
+        marketing: false,
+        unclassified: false,
+    };
+    setCookieConsent(allFalse);
+  };
+
+  const handleAllowAll = () => {
+    const allTrue: IConsentChoices = {
+        preferences: true,
+        statistics: true,
+        marketing: true,
+        unclassified: true,
+    };
+    setCookieConsent(allTrue);
+  };
+
+  const handleAllowSelection = () => {
+    setCookieConsent(consentChoices);
+  };
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-0 left-0 w-full bg-[#0b1120] text-white p-6 z-[100]">
@@ -110,9 +153,9 @@ const AdvancedCookieBanner = () => {
                 <button onClick={() => setTab('details')} className={`text-sm ${tab === 'details' ? 'font-bold border-b-2 border-blue-500' : 'text-gray-400'}`}>Szczegóły</button>
             </div>
             <div className="flex gap-4">
-                <button className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md text-sm">Odmowa</button>
-                <button className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md text-sm">Zezwól na wybór</button>
-                <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md text-sm">Zezwól na wszystkie</button>
+                <button onClick={handleDecline} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md text-sm">Odmowa</button>
+                <button onClick={handleAllowSelection} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md text-sm">Zezwól na wybór</button>
+                <button onClick={handleAllowAll} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md text-sm">Zezwól na wszystkie</button>
             </div>
         </div>
       </div>
