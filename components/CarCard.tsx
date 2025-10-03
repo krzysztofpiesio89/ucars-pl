@@ -45,7 +45,7 @@ const AuctionCountdown = ({ targetDate }: AuctionCountdownProps) => {
 
         // Wyczyszczenie interwału, gdy komponent jest odmontowywany
         return () => clearInterval(timer);
-    }, [targetDate]);
+    }, [targetDate, calculateTimeLeft]);
 
     if (!targetDate) {
         return <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Data aukcji nieustalona</span>;

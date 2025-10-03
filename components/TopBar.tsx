@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useCurrency } from '@/context/CurrencyProvider';
 import { useTopBar } from '@/context/TopBarContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TimeClock = ({ timeZone, label }: { timeZone: string; label: string }) => {
-  const getDate = () => new Date(new Date().toLocaleString('en-US', { timeZone }));
+  const getDate = useCallback(() => new Date(new Date().toLocaleString('en-US', { timeZone })), [timeZone]);
 
   const [date, setDate] = useState(getDate());
 
@@ -16,7 +16,7 @@ const TimeClock = ({ timeZone, label }: { timeZone: string; label: string }) => 
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeZone]);
+  }, [getDate]);
 
   const hours = date.getHours();
   const minutes = date.getMinutes();

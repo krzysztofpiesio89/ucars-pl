@@ -9,7 +9,7 @@ const PrivacyPolicyPage = () => {
 
         <h2>1. Wprowadzenie</h2>
         <p>
-          Niniejsza Polityka Prywatności opisuje, w jaki sposób {companyData.fullName} ("Firma", "my", "nas", "nasz") gromadzi, wykorzystuje i udostępnia Państwa dane osobowe podczas korzystania z naszej strony internetowej ucars.pl ("Serwis").
+          Niniejsza Polityka Prywatności opisuje, w jaki sposób {companyData.fullName} (&quot;Firma&quot;, &quot;my&quot;, &quot;nas&quot;, &quot;nasz&quot;) gromadzi, wykorzystuje i udostępnia Państwa dane osobowe podczas korzystania z naszej strony internetowej ucars.pl (&quot;Serwis&quot;).
         </p>
 
         <h2>2. Administrator Danych</h2>
@@ -48,7 +48,7 @@ const PrivacyPolicyPage = () => {
 
         <h2>5. Pliki Cookie</h2>
         <p>
-          Nasz Serwis wykorzystuje pliki cookie w celu zapewnienia prawidłowego działania, analizy ruchu oraz personalizacji treści. Szczegółowe informacje na temat wykorzystywanych plików cookie oraz możliwości zarządzania nimi znajdą Państwo w naszej polityce dotyczącej plików cookie, dostępnej po kliknięciu w "Ustawienia cookies" w stopce strony.
+          Nasz Serwis wykorzystuje pliki cookie w celu zapewnienia prawidłowego działania, analizy ruchu oraz personalizacji treści. Szczegółowe informacje na temat wykorzystywanych plików cookie oraz możliwości zarządzania nimi znajdą Państwo w naszej polityce dotyczącej plików cookie, dostępnej po kliknięciu w &quot;Ustawienia cookies&quot; w stopce strony.
         </p>
 
         <h2>6. Prawa użytkownika</h2>
