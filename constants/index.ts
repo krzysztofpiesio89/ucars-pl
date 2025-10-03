@@ -206,4 +206,11 @@ export const availableFilterTypeOptions = [
     {label:"Compact Car",value:'compact'},
     {label:"Large Car",value:'large'},
     
-]
+];
+
+export const companyData = {
+    fullName: 'Transaviatech Przemysław Kowalczyk',
+    address: 'ul. Kajakowa 11c, 02-838 Warszawa',
+    nip: '8121633205',
+    regon: '362364517',
+};

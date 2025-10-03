@@ -36,8 +36,8 @@ const Footer = () => {
             <div className='border-t dark:border-slate-800 p-4 md:p-12 flex items-center md:justify-between flex-col md:flex-row gap-2'>
                 <p className='text-sm text-gray-400'>&copy;2025 uCars.pl. Wszelkie prawa zastrzeżone</p>
                 <div className='flex items-center gap-4'>
-                    <Link href={'/'} className='text-gray-400 text-sm'>Polityka prywatności</Link>
-                    <Link href={'/'} className='text-gray-400 text-sm'>Regulamin</Link>
+                    <Link href={'/privacy-policy'} className='text-gray-400 text-sm'>Polityka prywatności</Link>
+                    <Link href={'/terms-of-service'} className='text-gray-400 text-sm'>Regulamin</Link>
                     <button onClick={handleResetConsent} className='text-gray-400 text-sm hover:text-white'>Ustawienia cookies</button>
                 </div>
             </div>

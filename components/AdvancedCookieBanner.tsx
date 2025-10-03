@@ -56,8 +56,9 @@ const cookieCategories: ICookieCategory[] = [
 const COOKIE_NAME = 'ucars-consent-choices';
 
 const AdvancedCookieBanner = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [tab, setTab] = useState('consent'); // 'consent' or 'details');
+  const [isClient, setIsClient] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
+  const [tab, setTab] = useState('consent'); // 'consent' or 'details'
   const [consentChoices, setConsentChoices] = useState<IConsentChoices>({
     preferences: true,
     statistics: true,
@@ -66,8 +67,9 @@ const AdvancedCookieBanner = () => {
   });
 
   useEffect(() => {
+    setIsClient(true);
     if (!Cookies.get(COOKIE_NAME)) {
-      setIsVisible(true);
+      setShowBanner(true);
     }
   }, []);
 
@@ -77,7 +79,7 @@ const AdvancedCookieBanner = () => {
 
   const setCookieConsent = (choices: IConsentChoices) => {
     Cookies.set(COOKIE_NAME, JSON.stringify(choices), { expires: 150 });
-    setIsVisible(false);
+    setShowBanner(false);
   };
 
   const handleDecline = () => {
@@ -104,7 +106,7 @@ const AdvancedCookieBanner = () => {
     setCookieConsent(consentChoices);
   };
 
-  if (!isVisible) {
+  if (!isClient || !showBanner) {
     return null;
   }
 
