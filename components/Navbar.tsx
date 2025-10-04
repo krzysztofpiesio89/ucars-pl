@@ -30,7 +30,7 @@ const Navbar = () => {
   const [isDropdownShown, setIsDropdownShown] = useState(false);
   const { theme } = useTheme();
   const isUser = session?.user;
-  const id = session?.user.id;
+  const id = session?.user?.id;
 
   useEffect(() => {
     const setupProviders = async () => {
@@ -41,13 +41,24 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+    <nav className="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto h-16">
-        <Link href={"/"}>
-          <span className="text-xl md:text-2xl text-blue-600 font-bold dark:text-white">
-           { process.env.NEXT_PUBLIC_APP_NAME || "uCars.pl" }
-          </span>
-        </Link>
+        
+          {/* === ZMIANA ZACZYNA SIĘ TUTAJ === */}
+      <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+        <Image
+            src="/logo/logo2.png" // lub logo.svg
+            alt="uCars.pl - Strona główna"
+            width={40} 
+            height={40} 
+            className="h-10 w-auto"
+            priority
+        />
+        <span className="text-2xl font-bold tracking-tight">
+            uCars<span className="text-red-600">.pl</span>
+        </span>
+      </Link>
+    {/* === ZMIANA KOŃCZY SIĘ TUTAJ === */}
 
         {/* Desktop navigation */}
         <div className="hidden md:flex items-center gap-6">
@@ -81,10 +92,10 @@ const Navbar = () => {
             </div>
           ) : (
             <CustomButton
-                title="Zaloguj się"
-                type="button"
-                handleClick={() => signIn()}
-                containerStyle="bg-blue-600 text-white rounded-full text-sm px-4 py-2 hover:bg-blue-700"
+              title="Zaloguj się"
+              type="button"
+              handleClick={() => signIn()}
+              containerStyle="bg-blue-600 text-white rounded-full text-sm px-4 py-2 hover:bg-blue-700"
             />
           )}
 
@@ -127,9 +138,10 @@ const Navbar = () => {
                 </button>
               </>
             ) : (
-              <Link href={"/user/login"} onClick={() => setIsDropdownShown(false)} className="font-medium">
-                Zaloguj się
-              </Link>
+                // Prawdopodobnie chcesz tutaj użyć signIn() zamiast linku do /user/login
+                <button onClick={() => { signIn(); setIsDropdownShown(false); }} className="text-left font-medium">
+                    Zaloguj się
+                </button>
             )}
             
             <hr className="dark:border-gray-700 my-2" />

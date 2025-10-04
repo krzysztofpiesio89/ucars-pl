@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="400" height="400" viewBox="0 0 400 400" role="img" aria-labelledby="title">
+  <title id="title">uCars.pl logo symbol</title>
+
+  <defs>
+    <style>
+      .brand { fill: #1F2933; }  /* ciemny grafit */
+    </style>
+  </defs>
+
+  <!-- --- Tarcza --- -->
+  <path class="brand" d="M200 40
+                          C280 40, 360 70, 360 150
+                          C360 230, 270 290, 250 310
+                          C240 320, 200 340, 200 340
+                          C200 340,160 320,150 310
+                          C130 290,40 230,40 150
+                          C40 70,120 40,200 40 Z"/>
+  <!-- wewnętrzne wycięcie -->
+  <path fill="#fff" d="M200 70
+                        C270 70, 330 95, 330 150
+                        C330 205,250 260,245 275
+                        C240 290,200 310,200 310
+                        C200 310,160 290,155 275
+                        C150 260,70 205,70 150
+                        C70 95,130 70,200 70 Z"/>
+
+  <!-- --- Zębatka --- -->
+  <g transform="translate(200,160) scale(0.6)">
+    <circle cx="0" cy="0" r="40" class="brand"/>
+    <circle cx="0" cy="0" r="20" fill="#fff"/>
+    <!-- zęby -->
+    <rect x="-4" y="-70" width="8" height="20" class="brand" transform="rotate(0)"/>
+    <rect x="-4" y="-70" width="8" height="20" class="brand" transform="rotate(45)"/>
+    <rect x="-4" y="-70" width="8" height="20" class="brand" transform="rotate(90)"/>
+    <rect x="-4" y="-70" width="8" height="20" class="brand" transform="rotate(135)"/>
+    <rect x="-4" y="-70" width="8" height="20" class="brand" transform="rotate(180)"/>
+    <rect x="-4" y="-70" width="8" height="20" class="brand" transform="rotate(225)"/>
+    <rect x="-4" y="-70" width="8" height="20" class="brand" transform="rotate(270)"/>
+    <rect x="-4" y="-70" width="8" height="20" class="brand" transform="rotate(315)"/>
+  </g>
+
+  <!-- --- Check mark --- -->
+  <path d="M140 200 L190 250 L270 150"
+        fill="none" stroke="#1F2933" stroke-width="24"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

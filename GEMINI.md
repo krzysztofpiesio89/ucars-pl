@@ -24,6 +24,14 @@ Pracujemy nad aplikacją `ucars.pl`, która jest platformą do przeglądania i l
 
 ## Dziennik Zmian (Changelog)
 
+### 03.10.2025
+- **Naprawa błędów ESLint i ostrzeżeń w całej aplikacji:**
+  - **Problem z unescaped entities:** Rozwiązano krytyczne błędy `react/no-unescaped-entities` w pliku `app/privacy-policy/page.tsx` poprzez zastąpienie cudzysłowów (`"`) encjami HTML (`&quot;`).
+  - **Tłumienie błędu w `AdvancedCookieBanner.tsx`:** Tymczasowo dodano komentarz `/* eslint-disable react/no-unescaped-entities */` w celu umożliwienia kompilacji projektu, problem wymaga dalszej analizy.
+  - **Poprawki w hakach `useEffect`:**
+    - W `components/CarCard.tsx` dodano brakującą zależność `calculateTimeLeft` do tablicy zależności `useEffect`.
+    - W `components/TopBar.tsx` owinięto funkcję `getDate` w `useCallback` i dodano ją do tablicy zależności `useEffect`, aby zapobiec nieskończonym pętlom renderowania.
+
 ### 02.10.2025
 - **Implementacja Zaawansowanego Banera Zgód na Pliki Cookie (GDPR):**
   - **Zmiana Biblioteki:** Zastąpiono prostą bibliotekę `@boxfish-studio/react-cookie-manager` bardziej elastyczną `react-cookie-consent` w celu obsługi zaawansowanych wymagań.

@@ -52,6 +52,7 @@ const TimeClock = ({ timeZone, label }: { timeZone: string; label: string }) => 
           strokeWidth="2.5"
           strokeLinecap="round"
           transform={`rotate(${hourAngle} 25 25)`}
+          suppressHydrationWarning
         />
         
         {/* Minute hand */}
@@ -64,6 +65,7 @@ const TimeClock = ({ timeZone, label }: { timeZone: string; label: string }) => 
           strokeWidth="1.5"
           strokeLinecap="round"
           transform={`rotate(${minuteAngle} 25 25)`}
+          suppressHydrationWarning
         />
         
         {/* Second hand */}
@@ -76,12 +78,13 @@ const TimeClock = ({ timeZone, label }: { timeZone: string; label: string }) => 
           strokeWidth="1"
           strokeLinecap="round"
           transform={`rotate(${secondAngle} 25 25)`}
+          suppressHydrationWarning
         />
       </svg>
 
       {/* Label + digital */}
       <span className="font-medium text-slate-500 dark:text-slate-400">{label}:</span>
-      <span className="font-bold text-green-500 dark:text-green-400 tabular-nums">{digitalTime}</span>
+      <span className="font-bold text-green-500 dark:text-green-400 tabular-nums" suppressHydrationWarning>{digitalTime}</span>
     </div>
   );
 };
