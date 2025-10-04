@@ -39,11 +39,11 @@ const Hero = () => {
               Hey🙋‍♀️, {session.user?.name?.split(" ")[0]}
             </span>
           )}
-          Wygraj aukcje i spełnij marzenie o samochodzie z USA! Wygodnie i bezpiecznie
+          Wygraj aukcje, spełniaj marzenia.
         </h1>
 
         <p className="text-xl md:text-2xl mt-6 mb-8 text-gray-200">
-          Kup samochód z USA bez stresu i ryzyka.
+          Kup samochód z USA bez stresu.
           Wygraj aukcje i ciesz się nowym autem w kilka tygodni!
         </p>
 
