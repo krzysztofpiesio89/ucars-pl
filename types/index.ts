@@ -20,6 +20,7 @@ export interface CustomInputProps {
   type?: string; // Znak '?' oznacza, że jest to pole opcjonalne
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  containerStyles?: string;
 }
 export interface SelectOption {
   value: string;

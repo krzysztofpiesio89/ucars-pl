@@ -1,12 +1,12 @@
 import { CustomInputProps } from '@/types';
 import toast from 'react-hot-toast';
 
-const CustomInput = ({  label, placeholder,name, type = 'text',value,onChange}:CustomInputProps) => {
+const CustomInput = ({  label, placeholder,name, type = 'text',value,onChange, containerStyles}:CustomInputProps) => {
     if (placeholder.length === 250) {
         toast('Reached max length');
     }
     return (
-        <div className='flex flex-col w-full gap-2'>
+        <div className={`flex flex-col w-full gap-2 ${containerStyles}`}>
             <label className='font-bold'>{label}</label>
             <input
                 type={type}
