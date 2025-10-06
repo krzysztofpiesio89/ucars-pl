@@ -13,7 +13,7 @@ const ViewAllCars = ({ searchParams }: { searchParams: FetchCarProps }) => {
     useEffect(() => {
         const fetchAllCars = async () => {
             try {
-                const res = await fetch(`/api/car?model=${model}&limit=${limit}&fuelType=${fuelType}&year=${year}&manufacturer=${manufacturer}&page=${page}`);
+                const res = await fetch(`/api/car?model=${model}&limit=${limit}&fuelType=${fuelType}&year=${year}&make=${manufacturer}&page=${page}`);
                 const data = await res.json();
                 setAllCars(data.cars.reverse());
                 setTotalCars(data.totalCars);

@@ -15,9 +15,9 @@ export default function Home({ searchParams }: { searchParams: FetchCarProps }) 
     useEffect(() => {
         const fetchAllCars = async () => {
             try {
-                const res = await fetch(`/api/car?model=${model}&limit=${limit}&fuelType=${fuelType}&year=${year}&manufacturer=${manufacturer}`);
+                const res = await fetch(`/api/car?model=${model}&limit=${limit}&fuelType=${fuelType}&year=${year}&make=${manufacturer}`);
                 const data = await res.json();
-                setAllCars(data?.reverse());
+                setAllCars(data.cars?.reverse());
             } catch (error) {
                 console.error(error);
             } finally {
