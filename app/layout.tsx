@@ -30,9 +30,9 @@ export default function RootLayout({
                                 {/* --- POPRAWKA --- */}
                                 <header className="sticky top-0 z-50">
                                     {/* Poprawiono kolejność */}
-                                    
+                                     <TopBar />
                                     <Navbar />
-                                    <TopBar />
+                                   
                                 </header>
                                 
                                 {/* Usunęliśmy stąd MainContent, teraz 'children' to bezpośrednio zawartość strony */}
