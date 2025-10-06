@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { ShowAllCars, AdvancedFilter, CustomButton, FloatingFilterButton } from '@/components';
 import { CarProps, FilterProps } from '@/types';
 import { useEffect, useState } from 'react';
@@ -24,7 +24,8 @@ const ViewAllCars = ({ searchParams }: { searchParams: FilterProps }) => {
         mileageTo: searchParams.mileageTo || undefined,
         engineCapacityTo: searchParams.engineCapacityTo || undefined,
         cylinders: searchParams.cylinders || [],
-        buyNowPrice: searchParams.buyNowPrice || [],
+        // USUNIĘTO: Poniższa linia była zbędna i myląca
+        // buyNowPrice: searchParams.buyNowPrice || [], 
     });
 
     useEffect(() => {
