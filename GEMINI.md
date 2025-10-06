@@ -22,7 +22,13 @@ Pracujemy nad aplikacją `ucars.pl`, która jest platformą do przeglądania i l
 
 ---
 
-## Dziennik Zmian (Changelog)
+### 06.10.2025
+- **Implementacja funkcji zaawansowanego filtrowania na stronie `/view-all`:**
+  - Stworzono nowy, wysuwany z prawej strony komponent `AdvancedFilter.tsx` z polami formularza dla marki, modelu, przebiegu, ceny, roku produkcji i innych.
+  - Zintegrowano nowy filtr z komponentem `ShowAllCars.tsx`, zastępując poprzednie, proste filtrowanie.
+  - Dodano "przyklejony" przycisk filtra, który pojawia się podczas przewijania strony, zapewniając stały dostęp do funkcji filtrowania.
+  - Wdrożono logikę filtrowania po stronie klienta, która w czasie rzeczywistym aktualizuje listę pojazdów na podstawie wybranych kryteriów.
+  - Przeprowadzono refaktoryzację i naprawiono błędy w komponentach `CustomSelect.tsx` i `CustomInput.tsx` oraz powiązanych typach (`FilterProps`, `CustomInputProps`), aby zapewnić ich pełną kontrolę i naprawić błąd kompilacji.
 
 ### 28.09.2025
 - Ustanowiono plik `GEMINI.MD` jako miejsce do prowadzenia dziennika zmian w projekcie.
