@@ -1,11 +1,16 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimationProps } from 'framer-motion';
 
-const Blob = ({ className, animateProps }) => (
+interface BlobProps {
+  className: string;
+  animate: AnimationProps['animate'];
+}
+
+const Blob = ({ className, animate }: BlobProps) => (
   <motion.div
     className={className}
-    animate={animateProps}
+    animate={animate}
     transition={{
       duration: Math.random() * 10 + 20, // Random duration between 20-30s
       repeat: Infinity,
@@ -16,7 +21,7 @@ const Blob = ({ className, animateProps }) => (
 );
 
 const AnimatedGradientBlobs = () => {
-  const blobs = [
+  const blobs: BlobProps[] = [
     {
       className: "w-64 h-64 hidden md:flex dark:bg-gradient-radial from-pink-500 to-purple-700 rounded-full absolute top-3/4 right-1/2 blur-3xl opacity-20 dark:opacity-30",
       animate: {
@@ -62,7 +67,7 @@ const AnimatedGradientBlobs = () => {
   return (
     <>
       {blobs.map((blob, i) => (
-        <Blob key={i} className={blob.className} animateProps={blob.animate} />
+        <Blob key={i} className={blob.className} animate={blob.animate} />
       ))}
     </>
   );
