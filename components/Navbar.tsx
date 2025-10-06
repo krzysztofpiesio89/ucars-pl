@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react"; // Zaktualizowano import
+import React, { useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
 import { getProviders, signIn, signOut, useSession } from "next-auth/react";
 import ThemeSwitcher from "./theme/ThemeSwitcher";
@@ -31,8 +31,6 @@ const Navbar = () => {
     const { theme } = useTheme();
     const isUser = session?.user;
     const id = session?.user?.id;
-    
-    // --- POCZĄTEK ZMIAN ---
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
@@ -43,14 +41,11 @@ const Navbar = () => {
                 setIsScrolled(false);
             }
         };
-
         window.addEventListener("scroll", handleScroll);
-
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
-    // --- KONIEC ZMIAN ---
 
     useEffect(() => {
         const setupProviders = async () => {
@@ -61,7 +56,9 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className={`w-full sticky top-0 z-50 transition-colors duration-300 ${
+        // --- POPRAWKA ---
+        // Usunięto "sticky top-0 z-50", ponieważ rodzic <header> zarządza teraz pozycjonowaniem.
+        <nav className={`w-full transition-colors duration-300 ${
             isScrolled 
                 ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-md' 
                 : 'bg-transparent'
