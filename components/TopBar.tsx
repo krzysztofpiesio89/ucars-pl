@@ -42,11 +42,12 @@ const TimeClock = ({ timeZone, label }: { timeZone: string; label: string }) => 
     const digitalTime = `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}`;
 
     return (
-        // Dodano `whitespace-nowrap`, aby zapobiec zawijaniu się tekstu i znikaniu "W"
-        <div className="flex items-center gap-2 whitespace-nowrap">
+        // Zmniejszono odstęp wewnętrzny dla lepszego dopasowania na mobile
+        <div className="flex items-center gap-1.5 whitespace-nowrap">
             <svg
                 viewBox="0 0 50 50"
-                className="w-5 h-5 text-slate-600 dark:text-slate-300"
+                // Zegar jest teraz mniejszy na mobile i rośnie na większych ekranach
+                className="w-4 h-4 md:w-5 md:h-5 text-slate-600 dark:text-slate-300 flex-shrink-0"
             >
                 <circle cx="25" cy="25" r="24" fill="none" stroke="currentColor" strokeWidth="2" />
                 <line
@@ -77,17 +78,17 @@ const TopBar = () => {
     const { rate, isLoading } = useCurrency();
 
     return (
-        // Usunięto logikę rozwijania - TopBar jest teraz zawsze widoczny
         <div className="w-full bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700/50">
-            <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 text-sm px-4 py-1.5">
-                <div className="flex items-center gap-4 order-2 md:order-1">
+            {/* Główne zmiany tutaj: responsywny padding, rozmiar tekstu i odstępy */}
+            <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 text-xs md:text-sm px-2 md:px-4 py-1.5">
+                {/* Zmieniono układ zegarów dla lepszej responsywności */}
+                <div className="flex flex-nowrap items-center gap-2 sm:gap-3 md:gap-4 order-2 md:order-1">
                     <TimeClock timeZone="Europe/Warsaw" label="WAW" />
                     <TimeClock timeZone="Europe/London" label="LDN" />
                     <TimeClock timeZone="America/New_York" label="NYC" />
-                    {/* Zmieniłem strefę dla Miami, aby była poprawna (jest taka sama jak NYC) */}
                     <TimeClock timeZone="America/New_York" label="MIA" />
                 </div>
-                <div className="flex items-center gap-2 order-1 md:order-2">
+                <div className="flex items-center gap-2 order-1 md:order-2 whitespace-nowrap">
                     <span className="font-medium text-slate-500 dark:text-slate-400">Kurs USD/PLN:</span>
                     {isLoading ? (
                         <div className="h-5 w-16 bg-slate-200 dark:bg-slate-700 rounded-md animate-pulse" />
