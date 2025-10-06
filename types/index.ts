@@ -34,6 +34,7 @@ export interface CustomSelectProps {
   onChange: (value: string, name: string) => void;
   label: string;
   name: string;
+  value?: string;
   containerStyle?: string;
   parentContainerStyle?: string;
 }
@@ -66,11 +67,17 @@ export interface FilterCardProps {
  * Interfejs opisujący strukturę obiektu z aktywnymi filtrami.
  */
 export interface FilterProps {
-  brand: string[];
+  brand: string;
+  model: string;
   cylinders: string[];
-  fuelType: string[];
+  fuelType: string;
   buyNowPrice?: string[];
-
+  mileageTo?: number;
+  engineCapacityTo?: number;
+  priceFrom?: number;
+  priceTo?: number;
+  yearFrom?: number;
+  yearTo?: number;
 }
 /**
  * Interfejs dla propsów głównego komponentu ShowAllCars.
