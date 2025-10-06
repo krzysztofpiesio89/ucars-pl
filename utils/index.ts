@@ -1,17 +1,15 @@
 import prisma from '@/utils/prisma';
 import { CarProps } from '@/types'; // Używamy 'CarProps' zgodnie z prośbą
 
-/**
- * Aktualizuje parametry wyszukiwania w URL po stronie klienta.
- * Działa bez zmian.
- */
-export const updateSearchParams = (type: string, value: string) => {
+export const updateMultipleSearchParams = (filters: Record<string, any>) => {
   const searchParams = new URLSearchParams(window.location.search);
 
-  if (value) {
-    searchParams.set(type.toLowerCase(), value.toLowerCase());
-  } else {
-    searchParams.delete(type.toLowerCase());
+  for (const [key, value] of Object.entries(filters)) {
+    if (value) {
+      searchParams.set(key.toLowerCase(), String(value).toLowerCase());
+    } else {
+      searchParams.delete(key.toLowerCase());
+    }
   }
 
   return `${window.location.pathname}?${searchParams.toString()}`;

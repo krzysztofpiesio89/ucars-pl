@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CarProps } from "@/types";
@@ -19,7 +19,7 @@ interface AuctionCountdownProps {
 }
 
 const AuctionCountdown = ({ targetDate }: AuctionCountdownProps) => {
-    const calculateTimeLeft = () => {
+    const calculateTimeLeft = useCallback(() => {
         if (!targetDate) return null;
         const difference = +new Date(targetDate) - +new Date();
         
@@ -32,7 +32,7 @@ const AuctionCountdown = ({ targetDate }: AuctionCountdownProps) => {
             };
         }
         return null;
-    };
+    }, [targetDate]);
 
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -229,7 +229,6 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
                         <InfoPill label="Silnik" value={car.cylinders} />
                         <InfoPill label="Paliwo" value={car.fuelType ? translateFuel(car.fuelType) : "Nieznane"} />
                         <InfoPill label="VIN" value={car.vin} />
-                        <InfoPill label="Typ uszkodzeń" value={car.damageType} />
                         <InfoPill label="Wersja" value={car.version} />
 
                     </div>

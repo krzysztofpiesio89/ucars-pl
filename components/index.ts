@@ -14,6 +14,8 @@ import CustomInput from './CustomInput';
 import Loader from './Loader';
 import AboutUs from './AboutUs'; // <-- Zaimportuj nowy komponent
 import MainContent from './MainContent';
+import AdvancedFilter from './AdvancedFilter';
+import FloatingFilterButton from './FloatingFilterButton';
 export {
     Hero,
     AboutUs,
@@ -30,5 +32,7 @@ export {
     Provider,
     CustomInput,
     Loader,
-    MainContent
+    MainContent,
+    AdvancedFilter,
+    FloatingFilterButton
 };

@@ -14,7 +14,11 @@ export const GET = async (req: NextRequest) => {
     const make = searchParams.get("make")?.trim() || undefined; 
     const fuelType = searchParams.get("fuelType")?.trim() || undefined;
     const year = searchParams.get("year") ? parseInt(searchParams.get("year")!, 10) : undefined;
-    const page = searchParams.get("page") ? parseInt(searchParams.get("page")!, 10) : 1;
+    const rawPage = searchParams.get("page");
+    let page = rawPage ? parseInt(rawPage, 10) : 1;
+    if (isNaN(page)) {
+      page = 1;
+    }
     const limit = 10;
     const skip = (page - 1) * limit;
 

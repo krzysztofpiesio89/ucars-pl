@@ -79,6 +79,8 @@ export interface FilterProps {
   priceTo?: number;
   yearFrom?: number;
   yearTo?: number;
+  limit?: number;
+  page?: number;
 }
 /**
  * Interfejs dla propsów głównego komponentu ShowAllCars.

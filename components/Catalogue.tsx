@@ -4,7 +4,7 @@ import Searchbar from "./Searchbar";
 import CarCard from "./CarCard";
 import CustomButton from "./CustomButton";
 import { CarProps } from "@/types"; // Import CarProps
-import { updateSearchParams } from "@/utils";
+import { updateMultipleSearchParams } from "@/utils";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CarCardSkeleton } from "./skeleton";
@@ -20,7 +20,7 @@ const Catalogue = ({ allCars, limit, isLoading }: CatalogueProps) => {
   const router = useRouter();
   const handleClick = () => {
     const newLimit = ((limit || 10) + 1) * 10;
-    const pathname = updateSearchParams("limit", `${newLimit}`);
+    const pathname = updateMultipleSearchParams({ limit: `${newLimit}` });
     router.push(pathname);
   };
   return (

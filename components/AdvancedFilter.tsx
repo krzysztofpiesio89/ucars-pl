@@ -14,9 +14,10 @@ interface AdvancedFilterProps {
   onClose: () => void;
   filters: FilterProps;
   setFilters: Dispatch<SetStateAction<FilterProps>>;
+  handleApply: () => void;
 }
 
-const AdvancedFilter = ({ isOpen, onClose, filters, setFilters }: AdvancedFilterProps) => {
+const AdvancedFilter = ({ isOpen, onClose, filters, setFilters, handleApply }: AdvancedFilterProps) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -90,7 +91,7 @@ const AdvancedFilter = ({ isOpen, onClose, filters, setFilters }: AdvancedFilter
           <div className="p-4 border-t border-gray-200 dark:border-slate-700">
             <div className="flex gap-4">
               <CustomButton title="Wyczyść filtry" containerStyle="w-full bg-gray-200 dark:bg-slate-700 text-gray-800 dark:text-gray-200" handleClick={handleClearFilters} />
-              <CustomButton title="Zastosuj" containerStyle="w-full bg-blue-600 text-white" handleClick={onClose} />
+              <CustomButton title="Zastosuj" containerStyle="w-full bg-blue-600 text-white" handleClick={handleApply} />
             </div>
           </div>
         </div>

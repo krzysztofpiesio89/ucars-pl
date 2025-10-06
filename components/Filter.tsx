@@ -3,7 +3,7 @@ import { useState } from 'react';
 import CustomSelect from './CustomSelect';
 import { fuels, yearsOfProduction } from '@/constants';
 import { useRouter } from 'next/navigation';
-import { updateSearchParams } from '@/utils';
+import { updateMultipleSearchParams } from '@/utils';
 
 const Filter = () => {
     const router = useRouter();
@@ -16,7 +16,7 @@ const Filter = () => {
     }
 
     const updateSearchParamsAndPush = (type: string, value: string) => {
-        const pathname = updateSearchParams(`${type}`, value);
+        const pathname = updateMultipleSearchParams({ [type]: value });
         router.push(pathname);
     }
 
