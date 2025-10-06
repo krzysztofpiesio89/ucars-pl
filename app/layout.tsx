@@ -29,7 +29,7 @@ export default function RootLayout({
           <CurrencyProvider>
             <TopBarProvider>
               <CustomThemeProvider>
-                <header className="fixed top-0 left-0 right-0 z-50 border-b dark:border-b-gray-800 shadow-sm">
+                <header className="sticky top-0 z-50">
                   <Navbar />
                   <TopBar />
                 </header>
