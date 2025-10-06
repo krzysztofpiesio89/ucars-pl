@@ -1,10 +1,10 @@
 'use client';
 
-import { motion, AnimationProps } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface BlobProps {
   className: string;
-  animate: AnimationProps['animate'];
+  animate: any;
 }
 
 const Blob = ({ className, animate }: BlobProps) => (
