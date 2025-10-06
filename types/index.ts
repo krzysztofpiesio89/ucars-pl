@@ -87,6 +87,8 @@ export interface ShowAllCarsProps {
   allCars: CarProps[]; // Zakładając, że CarProps już istnieje
   limit?: number;
   isLoading: boolean;
+  page: number;
+  totalCars: number;
 }
 
 
@@ -134,6 +136,7 @@ export interface FetchCarProps {
   fuelType: string;
   limit: number;
   model: string;
+  page?: number;
 }
 
 /**

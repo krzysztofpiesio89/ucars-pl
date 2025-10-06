@@ -4,17 +4,19 @@ import { CarProps, FetchCarProps } from '@/types';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 const ViewAllCars = ({ searchParams }: { searchParams: FetchCarProps }) => {
-    const { manufacturer, year, fuelType, limit, model } = searchParams;
+    const { manufacturer, year, fuelType, limit, model, page } = searchParams;
     const [allCars, setAllCars] = useState<CarProps[]>([]);
+    const [totalCars, setTotalCars] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
 
     useEffect(() => {
         const fetchAllCars = async () => {
             try {
-                const res = await fetch(`/api/car?model=${model}&limit=${limit}&fuelType=${fuelType}&year=${year}&manufacturer=${manufacturer}`);
+                const res = await fetch(`/api/car?model=${model}&limit=${limit}&fuelType=${fuelType}&year=${year}&manufacturer=${manufacturer}&page=${page}`);
                 const data = await res.json();
-                setAllCars(data.reverse());
+                setAllCars(data.cars.reverse());
+                setTotalCars(data.totalCars);
             } catch (error) {
                 console.error(error);
             } finally {
@@ -30,7 +32,7 @@ const ViewAllCars = ({ searchParams }: { searchParams: FetchCarProps }) => {
                 error: (err) => err.message,
             }
         );
-    }, [model, year, manufacturer, fuelType, limit]);
+    }, [model, year, manufacturer, fuelType, limit, page]);
 
 
     return (
@@ -38,7 +40,9 @@ const ViewAllCars = ({ searchParams }: { searchParams: FetchCarProps }) => {
             {
                 allCars && <ShowAllCars
                     allCars={allCars}
-                    limit={(limit || 20) / 10}
+                    limit={(limit || 10) / 10}
+                    page={page || 1}
+                    totalCars={totalCars}
                     isLoading={isLoading}
                 />
             }

@@ -14,12 +14,9 @@ export const GET = async (req: NextRequest) => {
     const make = searchParams.get("make")?.trim() || undefined; 
     const fuelType = searchParams.get("fuelType")?.trim() || undefined;
     const year = searchParams.get("year") ? parseInt(searchParams.get("year")!, 10) : undefined;
-    let limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!, 10) : 25;
-
-    // Zabezpieczenie na wypadek nieprawidłowej wartości 'limit'
-    if (isNaN(limit) || limit <= 0) {
-      limit = 25;
-    }
+    const page = searchParams.get("page") ? parseInt(searchParams.get("page")!, 10) : 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
 
     // Budujemy dynamiczny obiekt 'where' do Prisma
     const where: Record<string, any> = {};
@@ -27,7 +24,6 @@ export const GET = async (req: NextRequest) => {
       where.model = { contains: model, mode: 'insensitive' };
     }
     if (make && make !== "undefined") {
-       // Używamy 'make' zamiast 'manufacturer'
       where.make = { contains: make, mode: 'insensitive' };
     }
     if (fuelType && fuelType !== "undefined") {
@@ -39,15 +35,18 @@ export const GET = async (req: NextRequest) => {
 
     console.log("Filtering with WHERE clause:", where);
 
+    const totalCars = await prisma.car.count({ where });
+
     const allCars = await prisma.car.findMany({
       where,
       take: limit,
-      orderBy: { createdAt: "desc" }, // Sortowanie od najnowszych dodanych
+      skip,
+      orderBy: { createdAt: "desc" },
     });
     
     console.log(`Found ${allCars.length} cars.`);
 
-    return NextResponse.json(allCars, { status: 200 });
+    return NextResponse.json({ cars: allCars, totalCars }, { status: 200 });
   } catch (error) {
     console.error("GET /api/car error:", error);
     return NextResponse.json({ message: "Failed to fetch all cars" }, { status: 500 });

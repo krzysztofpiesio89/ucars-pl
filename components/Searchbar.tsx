@@ -43,7 +43,7 @@ const Searchbar = () => {
             searchParams.delete('model');
         }
         if (manufacturer) {
-            searchParams.set('manufacturer', 'make'); // Zgodnie z API powinno być 'make'
+            searchParams.set('make', manufacturer);
         } else {
             searchParams.delete('manufacturer');
         }
