@@ -13,6 +13,7 @@ import Provider from './Provider';
 import CustomInput from './CustomInput';
 import Loader from './Loader';
 import AboutUs from './AboutUs'; // <-- Zaimportuj nowy komponent
+import MainContent from './MainContent';
 export {
     Hero,
     AboutUs,
@@ -28,5 +29,6 @@ export {
     ShowAllCars,
     Provider,
     CustomInput,
-    Loader
+    Loader,
+    MainContent
 };

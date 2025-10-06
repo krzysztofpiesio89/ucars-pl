@@ -5,40 +5,47 @@ import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { CurrencyProvider } from "@/context/CurrencyProvider";
 import { TopBarProvider } from "@/context/TopBarContext";
-import MainContent from "@/components/MainContent";
 import TopBar from "@/components/TopBar";
+import AdvancedCookieBanner from "@/components/AdvancedCookieBanner";
 
 export const metadata = {
-  title: "uCars.pl",
-  description: "Nowoczesny system licytacji IAAI, CoPart - Kupuj samochody online z łatwością",
+    title: "uCars.pl",
+    description: "Nowoczesny system licytacji IAAI, CoPart - Kupuj samochody online z łatwością",
 };
 
 export default function RootLayout({
-  children,
-  session,
+    children,
+    session,
 }: {
-  children: ReactNode;
-  session: any;
+    children: ReactNode;
+    session: any;
 }) {
-  return (
-    <Provider session={session}>
-      <html lang="en">
-        <body className="app bg-slate-50 dark:bg-[#0b1120]">
-          <CurrencyProvider>
-            <TopBarProvider>
-              <CustomThemeProvider>
-                <header className="fixed top-0 left-0 right-0 z-50 border-b dark:border-b-gray-800 shadow-sm">
-                  <Navbar />
-                  <TopBar />
-                </header>
-                <MainContent>{children}</MainContent>
-                <Footer />
-                <Toaster position="top-left" reverseOrder={false} />
-              </CustomThemeProvider>
-            </TopBarProvider>
-          </CurrencyProvider>
-        </body>
-      </html>
-    </Provider>
-  );
+    return (
+        <Provider session={session}>
+            <html lang="en">
+                <body className="app bg-slate-50 dark:bg-[#0b1120]">
+                    <CurrencyProvider>
+                        <TopBarProvider>
+                            <CustomThemeProvider>
+                                {/* --- POPRAWKA --- */}
+                                <header className="sticky top-0 z-50">
+                                    {/* Poprawiono kolejność */}
+                                     <TopBar />
+                                    <Navbar />
+                                   
+                                </header>
+                                
+                                {/* Usunęliśmy stąd MainContent, teraz 'children' to bezpośrednio zawartość strony */}
+                                {children}
+                                
+                                <Footer />
+                                <Toaster position="top-left" reverseOrder={false} />
+                            </CustomThemeProvider>
+                        </TopBarProvider>
+                    </CurrencyProvider>
+                    <AdvancedCookieBanner />
+                </body>
+            </html>
+        </Provider>
+    );
 }

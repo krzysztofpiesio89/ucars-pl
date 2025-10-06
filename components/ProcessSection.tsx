@@ -104,7 +104,7 @@ const ImportProcess = () => {
                     variants={itemVariants}
                     className="text-lg text-slate-700 dark:text-slate-300 mb-8"
                 >
-                    W uCars.pl demistyfikujemy proces importu. Stworzyliśmy platformę, która czyni go bezpiecznym, prostym i w pełni zautomatyzowanym. Oto jak przeprowadzimy Cię przez cały proces.
+                    W uCars.pl licytujesz łatwo i bezpiecznie. Ty wybierasz auto, a my przeprowadzimy Cię przez cały proces. Od licytacji aż od odbioru auta i jego legalizacji.
                 </motion.p>
 
                 <ul className="space-y-6">
