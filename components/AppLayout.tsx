@@ -6,8 +6,10 @@ import TopBar from './TopBar';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { Toaster } from 'react-hot-toast';
+import useViewportHeight from '@/utils/useViewportHeight';
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
+    useViewportHeight(); // Call the hook to set the --vh property
     const { isTopBarVisible } = useTopBar();
 
     return (

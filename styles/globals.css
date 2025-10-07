@@ -12,6 +12,11 @@
   scroll-behavior: smooth;
 }
 
+.min-h-real-screen {
+  min-height: 100vh; /* Fallback */
+  min-height: calc(var(--vh, 1vh) * 100);
+}
+
 /* .hero-dark{
   background-image: url('/images/hero-dark.jpg');
   background-size: 86rem;
