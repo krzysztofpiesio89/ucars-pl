@@ -82,7 +82,7 @@ const TopBar = () => {
             {/* Główne zmiany tutaj: responsywny padding, rozmiar tekstu i odstępy */}
             <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 text-xs md:text-sm px-2 md:px-4 py-1.5">
                 {/* Zmieniono układ zegarów dla lepszej responsywności */}
-                <div className="flex flex-nowrap items-center gap-2 sm:gap-3 md:gap-4 order-2 md:order-1">
+                <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 md:gap-4 order-2 md:order-1">
                     <TimeClock timeZone="Europe/Warsaw" label="WAW" />
                     <TimeClock timeZone="Europe/London" label="LDN" />
                     <TimeClock timeZone="America/New_York" label="NYC" />

@@ -1,25 +1,29 @@
 'use client';
 
 // --- KROK 1: Zaimportuj MainContent ---
-import { Catalogue, Hero, AboutUs, ProcessSection, MainContent } from '@/components';
+import { ShowAllCars, Hero, AboutUs, ProcessSection, MainContent, BrandStrip } from '@/components';
 import AnimatedGradientBlobs from '@/components/AnimatedGradientBlobs';
-import { CarProps, FetchCarProps } from '@/types';
+import { CarProps, FilterProps } from '@/types';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-export default function Home({ searchParams }: { searchParams: FetchCarProps }) {
-    const { manufacturer, year, fuelType, limit, model } = searchParams;
+export default function Home({ searchParams }: { searchParams: FilterProps }) {
     const [allCars, setAllCars] = useState<CarProps[]>([]);
+    const [totalCars, setTotalCars] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchAllCars = async () => {
+            setIsLoading(true);
             try {
-                const res = await fetch(`/api/car?model=${model}&limit=${limit}&fuelType=${fuelType}&year=${year}&make=${manufacturer}`);
+                const queryString = new URLSearchParams(searchParams as any).toString();
+                const res = await fetch(`/api/car?${queryString}`);
                 const data = await res.json();
-                setAllCars(data.cars?.reverse());
+                setAllCars(data.cars);
+                setTotalCars(data.totalCars);
             } catch (error) {
                 console.error(error);
+                toast.error('Nie udało się pobrać samochodów.');
             } finally {
                 setIsLoading(false);
             }
@@ -28,9 +32,9 @@ export default function Home({ searchParams }: { searchParams: FetchCarProps }) 
         toast.promise(fetchAllCars(), {
             loading: 'Wyszukiwanie samochodów...',
             success: 'Wyszukiwanie zakończone',
-            error: 'Nie udało się znaleźć samochodów',
+            error: 'Wystąpił błąd podczas wyszukiwania.',
         });
-    }, [model, year, manufacturer, fuelType, limit]);
+    }, [searchParams]);
 
     return (
         // Usunęliśmy nadmiarowe divy dla uproszczenia
@@ -39,16 +43,19 @@ export default function Home({ searchParams }: { searchParams: FetchCarProps }) 
             
             {/* Hero jest renderowane samodzielnie, aby zająć cały ekran */}
             <Hero />
+            <BrandStrip />
 
             {/* --- KROK 2: Opakuj resztę treści w MainContent --- */}
             <MainContent>
                 <AboutUs /> 
                 <ProcessSection />
-                { allCars && <Catalogue
-                    isLoading={isLoading}
+                                <ShowAllCars
                     allCars={allCars}
-                    limit={(limit || 20) / 10}
-                />}
+                    limit={(Number(searchParams.limit) || 10)}
+                    page={Number(searchParams.page) || 1}
+                    totalCars={totalCars}
+                    isLoading={isLoading}
+                />
             </MainContent>
         </main>
     );

@@ -22,6 +22,26 @@ Pracujemy nad aplikacją `ucars.pl`, która jest platformą do przeglądania i l
 
 ---
 
+### 07.10.2025
+- **Naprawa Wyglądu `TopBar` na Urządzeniach Mobilnych:**
+  - W komponencie `TopBar.tsx` zmieniono właściwość `flex-nowrap` na `flex-wrap`, aby zapobiec wychodzeniu elementów poza ekran na węższych widokach.
+- **Implementacja Funkcji Ukrywania `TopBar`:**
+  - Dodano w `Navbar.tsx` przycisk z ikoną (strzałka w górę/dół) do przełączania widoczności górnego paska.
+  - Zaktualizowano `TopBarContext.tsx`, dodając logikę do zarządzania stanem widoczności (`isTopBarVisible`, `toggleTopBar`).
+  - W `app/layout.tsx` zaimplementowano płynną animację chowania i pokazywania `TopBar` poprzez dynamiczne zmiany klas CSS.
+- **Integracja Komponentu `BrandStrip`:**
+  - Umieszczono nowy komponent `BrandStrip.tsx` na stronie głównej, bezpośrednio pod sekcją `Hero`.
+  - Naprawiono błąd importu poprzez dodanie `BrandStrip` do pliku `components/index.ts`.
+  - Zaktualizowano komponent `BrandStrip`, powiększając logotypy marek i dodając do nich linki, które przekierowują do strony `/view-all` z automatycznie ustawionym filtrem marki.
+- **Naprawa Wyświetlania Samochodów na Stronie Głównej:**
+  - Zdiagnozowano problem, który polegał na używaniu przestarzałej logiki do pobierania danych o pojazdach.
+  - Przeprowadzono refaktoryzację `app/page.tsx`, zastępując stary komponent `<Catalogue />` nowym `<ShowAllCars />`.
+  - Zaktualizowano mechanizm pobierania danych, aby był zgodny z nowym, zaawansowanym systemem filtrowania, co rozwiązało problem braku wyświetlania aut.
+- **Dodanie Licznika Ofert w Sekcji `Hero`:**
+  - Utworzono nowy punkt API `/api/car/count/route.ts`, który zlicza wszystkie pojazdy w bazie danych.
+  - Stworzono komponent `OfferCount.tsx`, który pobiera i wyświetla liczbę dostępnych ofert.
+  - Zintegrowano `OfferCount.tsx` w sekcji `Hero`, umieszczając go nad głównym przyciskiem wezwania do działania, aby zwiększyć jego widoczność.
+
 ### 06.10.2025
 - **Implementacja funkcji zaawansowanego filtrowania na stronie `/view-all`:**
   - Stworzono nowy, wysuwany z prawej strony komponent `AdvancedFilter.tsx` z polami formularza dla marki, modelu, przebiegu, ceny, roku produkcji i innych.

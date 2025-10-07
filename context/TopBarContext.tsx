@@ -1,19 +1,23 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
 interface TopBarContextType {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  isTopBarVisible: boolean;
+  toggleTopBar: () => void;
 }
 
 const TopBarContext = createContext<TopBarContextType | undefined>(undefined);
 
 export const TopBarProvider = ({ children }: { children: ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isTopBarVisible, setIsTopBarVisible] = useState(true);
+
+  const toggleTopBar = useCallback(() => {
+    setIsTopBarVisible(prev => !prev);
+  }, []);
 
   return (
-    <TopBarContext.Provider value={{ isOpen, setIsOpen }}>
+    <TopBarContext.Provider value={{ isTopBarVisible, toggleTopBar }}>
       {children}
     </TopBarContext.Provider>
   );

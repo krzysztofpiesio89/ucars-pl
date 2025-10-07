@@ -16,6 +16,8 @@ import AboutUs from './AboutUs'; // <-- Zaimportuj nowy komponent
 import MainContent from './MainContent';
 import AdvancedFilter from './AdvancedFilter';
 import FloatingFilterButton from './FloatingFilterButton';
+import BrandStrip from './BrandStrip';
+import OfferCount from './OfferCount';
 export {
     Hero,
     AboutUs,
@@ -34,5 +36,7 @@ export {
     Loader,
     MainContent,
     AdvancedFilter,
-    FloatingFilterButton
+    FloatingFilterButton,
+    BrandStrip,
+    OfferCount
 };

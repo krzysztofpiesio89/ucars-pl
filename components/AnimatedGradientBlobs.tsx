@@ -27,7 +27,6 @@ const AnimatedGradientBlobs = () => {
       animate: {
         x: [-100, 100, -100],
         y: [-100, 100, -100],
-        scale: [1, 1.2, 1],
         rotate: [0, 90, 0],
       },
     },
@@ -43,7 +42,6 @@ const AnimatedGradientBlobs = () => {
       animate: {
         x: [200, -200, 200],
         y: [150, -150, 150],
-        scale: [1, 0.9, 1],
       },
     },
     {
@@ -59,7 +57,6 @@ const AnimatedGradientBlobs = () => {
       animate: {
         x: [100, -250, 100],
         y: [-100, 200, -100],
-        scale: [1, 1.1, 1],
       },
     },
   ];

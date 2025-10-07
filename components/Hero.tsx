@@ -1,9 +1,10 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { CustomButton } from "@/components";
+import { CustomButton, OfferCount } from "@/components";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { motion, AnimatePresence } from 'framer-motion';
+import BrandStrip from '@/components/BrandStrip';
 
 const Hero = () => {
   const { data: session } = useSession();
@@ -38,28 +39,22 @@ const Hero = () => {
   return (
     <section ref={sectionRef} className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
       
-      <AnimatePresence>
-        {isVideoVisible && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.7 }}
-            className="fixed top-0 left-0 w-full h-full z-0"
-          >
-            <video
-              src="/videos/hero-background.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-0 left-0 w-full h-full bg-black/50" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+      <motion.div
+        animate={{ opacity: isVideoVisible ? 1 : 0 }}
+        transition={{ duration: 0.7 }}
+        className="fixed top-0 left-0 w-full h-full z-0"
+      >
+        <video
+          src="/videos/hero-background.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute top-0 left-0 w-full h-full bg-black/50" />
+      </motion.div>
+        
       <div className="relative z-20 flex flex-col items-center text-center text-white p-4 max-w-4xl">
         <h1 className="text-5xl md:text-7xl font-bold">
           {isUser && (
@@ -74,6 +69,10 @@ const Hero = () => {
           Kup samochód z USA bez stresu.
           Wygraj aukcje i ciesz się nowym autem w kilka tygodni!
         </p>
+
+        <div className="my-8">
+          <OfferCount />
+        </div>
 
         <Link href={"#explore"}>
           <CustomButton

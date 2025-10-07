@@ -6,9 +6,23 @@ import React, { useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
 import { getProviders, signIn, signOut, useSession } from "next-auth/react";
 import ThemeSwitcher from "./theme/ThemeSwitcher";
-import { BsX, BsInstagram, BsFacebook } from "react-icons/bs";
+import { BsX, BsInstagram, BsFacebook, BsChevronCompactUp, BsChevronCompactDown } from "react-icons/bs";
 import { useTheme } from "next-themes";
 import { RiMenu3Line } from "react-icons/ri";
+import { useTopBar } from "@/context/TopBarContext";
+
+const TopBarToggleButton = () => {
+    const { toggleTopBar, isTopBarVisible } = useTopBar();
+    return (
+        <button 
+            onClick={toggleTopBar} 
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            aria-label={isTopBarVisible ? "Ukryj górny pasek" : "Pokaż górny pasek"}
+        >
+            {isTopBarVisible ? <BsChevronCompactUp className="h-5 w-5 text-gray-600 dark:text-gray-400" /> : <BsChevronCompactDown className="h-5 w-5 text-gray-600 dark:text-gray-400" />}
+        </button>
+    );
+};
 
 const SocialLinks = ({ className }: { className?: string }) => (
     <div className={`flex items-center gap-4 ${className}`}>
@@ -119,12 +133,14 @@ const Navbar = () => {
 
                     <div className="flex items-center gap-4 border-l dark:border-slate-700 ml-4 pl-4">
                         <SocialLinks />
+                        <TopBarToggleButton />
                         <ThemeSwitcher />
                     </div>
                 </div>
 
                 {/* Mobile navigation */}
                 <div className="flex items-center gap-4 md:hidden">
+                    <TopBarToggleButton />
                     <ThemeSwitcher />
                     <button onClick={() => setIsDropdownShown((prev) => !prev)} aria-label="Otwórz menu">
                         <RiMenu3Line size={24} className="text-gray-700 dark:text-gray-300" />
