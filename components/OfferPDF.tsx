@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { CarProps } from '@/types';
 
 interface OfferPDFProps {
@@ -59,7 +60,13 @@ const OfferPDF = React.forwardRef<HTMLDivElement, OfferPDFProps>((props, ref) =>
 
       <div className="mt-8 grid grid-cols-2 gap-8">
         <div>
-          <img src={car.imageUrl} alt={`${car.make} ${car.model}`} className="w-full rounded-lg shadow-md" />
+                    <Image 
+            src={car.imageUrl} 
+            alt={`${car.make} ${car.model}`} 
+            width={500} 
+            height={300} 
+            className="w-full h-auto object-cover rounded-lg shadow-md" 
+          />
         </div>
         <div>
           <h3 className="text-xl font-semibold border-b pb-2">Specyfikacja</h3>

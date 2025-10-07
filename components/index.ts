@@ -18,6 +18,7 @@ import AdvancedFilter from './AdvancedFilter';
 import FloatingFilterButton from './FloatingFilterButton';
 import BrandStrip from './BrandStrip';
 import OfferCount from './OfferCount';
+import TopBar from './TopBar';
 export {
     Hero,
     AboutUs,
@@ -38,5 +39,6 @@ export {
     AdvancedFilter,
     FloatingFilterButton,
     BrandStrip,
-    OfferCount
+    OfferCount,
+    TopBar
 };

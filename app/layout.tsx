@@ -1,34 +1,13 @@
-'use client';
-
-import { Footer, Navbar, Provider } from "@/components";
+import { Provider } from "@/components";
 import CustomThemeProvider from "@/components/theme/CustomThemeProvider";
 import "@/styles/globals.css";
 import { ReactNode } from "react";
-import { Toaster } from "react-hot-toast";
 import { CurrencyProvider } from "@/context/CurrencyProvider";
-import { TopBarProvider, useTopBar } from "@/context/TopBarContext";
-import TopBar from "@/components/TopBar";
+import { TopBarProvider } from "@/context/TopBarContext";
 import AdvancedCookieBanner from "@/components/AdvancedCookieBanner";
+import AppLayout from "@/components/AppLayout"; // Import the new client component
 
-
-const AppLayout = ({ children }: { children: ReactNode }) => {
-    const { isTopBarVisible } = useTopBar();
-
-    return (
-        <>
-            <header className="sticky top-0 z-50">
-                <div className={`transition-all duration-300 ease-in-out ${isTopBarVisible ? 'max-h-12' : 'max-h-0 overflow-hidden'}`}>
-                    <TopBar />
-                </div>
-                <Navbar />
-            </header>
-            {children}
-            <Footer />
-            <Toaster position="top-left" reverseOrder={false} />
-        </>
-    );
-};
-
+// Metadata can now be correctly exported from this Server Component
 export const metadata = {
     title: "uCars.pl",
     description: "Nowoczesny system licytacji IAAI, CoPart - Kupuj samochody online z łatwością",
