@@ -9,6 +9,7 @@ import Footer from './Footer';
 import Searchbar from './Searchbar';
 import Filter from './Filter';
 import ShowAllCars from './ShowAllCars';
+import ShowAllCarsOld from './ShowAllCarsOld';
 import Provider from './Provider';
 import CustomInput from './CustomInput';
 import Loader from './Loader';
@@ -19,6 +20,7 @@ import FloatingFilterButton from './FloatingFilterButton';
 import BrandStrip from './BrandStrip';
 import OfferCount from './OfferCount';
 import TopBar from './TopBar';
+
 export {
     Hero,
     AboutUs,
@@ -32,6 +34,7 @@ export {
     Searchbar,
     Filter,
     ShowAllCars,
+    ShowAllCarsOld,
     Provider,
     CustomInput,
     Loader,

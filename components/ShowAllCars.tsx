@@ -3,6 +3,7 @@
 import { ShowAllCarsProps } from '@/types';
 import { useState, useEffect } from 'react';
 import { CarCarousel } from './CarCarousel';
+import LazyLoadWrapper from './LazyLoadWrapper';
 
 // Custom hook for count-up animation (bez zmian)
 const useCountUp = (end: number, duration: number = 2000) => {
@@ -37,41 +38,48 @@ const ShowAllCars = ({ allCars, limit, isLoading, totalCars }: ShowAllCarsProps)
   return (
     <section className='w-full'>
       <div className='flex flex-col items-center text-center mb-12 space-y-4'>
-        
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold">Wszystkie pojazdy</h1>
-          <p className="text-gray-500 mt-2">Przeglądaj naszą pełną kolekcję dostępnych aut.</p>
-        </div>
+        <LazyLoadWrapper>
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold">Wszystkie pojazdy</h1>
+            <p className="text-gray-500 mt-2">Przeglądaj naszą pełną kolekcję dostępnych aut.</p>
+          </div>
+        </LazyLoadWrapper>
 
-        <div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Łączna ilość aukcji</p>
-          <p className="text-5xl font-extrabold text-blue-600 dark:text-indigo-400 tabular-nums">
-            {animatedTotal}
-          </p>
-        </div>
+        <LazyLoadWrapper delay={0.2}>
+          <div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Łączna ilość aukcji</p>
+            <p className="text-5xl font-extrabold text-blue-600 dark:text-indigo-400 tabular-nums">
+              {animatedTotal}
+            </p>
+          </div>
+        </LazyLoadWrapper>
         
-        <div className="pt-4">
-          <a
-            href="/view-all"
-            // 👇 ZMIANA: Użycie wbudowanej animacji 'animate-pulse' zamiast niestandardowej 👇
-            className="inline-flex items-center gap-2 px-6 py-2 bg-red-600 text-white font-bold rounded-full shadow-lg hover:bg-red-700 transition animate-pulse"
-          >
-            {/* Wskaźnik "Live" pozostaje bez zmian, bo używa wbudowanej animacji "ping" */}
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-            </span>
-            Oglądaj aukcję na żywo
-          </a>
-        </div>
+        <LazyLoadWrapper delay={0.4}>
+          <div className="pt-4">
+            <a
+              href="/view-all"
+              // 👇 ZMIANA: Użycie wbudowanej animacji 'animate-pulse' zamiast niestandardowej 👇
+              className="inline-flex items-center gap-2 px-6 py-2 bg-red-600 text-white font-bold rounded-full shadow-lg hover:bg-red-700 transition animate-pulse"
+            >
+              {/* Wskaźnik "Live" pozostaje bez zmian, bo używa wbudowanej animacji "ping" */}
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+              </span>
+              Oglądaj aukcję na żywo
+            </a>
+          </div>
+        </LazyLoadWrapper>
 
       </div>
 
-      <CarCarousel 
-        allCars={allCars} 
-        isLoading={isLoading} 
-        limit={limit} 
-      />
+      <LazyLoadWrapper delay={0.6}>
+        <CarCarousel 
+          allCars={allCars} 
+          isLoading={isLoading} 
+          limit={limit} 
+        />
+      </LazyLoadWrapper>
 
     </section>
   );

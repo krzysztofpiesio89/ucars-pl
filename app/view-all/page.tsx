@@ -1,5 +1,5 @@
 'use client';
-import { ShowAllCars, AdvancedFilter, CustomButton, FloatingFilterButton } from '@/components';
+import { ShowAllCarsOld, AdvancedFilter, CustomButton, FloatingFilterButton } from '@/components';
 import { CarProps, FilterProps } from '@/types';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -102,7 +102,7 @@ const ViewAllCars = ({ searchParams }: { searchParams: FilterProps }) => {
                 handleApply={handleApplyFilters}
             />
             {
-                allCars && <ShowAllCars
+                allCars && <ShowAllCarsOld
                     allCars={allCars}
                     limit={(Number(searchParams.limit) || 10) / 10}
                     page={Number(searchParams.page) || 1}
