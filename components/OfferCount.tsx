@@ -10,10 +10,16 @@ const OfferCount = () => {
     const fetchCount = async () => {
       try {
         const res = await fetch('/api/car/count');
-        const data = await res.json();
-        setCount(data.count);
+        if (res.ok) {
+          const data = await res.json();
+          setCount(data.count);
+        } else {
+          console.error('Failed to fetch offer count:', res.statusText);
+          setCount(null);
+        }
       } catch (error) {
         console.error('Failed to fetch offer count:', error);
+        setCount(null);
       } finally {
         setIsLoading(false);
       }
