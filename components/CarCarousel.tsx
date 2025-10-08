@@ -2,9 +2,9 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay'; // 1. Import pluginu Autoplay
+import Autoplay from 'embla-carousel-autoplay';
 import { CarProps } from '@/types';
-import CarCard from './CarCard';
+import CarCardLarge from './CarCardLarge';
 import { CarCardSkeleton } from './skeleton';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 
@@ -15,22 +15,18 @@ interface CarCarouselProps {
 }
 
 export const CarCarousel = ({ allCars = [], isLoading = false, limit = 10 }: CarCarouselProps) => {
-  // 2. Dodanie pluginu Autoplay do konfiguracji karuzeli
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: 'start' },
     [
       Autoplay({
-        delay: 4000, // Czas w milisekundach między slajdami
-        stopOnInteraction: true, // Zatrzymuje autoplay po interakcji użytkownika (zalecane)
+        delay: 4000,
+        stopOnInteraction: true,
       }),
     ]
   );
 
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
-
-  // UWAGA: Usunęliśmy stany i useEffect do obsługi responsywności w JS.
-  // Teraz za wszystko odpowiada CSS, co jest znacznie wydajniejsze.
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -54,8 +50,6 @@ export const CarCarousel = ({ allCars = [], isLoading = false, limit = 10 }: Car
 
   return (
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Nawigacja - strzałki */}
-      {/* 3. Uproszczona logika pokazywania strzałek */}
       {!isLoading && allCars.length > 1 && (
         <>
           <button
@@ -75,19 +69,17 @@ export const CarCarousel = ({ allCars = [], isLoading = false, limit = 10 }: Car
         </>
       )}
 
-      {/* Karuzela */}
       <div className="embla" ref={emblaRef}>
         <div className="embla__container flex">
           {isLoading
             ? Array(limit).fill(0).map((_, i) => (
-                // 4. Te klasy CSS w pełni kontrolują responsywność karuzeli
-                <div key={i} className="embla__slide p-2 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                <div key={i} className="embla__slide p-2 basis-full md:basis-1/2 lg:basis-1/3">
                   <CarCardSkeleton />
                 </div>
               ))
             : allCars.map((car) => (
-                <div key={car.id} className="embla__slide p-2 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <CarCard car={car} />
+                <div key={car.id} className="embla__slide p-2 basis-full md:basis-1/2 lg:basis-1/3">
+                  <CarCardLarge car={car} />
                 </div>
               ))
           }
