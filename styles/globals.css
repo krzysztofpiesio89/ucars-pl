@@ -43,4 +43,36 @@
   }
 }
 
+/* Style dla karuzeli ofert */
+/* Plik: globals.css */
+
+.embla {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 100%; /* Domyślnie jeden slajd na widoku */
+  min-width: 0;
+  position: relative;
+}
+
+/* Dostosuj liczbę widocznych slajdów dla różnych ekranów */
+@media (min-width: 640px) { /* sm */
+  .embla__slide {
+    flex-basis: 50%; /* 2 slajdy */
+  }
+}
+@media (min-width: 1024px) { /* lg */
+  .embla__slide {
+    flex-basis: 33.333%; /* 3 slajdy */
+  }
+}
+@media (min-width: 1280px) { /* xl */
+  .embla__slide {
+    flex-basis: 25%; /* 4 slajdy */
+  }
+}
+
 

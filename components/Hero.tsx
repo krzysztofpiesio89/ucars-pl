@@ -56,14 +56,18 @@ const Hero = () => {
       </motion.div>
         
       <div className="relative z-20 flex flex-col items-center text-center text-white p-4 max-w-4xl">
-        <h1 className="text-5xl md:text-7xl font-bold">
-          {isUser && (
-            <span className="block text-2xl font-medium text-gray-300 mb-4 truncate">
-              Hey🙋‍♀️, {session.user?.name?.split(" ")[0]}
-            </span>
-          )}
-          Wygraj aukcje, spełniaj marzenia.
-        </h1>
+      <h1 className="text-5xl md:text-7xl font-bold">
+        {isUser && (
+          <span className="block text-2xl font-medium text-gray-300 mb-4 truncate">
+            Hey🙋‍♀️, {session.user?.name?.split(" ")[0]}
+          </span>
+        )}
+        {/* 👇 ZMIANA: Kolor jest teraz zastosowany tylko do części tekstu 👇 */}
+        Wygraj aukcje,{' '}
+        <span className="text-red-600 dark:text-red-500">
+          spełniaj marzenia.
+        </span>
+      </h1>
 
         <p className="text-xl md:text-2xl mt-6 mb-8 text-gray-200">
           Kup samochód z USA bez stresu.
@@ -74,9 +78,9 @@ const Hero = () => {
           <OfferCount />
         </div>
 
-        <Link href={"#explore"}>
+        <Link href={"/view-all"}>
           <CustomButton
-            title="Trwające aukcje"
+            title="Aukcje na żywo"
             type="button"
             containerStyle="text-white bg-blue-600 hover:bg-blue-700 rounded-full text-lg px-8 py-3"
           />
