@@ -50,11 +50,19 @@ const ViewAllCars = ({ searchParams }: { searchParams: FilterProps }) => {
             try {
                 const queryString = new URLSearchParams(searchParams as any).toString();
                 const res = await fetch(`/api/car?${queryString}`);
-                const data = await res.json();
-                setAllCars(data.cars);
-                setTotalCars(data.totalCars);
+                if (res.ok) {
+                    const data = await res.json();
+                    setAllCars(data.cars);
+                    setTotalCars(data.totalCars);
+                } else {
+                    const errorData = await res.json();
+                    setAllCars([]);
+                    setTotalCars(0);
+                    throw new Error(errorData.message || 'Failed to fetch cars');
+                }
             } catch (error) {
                 console.error(error);
+                throw error; // Re-throw the error to be caught by toast.promise
             } finally {
                 setIsLoading(false);
             }
