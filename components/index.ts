@@ -20,6 +20,7 @@ import FloatingFilterButton from './FloatingFilterButton';
 import BrandStrip from './BrandStrip';
 import OfferCount from './OfferCount';
 import TopBar from './TopBar';
+import CarFilterForm from './CarFilterForm';
 
 export {
     Hero,
@@ -43,5 +44,6 @@ export {
     FloatingFilterButton,
     BrandStrip,
     OfferCount,
-    TopBar
+    TopBar,
+    CarFilterForm
 };

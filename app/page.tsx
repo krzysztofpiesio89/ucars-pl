@@ -1,7 +1,7 @@
 'use client';
 
 // --- KROK 1: Zaimportuj MainContent ---
-import { ShowAllCars, Hero, AboutUs, ProcessSection, MainContent, BrandStrip } from '@/components';
+import { ShowAllCars, Hero, AboutUs, ProcessSection, MainContent, BrandStrip, CarFilterForm } from '@/components';
 import AnimatedGradientBlobs from '@/components/AnimatedGradientBlobs';
 import { CarProps, FilterProps } from '@/types';
 import { useEffect, useState } from 'react';
@@ -49,7 +49,8 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
             <MainContent>
                 <AboutUs /> 
                 <ProcessSection />
-                                <ShowAllCars
+                <CarFilterForm />
+                <ShowAllCars
                     allCars={allCars}
                     limit={(Number(searchParams.limit) || 10)}
                     page={Number(searchParams.page) || 1}

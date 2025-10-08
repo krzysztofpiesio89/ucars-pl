@@ -10,6 +10,7 @@ export const GET = async (req: NextRequest) => {
     // --- POPRAWKA: Odczytujemy parametry ZAWSZE małymi literami ---
     const model = searchParams.get("model")?.trim() || undefined;
     const brand = searchParams.get("brand")?.trim() || undefined;
+    const version = searchParams.get("version")?.trim() || undefined;
     const fuelType = searchParams.get("fueltype")?.trim() || undefined;
     const yearFrom = searchParams.get("yearfrom") ? parseInt(searchParams.get("yearfrom")!, 10) : undefined;
     const yearTo = searchParams.get("yearto") ? parseInt(searchParams.get("yearto")!, 10) : undefined;
@@ -35,6 +36,9 @@ export const GET = async (req: NextRequest) => {
     }
     if (model) {
       where.model = { contains: model, mode: 'insensitive' };
+    }
+    if (version) {
+      where.version = { contains: version, mode: 'insensitive' };
     }
     if (fuelType) {
       where.fuelType = { equals: fuelType, mode: 'insensitive' };

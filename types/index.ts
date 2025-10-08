@@ -10,7 +10,7 @@ export interface CustomButtonProps {
   type?: "button" | "submit" | "reset";
   isLoading?: boolean;
   icon?: ReactNode;
-  
+  disabled?: boolean;
 }
 
 export interface CustomInputProps {
@@ -70,6 +70,7 @@ export interface FilterCardProps {
 export interface FilterProps {
   brand: string;
   model: string;
+  version?: string;
   cylinders: string[];
   fuelType: string;
   buyNowPrice?: string[];
@@ -186,5 +187,3 @@ export interface ImageUploaderProps {
   acceptedFiles: File[];      // Nowo dodane pliki (typ File)
   existingImageFiles: string[]; // Istniejące już obrazki (jako URL lub base64)
 }
-
-
