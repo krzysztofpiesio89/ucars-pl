@@ -13,10 +13,11 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
     return (
         <>
             <header className="sticky top-0 z-50">
+              
+                <Navbar />
                 <div className={`transition-all duration-300 ease-in-out ${isTopBarVisible ? 'max-h-12' : 'max-h-0 overflow-hidden'}`}>
                     <TopBar />
                 </div>
-                <Navbar />
             </header>
             {children}
             <Footer />

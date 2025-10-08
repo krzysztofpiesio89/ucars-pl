@@ -30,7 +30,7 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
         };
 
         toast.promise(fetchAllCars(), {
-            loading: 'Wyszukiwanie samochodów...',
+            loading: 'Szukam nowych aukcji...',
             success: 'Wyszukiwanie zakończone',
             error: 'Wystąpił błąd podczas wyszukiwania.',
         });
