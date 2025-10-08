@@ -37,7 +37,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full min-h-real-screen flex items-center justify-center overflow-hidden">
+    <section ref={sectionRef} className="relative w-full min-h-[100dvh] flex items-center justify-center overflow-hidden">
       
       <motion.div
         animate={{ opacity: isVideoVisible ? 1 : 0 }}
