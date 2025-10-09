@@ -2,7 +2,7 @@
 
 // Twoje importy pozostają bez zmian
 import { ShowAllCars, Hero, AboutUs, ProcessSection, MainContent, BrandStrip, CarFilterForm, WhyUsCarAnimation, OfferCount } from '@/components';
-import AnimatedGradientBlobs from '@/components/AnimatedGradientBlobs';
+
 import { CarProps, FilterProps } from '@/types';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -52,10 +52,11 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
             {/* --- WARSTWA TREŚCI (z-10) --- */}
             {/* Ten kontener trzyma całą zawartość strony i zawsze jest na wierzchu. */}
             <div className="relative z-10">
-                <WhyUsCarAnimation />
-                <OfferCount />
+       
                 
                 <MainContent>
+                <WhyUsCarAnimation />
+                <OfferCount />
                     <Hero /> 
                     <CarFilterForm />
                     <ShowAllCars
