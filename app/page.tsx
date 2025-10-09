@@ -38,7 +38,7 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
 
     return (
         // Usunęliśmy nadmiarowe divy dla uproszczenia
-        <main className="relative dark:bg-slate-900">
+        <main className="relative overflow-x-hidden dark:bg-slate-900">
             <AnimatedGradientBlobs />
             
             {/* Hero jest renderowane samodzielnie, aby zająć cały ekran */}
