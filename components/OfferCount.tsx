@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
 
-// Komponent do animacji samej liczby (bez zmian)
+// Komponent do animacji liczby (bez zmian)
 const AnimatedNumber = ({ value }: { value: number }) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
@@ -32,7 +32,8 @@ const OfferCount = () => {
         }
         const data = await res.json();
         setCount(data.count);
-      } catch (error) {
+      } catch (error)
+      {
         console.error('Nie udało się pobrać liczby ofert:', error);
         setCount(null);
       } finally {
@@ -43,37 +44,42 @@ const OfferCount = () => {
     fetchCount();
   }, []);
 
-  // Prosty, tekstowy loader na czas ładowania (bez zmian)
+  // ⏳ NOWY, LEPSZY EKRAN ŁADOWANIA
   if (isLoading) {
     return (
-      <div className="flex items-baseline gap-3">
-        <p className="text-5xl font-bold text-gray-500">...</p>
+      <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-2xl border border-white/30 dark:border-slate-700 p-6 shadow-lg flex flex-col items-center justify-center w-80 h-40">
+        <div className="w-3/4 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg animate-pulse mb-3"></div>
+        <div className="w-1/2 h-5 bg-slate-200 dark:bg-slate-700 rounded-lg animate-pulse"></div>
       </div>
     );
   }
 
-  // Nie renderuj niczego, jeśli wystąpił błąd (bez zmian)
+  // Nic nie renderuj przy błędzie
   if (count === null) {
     return null;
   }
 
-  // Ostateczny wygląd z wprowadzonymi zmianami
+  // ✨ OSTATECZNY, NOWOCZESNY WYGLĄD
   return (
-    <div className="flex items-baseline gap-3">
-      {/* 👇 TUTAJ WPROWADZONO ZMIANY 👇 */}
-     
-     <div className="flex flex-col items-center gap-1">
-  {/* 1. Neonowa liczba z efektem poświaty */}
-  <div className="text-5xl font-bold text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.7)] tabular-nums">
-    <AnimatedNumber value={count} />
-  </div>
+    <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-2xl border border-white/30 dark:border-slate-700 p-6 shadow-lg flex flex-col items-center justify-center w-auto min-w-[320px]">
+      {/* 1. Wskaźnik "LIVE" dodający kontekst */}
+      <div className="flex items-center gap-2 mb-3 text-sm font-medium text-green-600 dark:text-green-400">
+        <span className="relative flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+        </span>
+        AUKCJE NA ŻYWO
+      </div>
 
-  {/* 2. Napis w stylu iOS */}
-  <p className="text-xl font-normal text-gray-500 dark:text-gray-400">
-    Trwających aukcji!
-  </p>
-</div>
+      {/* 2. Liczba z gradientem, świetnie wyglądająca w obu trybach */}
+      <div className="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500 tabular-nums">
+        <AnimatedNumber value={count} />
+      </div>
 
+      {/* 3. Czytelny opis */}
+      <p className="mt-1 text-lg font-medium text-slate-600 dark:text-slate-400">
+        Aktywnych Ofert
+      </p>
     </div>
   );
 };

@@ -5,12 +5,13 @@ import { Session } from 'next-auth';
 
 export interface CustomButtonProps {
   title: string;
-  handleClick?: MouseEventHandler<HTMLButtonElement>;
+  type?: 'button' | 'submit';
   containerStyle?: string;
-  type?: "button" | "submit" | "reset";
+  handleClick?: () => void;
   isLoading?: boolean;
-  icon?: ReactNode;
   disabled?: boolean;
+  rightIcon?: React.ReactNode; // ✅ DODAJ TĘ LINIĘ
+  // 'icon' możesz usunąć, jeśli nie jest już używane
 }
 
 export interface CustomInputProps {

@@ -3,11 +3,6 @@
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
 
-import { CustomButton, OfferCount, ShowAllCars } from "@/components";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { CarProps, FilterProps } from '@/types';
-
 // --- Komponenty Ikon SVG ---
 
 const EyeIcon = ({ className }: { className?: string }) => (
@@ -69,7 +64,7 @@ const steps = [
     {
         icon: StarIcon,
         title: "Ekskluzywne podejście dla wymagających",
-        description: "Rozumiemy, że nasi klienci oczekują najwyższej jakości. Każdy projekt traktujemy indywidualnie, oferując wsparcie na każdym etapie. W UCARS każdy klient jest VIP-em.",
+        description: "Rozumiemy, że nasi klienci oczekują najwyższej jakości. Każdy projekt traktujemy indywidualnie, oferując wsparcie na każdym etapie. W uCars.pl każdy klient jest VIP-em.",
         borderColor: "border-blue-500",
         imageUrl: "https://images.unsplash.com/photo-1616422285623-13ff0162193c?q=80&w=1932&auto=format&fit=crop"
     }
@@ -102,45 +97,10 @@ const itemVariants: Variants = {
 
 // --- Główny Komponent ---
 
-const Hero = () => {  
-  const { data: session } = useSession();
-  const isUser = session?.user;
-
+const Hero = () => {
     return (
         <section className="w-full bg-white dark:bg-slate-900 overflow-hidden">
-              <div className="relative z-10 flex flex-col justify-center items-center container mx-auto px-4 text-center text-white">
-        <h1 className="text-5xl md:text-7xl font-bold">
-          {isUser && (
-            <span className="block text-2xl font-medium text-gray-300 mb-4 truncate">
-              Hey🙋‍♀️, {session.user?.name?.split(" ")[0]}
-            </span>
-          )}
-          Wygraj aukcje,{' '}
-          <span className="text-red-500">
-            spełniaj marzenia.
-          </span>
-        </h1>
-
-        <p className="text-xl md:text-2xl mt-6 mb-8 text-gray-200 max-w-3xl">
-          Kup samochód z USA bez stresu.
-          Wygraj aukcje i ciesz się nowym autem w kilka tygodni!
-        </p>
-
-        <div className="my-8">
-          <OfferCount />
-        </div>
-        
-        <Link href={"/view-all"}>
-          <CustomButton
-            title="Aukcje na żywo"
-            type="button"
-            containerStyle="text-white bg-blue-600 hover:bg-blue-700 rounded-full text-lg px-8 py-3"
-          />
-        </Link>
-      </div>
-
-
-
+          
             <div className="container mx-auto px-4 py-20 md:py-28">
                 {/* Nagłówek */}
                 <motion.div
@@ -154,7 +114,7 @@ const Hero = () => {
                         Jak Pracujemy
                     </h1>
                     <p className="text-lg md:text-xl max-w-3xl mx-auto text-slate-600 dark:text-slate-300">
-                        W UCARS traktujemy import samochodów z USA jak sztukę — z precyzją, transparentnością i dbałością o każdy detal.
+                        W uCars.pl traktujemy import samochodów z USA jak sztukę — z precyzją, transparentnością i dbałością o każdy detal.
                     </p>
                 </motion.div>
 
