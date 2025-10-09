@@ -39,6 +39,10 @@ const BrandStrip = () => {
   return (
     <div className="w-full bg-blue-900 dark:bg-gray-900 py-6 lg:py-8 border-t border-b border-gray-700/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+         {/* --- DODANY NAGŁÓWEK --- */}
+        <h2 className="text-3xl font-bold text-center text-white opacity-90 mb-8 tracking-wide">
+          Popularne marki
+        </h2>
         <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-6 md:gap-x-12">
           {brands.map((brand) => (
             <Link
