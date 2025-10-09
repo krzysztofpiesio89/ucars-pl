@@ -21,6 +21,7 @@ import BrandStrip from './BrandStrip';
 import OfferCount from './OfferCount';
 import TopBar from './TopBar';
 import CarFilterForm from './CarFilterForm';
+import WhyUsCarAnimation from './WhyUsCarAnimation';
 
 
 export {
@@ -46,5 +47,6 @@ export {
     BrandStrip,
     OfferCount,
     TopBar,
-    CarFilterForm
+    CarFilterForm,
+    WhyUsCarAnimation
 };
