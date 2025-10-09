@@ -1,5 +1,4 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
 import { CustomButton, OfferCount } from "@/components";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -9,57 +8,62 @@ const Hero = () => {
   const { data: session } = useSession();
   const isUser = session?.user;
 
-  const [isVideoVisible, setIsVideoVisible] = useState(true);
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVideoVisible(entry.isIntersecting);
-      },
-      {
-        threshold: 0,
-        rootMargin: "10px",
-      }
-    );
-
-    const currentRef = sectionRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, []);
-
   return (
-    // ZMIANA: Sekcja zajmuje teraz całą wysokość ekranu (h-screen)
-    <section ref={sectionRef} className="relative w-full bg-black overflow-hidden h-screen">
-      {/* Tło wideo z optymalizacjami */}
-      <motion.div
-        animate={{ opacity: isVideoVisible ? 0.5 : 0 }}
-        transition={{ duration: 0.7 }}
-        className="absolute top-0 left-0 w-full h-full z-0"
-      >
-        <video
-          src="/videos/hero-background.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster="/images/hero-poster.webp" // OPTYMALIZACJA: Obrazek wyświetlany podczas ładowania wideo
-          preload="auto"                   // OPTYMALIZACJA: Wskazówka dla przeglądarki, by szybciej załadowała wideo
-          className="w-full h-full object-cover"
+    <section className="relative w-full h-screen overflow-hidden bg-slate-900 flex justify-center items-center">
+      
+      {/* --- KROK 1: Nowe animowane tło --- */}
+      {/* Kontener na "bloby", umieszczony z tyłu (z-0) */}
+      <div className="absolute inset-0 z-0">
+        {/* Każdy motion.div to osobny, animowany "blob" z gradientem */}
+        <motion.div
+          className="absolute top-[10%] left-[10%] w-72 h-72 bg-purple-600 rounded-full filter blur-3xl opacity-40"
+          animate={{
+            x: [0, 50, -30, 0],
+            y: [0, -40, 60, 0],
+            rotate: [0, 180, 360],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
         />
-        {/* Nakładka przyciemniająca */}
-        <div className="absolute top-0 left-0 w-full h-full bg-black/50" />
-      </motion.div>
+        <motion.div
+          className="absolute bottom-[15%] right-[5%] w-96 h-96 bg-red-500 rounded-full filter blur-3xl opacity-30"
+          animate={{
+            x: [0, -40, 50, 0],
+            y: [0, 60, -30, 0],
+            rotate: [0, -120, 360],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 30,
+            repeat: Infinity,
+            repeatType: "mirror",
+            delay: 5,
+          }}
+        />
+         <motion.div
+          className="absolute bottom-[45%] right-[40%] w-60 h-60 bg-sky-500 rounded-full filter blur-3xl opacity-40"
+          animate={{
+            x: [0, 40, -50, 0],
+            y: [0, -60, 30, 0],
+            rotate: [0, 90, -180],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 28,
+            repeat: Infinity,
+            repeatType: "mirror",
+            delay: 2,
+          }}
+        />
+      </div>
 
-      {/* ZMIANA: Kontener z treścią centruje elementy w pionie i poziomie na całej wysokości */}
-      <div className="relative z-10 h-full flex flex-col justify-center items-center container mx-auto px-4 text-center text-white">
+      {/* --- KROK 2: Treść sekcji Hero (bez zmian) --- */}
+      {/* Kontener z treścią, umieszczony na wierzchu (z-10) */}
+      <div className="relative z-10 flex flex-col justify-center items-center container mx-auto px-4 text-center text-white">
         <h1 className="text-5xl md:text-7xl font-bold">
           {isUser && (
             <span className="block text-2xl font-medium text-gray-300 mb-4 truncate">
@@ -67,7 +71,7 @@ const Hero = () => {
             </span>
           )}
           Wygraj aukcje,{' '}
-          <span className="text-red-600 dark:text-red-500">
+          <span className="text-red-500">
             spełniaj marzenia.
           </span>
         </h1>

@@ -46,12 +46,12 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
       <div className="w-72 h-72 dark:bg-gradient-radial from-slate-700 to-[#343434] rounded-2xl rotate-12 absolute top-[15%] right-0 blur-3xl" />
 
             {/* Hero jest renderowane samodzielnie, aby gzająć cały ekran */}
-      
+            <Hero/>  
           
 
             {/* --- KROK 2: Opakuj resztę treści w MainContent --- */}
             <MainContent>
-                <Hero/>  
+            
                 <BrandStrip />
                
             
