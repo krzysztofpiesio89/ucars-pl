@@ -38,7 +38,7 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
 
     return (
         // Usunęliśmy nadmiarowe divy dla uproszczenia
-        <main className="overflow-hidden relative dark:bg-slate-900">
+        <main className="relative dark:bg-slate-900">
             <AnimatedGradientBlobs />
             
             {/* Hero jest renderowane samodzielnie, aby zająć cały ekran */}
@@ -49,7 +49,7 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
             <MainContent>
                 <AboutUs /> 
                 <ProcessSection />
-                <WhyUsCarAnimation />
+                
                 <CarFilterForm />
                 <ShowAllCars
                     allCars={allCars}
@@ -58,7 +58,9 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
                     totalCars={totalCars}
                     isLoading={isLoading}
                 />
+                <WhyUsCarAnimation />
             </MainContent>
+
         </main>
     );
 }

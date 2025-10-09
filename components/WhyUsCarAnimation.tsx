@@ -116,7 +116,7 @@ const itemVariants: Variants = {
 
 const WhyUCarsAnimation = () => {
     return (
-        <section className="w-full py-20 bg-gray-50 dark:bg-slate-900 overflow-hidden">
+        <section className="w-full py-20 bg-gray-50 dark:bg-slate-900">
             <motion.div
                 className="container mx-auto px-6 text-center"
                 initial="hidden"

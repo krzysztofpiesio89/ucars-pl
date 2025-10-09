@@ -42,7 +42,7 @@ const Hero = () => {
       <motion.div
         animate={{ opacity: isVideoVisible ? 1 : 0 }}
         transition={{ duration: 0.7 }}
-        className="fixed top-0 left-0 w-full h-full z-0"
+        className="absolute top-0 left-0 w-full h-full z-0" // <-- TUTAJ JEST POPRAWKA
       >
         <video
           src="/videos/hero-background.mp4"

@@ -75,27 +75,9 @@ export const footerLinks = [
         title: 'O nas',
         links: [
             { title: 'Jak pracujemy', url: '/how-we-work' },
-            { title: 'Wyróżnione', url: '/' },
-            { title: 'Współpraca', url: '/' },
-            { title: 'Relacje biznesowe', url: '/' },
-        ],
-    },
-    {
-        title: 'Nasza firma',
-        links: [
-            { title: 'Wydarzenia', url: '/' },
-            { title: 'Blog', url: '/' },
-            { title: 'Podcasty', url: '/' },
-            { title: 'Prasa', url: '/' },
-        ],
-    },
-    {
-        title: 'Socjal Media',
-        links: [
-            { title: 'Discord', url: '/' },
-            { title: 'Instagram', url: '/' },
-            { title: 'Twitter', url: '/' },
-            { title: 'Facebook', url: '/' },
+            { title: 'Współpraca', url: '/wspolpraca' },
+            { title: 'Relacje biznesowe', url: '/relacje-biznesowe' },
+            { title: 'Kontakt', url: '/kontakt' },
         ],
     },
 ];
