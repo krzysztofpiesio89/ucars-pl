@@ -195,7 +195,7 @@ const WhyUCarsAnimation = () => {
                                 variants={itemVariants}
                                 whileHover={{ scale: 1.03, transition: { type: "spring", stiffness: 400, damping: 10 } }}
                             >
-                                <p className="text-gray-600 dark:text-gray-300 text-base italic mb-4 flex-grow">"{testimonial.quote}"</p>
+                                <p className="text-gray-600 dark:text-gray-300 text-base italic mb-4 flex-grow">&ldquo;{testimonial.quote}&rdquo;</p>
                                 <div className="flex items-center mt-auto pt-4 border-t border-gray-200 dark:border-slate-700/50">
                                     <UserIcon className="w-10 h-10 text-gray-400 dark:text-slate-500 mr-4"/>
                                     <div>
