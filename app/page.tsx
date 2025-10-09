@@ -44,14 +44,16 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
       <div className="w-72 h-72 dark:bg-gradient-radial from-indigo-900 to-purple-700 rounded-2xl rotate-12 absolute top-1/2 left-1/2 blur-3xl" />
       <div className="w-72 h-20 dark:bg-gradient-radial from-teal-500 to-green-700 rounded-2xl rotate-12 absolute top-0 left-4 blur-3xl" />
       <div className="w-72 h-72 dark:bg-gradient-radial from-slate-700 to-[#343434] rounded-2xl rotate-12 absolute top-[15%] right-0 blur-3xl" />
-        
+       <Hero/>  
             
             {/* Hero jest renderowane samodzielnie, aby zająć cały ekran */}
       
-            <BrandStrip />
+          
 
             {/* --- KROK 2: Opakuj resztę treści w MainContent --- */}
             <MainContent>
+               
+                <BrandStrip />
                 <AboutUs /> 
                 <ProcessSection />
                 <WhyUsCarAnimation />
