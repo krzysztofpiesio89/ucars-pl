@@ -46,7 +46,6 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
 
             {/* --- KROK 2: Opakuj resztę treści w MainContent --- */}
             <MainContent>
-                <Hero />
                 <BrandStrip />
                 <AboutUs /> 
                 <ProcessSection />
