@@ -81,9 +81,7 @@ const Hero = () => {
           Wygraj aukcje i ciesz się nowym autem w kilka tygodni!
         </p>
 
-        <div className="my-8">
-          <OfferCount />
-        </div>
+    
 
         <Link href={"/view-all"}>
           <CustomButton
