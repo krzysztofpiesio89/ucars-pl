@@ -39,26 +39,20 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
     return (
         // Usunęliśmy nadmiarowe divy dla uproszczenia
         <main className="relative overflow-x-hidden dark:bg-slate-900">
-            <AnimatedGradientBlobs />
+          
             
             {/* Hero jest renderowane samodzielnie, aby zająć cały ekran */}
-            <Hero />
-            <BrandStrip />
+      
 
             {/* --- KROK 2: Opakuj resztę treści w MainContent --- */}
             <MainContent>
+                <Hero />
+                <BrandStrip />
                 <AboutUs /> 
                 <ProcessSection />
                 
-                <CarFilterForm />
-                <ShowAllCars
-                    allCars={allCars}
-                    limit={(Number(searchParams.limit) || 10)}
-                    page={Number(searchParams.page) || 1}
-                    totalCars={totalCars}
-                    isLoading={isLoading}
-                />
-                <WhyUsCarAnimation />
+             
+             
             </MainContent>
 
         </main>
