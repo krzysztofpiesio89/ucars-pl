@@ -19,15 +19,29 @@ const ContactForm = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSubmitting(true);
-        
-        // Symulacja wysyłania formularza
-        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        console.log('Wysłano dane formularza:', formData);
-        toast.success('Dziękujemy za wiadomość! Skontaktujemy się wkrótce.');
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-        setFormData({ name: '', email: '', message: '' });
-        setIsSubmitting(false);
+            if (response.ok) {
+                toast.success('Dziękujemy za wiadomość! Skontaktujemy się wkrótce.');
+                setFormData({ name: '', email: '', message: '' });
+            } else {
+                const errorData = await response.json();
+                toast.error(errorData.error || 'Nie udało się wysłać wiadomości.');
+            }
+        } catch (error) {
+            console.error('Błąd wysyłania formularza:', error);
+            toast.error('Wystąpił nieoczekiwany błąd.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
