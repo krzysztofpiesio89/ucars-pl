@@ -19,7 +19,7 @@ const CustomSelect = ({ options, onChange, label, containerStyle, parentContaine
                 <BsChevronContract size={16} className={`ml-4 ${theme === 'dark'?'text-slate-400':'text-slate-700'}`}/>
             </button>
             {
-                isShownOptions && (<ul className='bg-white dark:bg-slate-800 border dark:border-slate-700 shadow rounded absolute mt-2 max-h-60 overflow-y-auto space-y-1 flex flex-col items-center w-full z-10 '>
+                isShownOptions && (<ul className='bg-white dark:bg-slate-800 border dark:border-slate-700 shadow rounded absolute mt-2 max-h-60 overflow-y-auto space-y-1 flex flex-col items-center w-full z-20 '>
                     {
                         options.map(({ value: optValue, title }, i) => (<li key={i} className='text-sm px-2 py-1.5 w-full hover:bg-blue-600 dark:hover:bg-slate-700 hover:text-white  cursor-pointer' onClick={() => {
                             onChange(optValue, name);
