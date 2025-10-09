@@ -81,9 +81,9 @@ const ContactForm = () => {
                 <div className="flex items-center justify-center">
                     <CustomButton 
                         title={isSubmitting ? 'Wysyłanie...' : 'Wyślij wiadomość'}
-                        btnType='submit'
-                        containerStyles='w-full bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:bg-gray-400'
-                        isDisabled={isSubmitting}
+                        type='submit'
+                        containerStyle='w-full bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:bg-gray-400'
+                        disabled={isSubmitting}
                     />
                 </div>
             </form>
