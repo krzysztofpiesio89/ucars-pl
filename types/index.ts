@@ -38,6 +38,7 @@ export interface CustomSelectProps {
   value?: string;
   containerStyle?: string;
   parentContainerStyle?: string;
+  disabled?: boolean; // <-- DODAJ TĘ LINIĘ
 }
 
 /** Interfejst dla sesji  */

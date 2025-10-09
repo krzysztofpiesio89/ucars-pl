@@ -16,6 +16,7 @@ const ViewAllCars = ({ searchParams }: { searchParams: FilterProps }) => {
     const [filters, setFilters] = useState<FilterProps>({
         brand: searchParams.brand || '',
         model: searchParams.model || '',
+        version: searchParams.version || '',
         fuelType: searchParams.fuelType || '',
         yearFrom: searchParams.yearFrom || undefined,
         yearTo: searchParams.yearTo || undefined,
