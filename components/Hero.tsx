@@ -14,6 +14,21 @@ const Hero = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Set height based on window inner height to avoid mobile browser jump
+    const setVh = () => {
+      if (sectionRef.current) {
+        // We use a CSS variable for flexibility
+        const vh = window.innerHeight * 0.01;
+        sectionRef.current.style.setProperty('--vh', `${vh}px`);
+      }
+    };
+
+    setVh();
+
+    // Re-calculate on resize
+    window.addEventListener('resize', setVh);
+
+    // Intersection observer for video visibility
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsVideoVisible(entry.isIntersecting);
@@ -30,6 +45,7 @@ const Hero = () => {
     }
 
     return () => {
+      window.removeEventListener('resize', setVh);
       if (currentRef) {
         observer.unobserve(currentRef);
       }
@@ -37,12 +53,16 @@ const Hero = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full min-h-[100dvh] flex items-center justify-center overflow-hidden">
+    <section 
+      ref={sectionRef} 
+      className="relative w-full flex items-center justify-center overflow-hidden"
+      style={{ minHeight: 'calc(var(--vh, 1vh) * 100)' }}
+    >
       
       <motion.div
         animate={{ opacity: isVideoVisible ? 1 : 0 }}
         transition={{ duration: 0.7 }}
-        className="absolute top-0 left-0 w-full h-full z-0" // <-- TUTAJ JEST POPRAWKA
+        className="absolute top-0 left-0 w-full h-full z-0"
       >
         <video
           src="/videos/hero-background.mp4"
@@ -62,7 +82,6 @@ const Hero = () => {
             Hey🙋‍♀️, {session.user?.name?.split(" ")[0]}
           </span>
         )}
-        {/* 👇 ZMIANA: Kolor jest teraz zastosowany tylko do części tekstu 👇 */}
         Wygraj aukcje,{' '}
         <span className="text-red-600 dark:text-red-500">
           spełniaj marzenia.
