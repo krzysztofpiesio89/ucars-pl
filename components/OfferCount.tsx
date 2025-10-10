@@ -67,46 +67,46 @@ const OfferCount = () => {
     { v: '300', a: 75 }, { v: '350', a: 112.5 }, { v: '400', a: 150 }
   ];
 
-  if (isLoading) { return ( <div className="w-1/2 md:w-1/3 lg:w-1/4 mx-auto"><div className="w-full aspect-square rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center"><div className="font-mono text-4xl text-slate-600 animate-pulse">...</div></div></div>); }
+  if (isLoading) { return ( <div className="w-[70vw] sm:w-1/2 md:w-1/3 lg:w-1/4 max-w-[400px] mx-auto"><div className="w-full aspect-square rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center"><div className="font-mono text-4xl text-slate-600 animate-pulse">...</div></div></div>); }
   if (count === null) return null;
 
   return (
-    <div className="w-[50vw] md:w-[33vw] lg:w-[25vw] max-w-[400px] mx-auto">
+    // ZMIANA: Zwiększony rozmiar na mobile (70vw), stopniowo zmniejszany na większych ekranach
+    <div className="w-[70vw] sm:w-1/2 md:w-1/3 lg:w-1/4 max-w-[400px] mx-auto">
       <motion.div
         className="relative w-full aspect-square rounded-full bg-gradient-to-br from-slate-900 to-black border-2 p-4 shadow-2xl flex flex-col items-center justify-center overflow-hidden"
         variants={circleVariants} initial="initial" animate={animationState}
       >
-        {/* Warstwy tła */}
-        <div className="absolute inset-2 rounded-full opacity-20 dark:opacity-30 animate-spin-slow bg-[repeating-conic-gradient(rgba(0,190,255,0.4)_0deg_1deg,transparent_1deg_6deg)] z-0" />
-        
-        {/* ZMIANA: POPRAWIONA WARSTWA Z CYFRAMI */}
-        <div className="absolute inset-0 z-10">
+        {/* --- ELEMENTY WIDOCZNE TYLKO NA DESKTOPIE --- */}
+
+        {/* ZMIANA: Tarcza i cyfry ukryte na mobile (widoczne od `md`) */}
+        <div className="hidden md:block absolute inset-2 rounded-full opacity-20 dark:opacity-30 animate-spin-slow bg-[repeating-conic-gradient(rgba(0,190,255,0.4)_0deg_1deg,transparent_1deg_6deg)] z-0" />
+        <div className="hidden md:block absolute inset-0 z-10">
           {speedometerNumbers.map((num) => (
             <div key={num.v} className="absolute inset-0" style={{ transform: `rotate(${num.a}deg)` }}>
-              <span
-                className="absolute top-0 left-1/2 -translate-x-1/2 pt-2 font-mono text-lg text-green-400"
-                style={{ transform: `rotate(-${num.a}deg)`, textShadow: '0 0 8px rgba(52, 211, 153, 0.8)' }}
-              >
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 pt-2 font-mono text-lg text-green-400"
+                style={{ transform: `rotate(-${num.a}deg)`, textShadow: '0 0 8px rgba(52, 211, 153, 0.8)' }}>
                 {num.v}
               </span>
             </div>
           ))}
         </div>
         
-        {/* Wskazówka i pin */}
-        <div className="absolute inset-0 z-30 flex justify-center items-center">
+        {/* ZMIANA: Wskazówka i pin ukryte na mobile (widoczne od `md`) */}
+        <div className="hidden md:block absolute inset-0 z-30 flex justify-center items-center">
           <motion.div className="w-1 h-1/3 bg-red-500 rounded-full shadow-[0_0_10px_rgba(239,68,68,1)]"
             style={{ transformOrigin: 'bottom' }} initial={{ rotate: -150 }} animate={needleControls}
           />
         </div>
-        <div className="absolute w-4 h-4 rounded-full bg-slate-700 border-2 border-slate-500 z-40" />
+        <div className="hidden md:block absolute w-4 h-4 rounded-full bg-slate-700 border-2 border-slate-500 z-40" />
 
-        {/* ZMIANA: NOWY SZKLANY WYŚWIETLACZ W CENTRUM */}
+        {/* --- ELEMENTY WIDOCZNE ZAWSZE --- */}
+
         <div className="relative z-50 flex flex-col items-center justify-center">
             <div className="
               bg-gradient-to-b from-blue-900/50 to-blue-950/70
               backdrop-blur-sm
-              rounded-xl px-8 py-3
+              rounded-xl px-6 py-3 sm:px-8 sm:py-4
               border-t border-blue-400/50
               shadow-inner shadow-black/50
             ">
@@ -114,7 +114,7 @@ const OfferCount = () => {
                     <span className="relative flex h-2 w-2"><span className="animate-ping absolute h-full w-full rounded-full bg-green-400 opacity-75"></span><span className="relative rounded-full h-2 w-2 bg-green-500"></span></span>
                     LIVE
                 </div>
-                <div className="font-mono text-4xl sm:text-5xl md:text-6xl font-bold text-sky-300 drop-shadow-[0_0_10px_rgba(56,189,248,0.8)] tabular-nums">
+                <div className="font-mono text-4xl sm:text-5xl font-bold text-sky-300 drop-shadow-[0_0_10px_rgba(56,189,248,0.8)] tabular-nums">
                     <AnimatedNumber value={count} onStart={() => setAnimationState('counting')} onEnd={() => setAnimationState('finished')} />
                 </div>
                 <p className="mt-1 text-sm font-medium text-slate-500 tracking-wider uppercase">
