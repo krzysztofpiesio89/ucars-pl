@@ -30,6 +30,7 @@ const OfferCount = () => {
   const [animationState, setAnimationState] = useState<'initial' | 'counting' | 'finished'>('initial');
 
   useEffect(() => {
+    // ...logika fetchowania bez zmian
     const fetchCount = async () => {
       try {
         const res = await fetch('/api/car/count');
@@ -63,6 +64,16 @@ const OfferCount = () => {
   if (isLoading) { /* Ekran ładowania bez zmian */ return ( <div className="w-[70vw] sm:w-[60vw] md:w-[40vw] lg:w-[30vw] max-w-[380px] mx-auto"><div className="w-full aspect-square rounded-full bg-slate-900/50 flex items-center justify-center"><div className="w-3/4 h-1/3 bg-slate-800/50 rounded-2xl animate-pulse"></div></div></div>); }
   if (count === null) return null;
 
+  // --- NOWOŚĆ: Logika dynamicznie zmieniająca rozmiar czcionki ---
+  let numberSizeClass = 'text-6xl sm:text-7xl'; // Domyślny, największy rozmiar
+  const numDigits = count.toString().length;
+
+  if (numDigits === 5) {
+    numberSizeClass = 'text-5xl sm:text-6xl'; // Rozmiar dla 5 cyfr
+  } else if (numDigits >= 6) {
+    numberSizeClass = 'text-4xl sm:text-5xl'; // Rozmiar dla 6+ cyfr
+  }
+
   return (
     <div className="w-[70vw] sm:w-[60vw] md:w-[40vw] lg:w-[30vw] max-w-[380px] mx-auto">
       <motion.div
@@ -77,11 +88,12 @@ const OfferCount = () => {
                     <span className="relative flex h-2 w-2"><span className="animate-ping absolute h-full w-full rounded-full bg-green-400 opacity-75"></span><span className="relative rounded-full h-2 w-2 bg-green-500"></span></span>
                     LIVE
                 </div>
-                {/* ZMIANA: Powiększono czcionkę licznika */}
-                <div className="font-mono text-6xl sm:text-7xl font-bold text-sky-300 drop-shadow-[0_0_10px_rgba(56,189,248,0.8)] tabular-nums my-1">
+                
+                {/* ZMIANA: Zastosowano dynamiczną klasę rozmiaru czcionki */}
+                <div className={`font-mono font-bold text-sky-300 drop-shadow-[0_0_10px_rgba(56,189,248,0.8)] tabular-nums my-1 ${numberSizeClass}`}>
                     <AnimatedNumber value={count} onStart={() => setAnimationState('counting')} onEnd={() => setAnimationState('finished')} />
                 </div>
-                {/* ZMIANA: Powiększono czcionkę, dodano kolor i animację migania */}
+                
                 <p className="text-xl font-medium text-orange-400 tracking-wider uppercase animate-turn-signal">
                     Ofert Online
                 </p>
