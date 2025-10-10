@@ -248,7 +248,7 @@ const CarCard = ({ car, isInitiallyFavorite = false, onFavoriteChange }: CarCard
 
                                 {buyNowPrice && (
                                 <p className="text-xs text-orange-600 dark:text-orange-400 font-semibold">
-                                    Aktualna oferta: {currentBid}
+                                    Wartość detaliczna: {currentBid}
                                 </p>
                                 )}
                             </div>
