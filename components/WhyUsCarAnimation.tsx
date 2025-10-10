@@ -4,7 +4,7 @@ import React from 'react';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
 
-// --- Komponenty Ikon SVG ---
+// --- Komponenty Ikon SVG (bez zmian) ---
 const RocketIcon = ({ className }: { className?: string }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.3.05-3.11S5.34 9.66 4.5 9.5" /><path d="m9 15 6-6" /><path d="M14.5 9.5c.66.84 2.3.89 3.11.05 1.26-1.5 2-5 2-5s-3.74.5-5 2c-.84.71-.89 2.3-.05 3.11Z" /></svg>
 );
@@ -34,12 +34,12 @@ const containerVariants: Variants = {
     }
 };
 
+// ZMIANA: Usunięto 'filter: blur()' z wariantów animacji
 const itemVariants: Variants = {
-    hidden: { y: 20, opacity: 0, filter: 'blur(5px)' },
+    hidden: { y: 20, opacity: 0 },
     visible: {
         y: 0,
         opacity: 1,
-        filter: 'blur(0px)',
         transition: { duration: 0.8, ease: "easeOut" }
     }
 };
@@ -48,8 +48,8 @@ const itemVariants: Variants = {
 const WhyUsCarAnimation = () => {
     return (
         <section className="relative w-full h-[100svh] flex flex-col justify-center items-center overflow-hidden bg-slate-900 text-white text-center p-6">
+            {/* Animacje tła pozostają wyłączone na mobile */}
             <div className="absolute inset-0 z-0 opacity-50">
-                {/* ZMIANA: Poniższe animacje są ukryte na małych ekranach i widoczne od rozdzielczości 'lg' (1024px) w górę */}
                 <motion.div
                     className="hidden lg:block absolute top-0 left-0 w-96 h-96 bg-blue-700 rounded-full filter blur-3xl"
                     animate={{ x: [-100, 100, -100], y: [-100, 100, -100], rotate: [0, 180, 360], scale: [1, 1.2, 1] }}
@@ -62,6 +62,7 @@ const WhyUsCarAnimation = () => {
                 />
             </div>
             
+            {/* Reszta kodu bez zmian - będzie teraz używać lżejszej animacji */}
             <motion.div
                 className="relative z-10 flex flex-col items-center pt-24"
                 initial="hidden"

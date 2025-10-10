@@ -53,10 +53,10 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
             {/* Ten kontener trzyma całą zawartość strony i zawsze jest na wierzchu. */}
             <div className="relative z-10">
             <WhyUsCarAnimation />
-                <OfferCount />
                 
                 <MainContent>
-              
+                
+                <OfferCount />
                     <Hero /> 
                     <CarFilterForm />
                     <ShowAllCars
