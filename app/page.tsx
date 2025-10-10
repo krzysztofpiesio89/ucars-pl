@@ -55,8 +55,9 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
           
                 
                 <MainContent>
-                
-                 <WhyUsCarAnimation />
+                <OfferCount />
+            
+           
                     <Hero /> 
                     <CarFilterForm />
                     <ShowAllCars
