@@ -52,11 +52,11 @@ export default function Home({ searchParams }: { searchParams: FilterProps }) {
             {/* --- WARSTWA TREŚCI (z-10) --- */}
             {/* Ten kontener trzyma całą zawartość strony i zawsze jest na wierzchu. */}
             <div className="relative z-10">
-            <WhyUsCarAnimation />
+          
                 
                 <MainContent>
                 
-                <OfferCount />
+                 <WhyUsCarAnimation />
                     <Hero /> 
                     <CarFilterForm />
                     <ShowAllCars
