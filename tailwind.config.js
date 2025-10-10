@@ -14,6 +14,11 @@ module.exports = {
         'light': "url('/images/hero-light.jpg')",
       },
 
+      animation: {
+        // ...twoje inne animacje
+        'spin-slow': 'spin 10s linear infinite', // ✅ DODAJ TĘ LINIĘ
+      },
+
     },
 
   },
